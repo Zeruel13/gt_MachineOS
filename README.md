@@ -21,14 +21,14 @@ buttonAPI ported to OC by MoparDan originally created by DireWolf20 for Computer
  to install, type the following into your OC Computer/Server. 
 
 ```lua
-wget https://github.com/Zeruel13/gt_machineOS **finish**
+wget https://github.com/Zeruel13/gt_machineOS **finish**```
 
 ## Usage
 - All machines/tanks need an adapter connected to the machine. You can do this by placing it directly beside, or placing the adapter less than 3 blocks away and use an MFU to wirelessly connect the adapter to the machine
 - gtMacineList.lua can be used to easily keep track of what machines you've connected to the network vs. what machines are being used by gt_machineOS. 
     - to use gtMachineList.lua, type
     ```lua
-    gtMachineList.lua > output.txt
+    gtMachineList.lua > output.txt```
     - this will create a text file called output.txt in the same directory as gtMachineList.lua. It will display the addresees of all gt_machines in an easy to read format 
     - Add the addresses of each machine to the files **machines.lua**, **pinnedMachines.lua**, or **tanks.lua** depending on where you want to add them. 
         - Addresses in machines.lua will be displayed under Multiblock Information
