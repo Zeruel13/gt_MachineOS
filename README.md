@@ -7,7 +7,9 @@ Features:
 - 10 fluid tanks to monitor
 
 Originally inspired by Sampsa's and Gordominossi's InfOS
+
 Border code originally by Krakaen to use in 'OPENCOMPUTER AUTOMATION PROGRAM'
+
 buttonAPI ported to OC by MoparDan originally created by DireWolf20 for ComputerCraft
 
 ## Requirements
