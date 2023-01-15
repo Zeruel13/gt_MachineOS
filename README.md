@@ -44,7 +44,7 @@ wget https://github.com/Zeruel13/gt_machineOS **finish**
 ## Gifs
 ![](Display.gif)
 
-![]((Page.gif)
+![](Page.gif)
 
 ## Disclaimer
 My first code for lua. This project was originally designed as a way to learn lua. 
