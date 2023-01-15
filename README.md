@@ -15,7 +15,7 @@ buttonAPI ported to OC by MoparDan originally created by DireWolf20 for Computer
 ## Requirements
 - A tier 3 computer case or a tier 3 server
     - This is because the program requires a tier 3 graphics card
-    - a server is **strongly* recommended. a tier 3 CPU can only support 16 components. With a tier 3 server, you can install up to 3 components busses to increase      capacity
+    - a server is **strongly** recommended. a tier 3 CPU can only support 16 components. With a tier 3 server, you can install up to 3 components busses to increase      capacity
 - OpenOS installed on the computer
 - Recommended screen size is 6x4
 
