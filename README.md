@@ -43,6 +43,7 @@ wget https://github.com/Zeruel13/gt_machineOS **finish**
 
 ## Gifs
 ![](Display.gif)
+
 ![]((Page.gif)
 
 ## Disclaimer
