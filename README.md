@@ -23,7 +23,8 @@ buttonAPI ported to OC by MoparDan originally created by DireWolf20 for Computer
  to install, type the following into your OC Computer/Server. 
 
 ```lua
-wget https://github.com/Zeruel13/gt_machineOS **finish**
+wget https://raw.githubusercontent.com/Zeruel13/gt_machineOS/master/setup.lua -f
+setup.lua
 ```
 
 ## Usage
