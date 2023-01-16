@@ -26,6 +26,8 @@ buttonAPI ported to OC by MoparDan originally created by DireWolf20 for Computer
 wget https://raw.githubusercontent.com/Zeruel13/gt_machineOS/master/setup.lua -f
 setup.lua
 ```
+Once installed, run
+```main.lua```
 
 ## Usage
 - All machines/tanks need an adapter connected to the machine. You can do this by placing it directly beside, or placing the adapter less than 3 blocks away and use an MFU to wirelessly connect the adapter to the machine
