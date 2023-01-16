@@ -25,7 +25,6 @@ shell.execute("tar -xf gt_machineOS.tar")
 shell.execute("rm -f gt_machineOS.tar")
 
 shell.setWorkingDirectory("/home/")
-shell.execute("cp -r /home/test. /home/")
 shell.execute("rm -f setup.lua")
 
 print("Success!\n")
