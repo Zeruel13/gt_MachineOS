@@ -10,7 +10,7 @@ shell.execute("wget -fq " .. tarMan)
 shell.setWorkingDirectory("/bin")
 shell.execute("wget -fq " .. tarBin)
 
-local InfOS = "https://github.com/Zeruel13/gt_machineOS/releases/latest/download/gt_machineOS.tar"
+local gt_machineOS = "https://github.com/Zeruel13/gt_machineOS/releases/latest/download/gt_machineOS.tar"
 
 shell.setWorkingDirectory("/home")
 if not shell.resolve("/home/gt_machineOS") then
