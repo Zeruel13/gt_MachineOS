@@ -249,39 +249,38 @@ end
 --calls the function drawMachineBorder
 drawMachineBorder()
 	
-	function printBordersInner(screenInnerName)
-	
-		local sI = screenInner[screenInnerName]
-		
-			gpu.setForeground(colors.yellow)
-		
-			--top horizontal
-			gpu.fill(sI.x, sI.y, sI.width, 1, "─")
-		
-		
-			--left vertical
-			gpu.fill(sI.x, sI.y, 1, sI.height, "│")
-			gpu.set(sI.x, sI.y, "╭")
-		
-			--bottom Horiztonal
-			gpu.fill(sI.x, sI.y + sI.height, sI.width, 1, "─")
-			gpu.set(sI.x, sI.y+4, "╰")
-		
-			--right vertical
-			gpu.fill(sI.x + sI.width, sI.y, 1, sI.height + 1, "│")
-			gpu.set(sI.x + sI.width, sI.y, "╮")
-			gpu.set(sI.x + sI.width, sI.y+4, "╯")
-			
-			gpu.setForeground(colors.white)
-		
- 
-			-- set title
-			gpu.setBackground(colors.black)
-			gpu.setForeground(colors.purple)
-			gpu.set(sI.x + 4, sI.y, sI.title)
-			gpu.setForeground(colors.white)
-			
-	end
+local function drawHorizontalLine(x, y, width)
+  gpu.fill(x, y, width, 1, "─")
+end
+
+local function drawVerticalLine(x, y, height)
+  gpu.fill(x, y, 1, height, "│")
+end
+
+local function drawCorner(x, y, char)
+  gpu.set(x, y, char)
+end
+
+local function printBordersInner(screenInnerName)
+  local sI = screenInner[screenInnerName]
+
+  gpu.setForeground(colors.yellow)
+
+  drawHorizontalLine(sI.x, sI.y, sI.width)
+  drawVerticalLine(sI.x, sI.y, sI.height)
+  drawCorner(sI.x, sI.y, "╭")
+  drawHorizontalLine(sI.x, sI.y + sI.height, sI.width)
+  drawCorner(sI.x, sI.y + sI.height, "╰")
+  drawVerticalLine(sI.x + sI.width, sI.y, sI.height + 1)
+  drawCorner(sI.x + sI.width, sI.y, "╮")
+  drawCorner(sI.x + sI.width, sI.y + sI.height, "╯")
+
+  gpu.setForeground(colors.white)
+
+  gpu.setForeground(colors.purple)
+  gpu.set(sI.x + 4, sI.y, sI.title)
+  gpu.setForeground(colors.white)
+end
   
 --these two for loops iterates through the tables screenOuter and sceenInner and displays all the sections for each. 
 --i.e. This will print the borders and the titles of the borders. 
