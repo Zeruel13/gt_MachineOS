@@ -7,11 +7,11 @@ local term = require("term")
 local component = require("component")
 
 --load files to read information from
-local machines_chunk = loadfile("machines.lua")
+local machines_chunk = loadfile("addressList/machines.lua")
 local machines = machines_chunk()
-local tanks_chunk = loadfile("tanks.lua")
+local tanks_chunk = loadfile("addressList/tanks.lua")
 local tanks = tanks_chunk()
-local pinnedMachines_chunk = loadfile("pinnedMachines.lua")
+local pinnedMachines_chunk = loadfile("addressList/pinnedMachines.lua")
 local pinnedMachines = pinnedMachines_chunk()
 
 
