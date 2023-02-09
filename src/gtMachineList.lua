@@ -47,7 +47,9 @@ end
 --This goes through all components connected to your OC computer. If it has the name gt_machine, add it to the gt_machineNetwork table
 for k, v in pairs(component.list()) do 
 	if v == "gt_machine" then
-		table.insert(gt_machineNetwork, k)
+		if component.type(k) == "gt_machine" and component.methods(k) and component.methods(k)["getOwnerName"] then
+			table.insert(gt_machineNetwork, k)
+		end
 	end
 end
 
