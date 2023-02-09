@@ -53,20 +53,13 @@ function API.flash(name,length)
 end
  
 function API.checkxy(_, _, x, y, _, _)
-	--[[local outputFile = io.open("output.txt", "w") -- open a file for writing, or create it if it doesn't exist
-	outputFile:write("x value: "..x,"   y value: "..y) -- write to the file
-	outputFile:close() -- close the file to save the changes]]
   for name, data in pairs(button) do
     if y >= data["ymin"] and y <= data["ymax"] then
       if x >= data["xmin"] and x <= data["xmax"] then
 		data["func"](data["text"])
-        data["func"]()
-		data["active"] = true
-        return true
       end
     end
   end
-  return false
 end
  
 return API
