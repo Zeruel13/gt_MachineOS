@@ -230,64 +230,9 @@ API.screen()
 --This checks if a user touches the screen then calls API.checkxy
 event.listen("touch", API.checkxy)
 
-
 local function printTankInfo(tank, tankValue, tankName)
 	gpu.set(fluidLevelX, fluidLevelY+tankValue, tankName..": "..getFluidLevels(tank.getSensorInformation()[4]))
 end
-
---everything inside this while loop will run every 0.5 seconds by os.sleep(0.5)
-local function loop()
-
-	--code for adding problems up. problems wille be printed at the end 
-	local problems = 0
-	gpu.set(7, 35, "                         ")
-	for i, machine in ipairs (machines) do
-		if (component.proxy(component.get(machine.id)).isWorkAllowed()) == false or string.match(tostring(component.proxy(component.get(machine.id)).getSensorInformation()[5]), "§c(%d+)")  ~= "0" then
-			problems = problems + 1
-		end
-	end
-	
-	--this sets the fluid level area blank. Allows for new information to be printed every second.
-	gpu.fill(87, 26, 42, 10, " ")
-	
-	local gpuX = 9
-	local gpuY = 5
-	
-	--This sets the inner borders of each multiblockInformation blank. It clears the first six then if it's the 7nth
-	--changes the x and y values and continues to print blank
-	for i = startBorder, finishBorder do
-	
-		--If there is more than one page, i will be greater than 12. Subtracts 12
-		if i > 12 then	
-			i = i-12
-		end
-		
-		--To start printing the right boxes
-		if(i == 7) then
-			gpuY = 5
-			gpuX = 46
-		end
-		
-		gpu.fill(gpuX, gpuY, 30, 3, " ")
-		gpuY = gpuY + 5
-
-	end
-
-	local tankValue = 0 
-	for i, tank in ipairs(tanks) do
-		found = false
-			for g, machine in ipairs(machines) do
-				if(tank.name == machine.name) then
-					found = true
-					break
-				end
-			end
-		if not found then 
-			tankValue = tankValue + 1
-			tankName = tank.name
-			printTankInfo(component.proxy(component.get(tank.id)), tankValue, tankName)
-		end
-	end
 
 	--this variable decides what y-level to print out each machine's information. This goes up by 5 after each iteration
 	local xVar = 2
@@ -337,7 +282,71 @@ local function loop()
 		gpu.set(7+xVar, i*5+2, getFluidLevels(tank.getSensorInformation()[4]))
 	end
 
+local tankFluidLevels = {}
+local tankValue = 0
+for i, tank in ipairs(tanks) do
+    found = false
+    for g, machine in ipairs(machines) do
+        if(tank.name == machine.name) then
+            found = true
+            break
+        end
+    end
+    if not found then
+        tankValue = tankValue + 1
+        tankName = tank.name
+        -- Add the tank to the new array
+        table.insert(tankFluidLevels, {
+            id = component.get(tank.id),
+            value = tankValue,
+            name = tankName
+        })
+    end
+end
+
+--everything inside this while loop will run every 0.5 seconds by os.sleep(0.5)
+local function loop()
+
+	--code for adding problems up. problems wille be printed at the end 
+	local problems = 0
+	gpu.set(7, 35, "                         ")
+	for i, machine in ipairs (machines) do
+		if (component.proxy(component.get(machine.id)).isWorkAllowed()) == false or string.match(tostring(component.proxy(component.get(machine.id)).getSensorInformation()[5]), "§c(%d+)")  ~= "0" then
+			problems = problems + 1
+		end
+	end
 	
+	--this sets the fluid level area blank. Allows for new information to be printed every second.
+	gpu.fill(87, 26, 42, 10, " ")
+	
+	local gpuX = 9
+	local gpuY = 5
+	
+	--This sets the inner borders of each multiblockInformation blank. It clears the first six then if it's the 7nth
+	--changes the x and y values and continues to print blank
+	for i = startBorder, finishBorder do
+	
+		--If there is more than one page, i will be greater than 12. Subtracts 12
+		if i > 12 then	
+			i = i-12
+		end
+		
+		--To start printing the right boxes
+		if(i == 7) then
+			gpuY = 5
+			gpuX = 46
+		end
+		
+		gpu.fill(gpuX, gpuY, 30, 3, " ")
+		gpuY = gpuY + 5
+
+	end
+	
+	-- Iterate through the tankFluidLevels array and call printTankInfo
+	for i, tank in ipairs(tankFluidLevels) do
+		printTankInfo(component.proxy(tank.id), tank.value, tank.name)
+	end
+
 	--get the name of the machine at the start - finish index for the machines table. 
 	for i = startBorder, finishBorder do
 		machine = machines[i]
