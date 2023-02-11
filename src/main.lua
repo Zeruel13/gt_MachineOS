@@ -54,7 +54,7 @@ local screenOuter = {}
 function setScreenOuter()
 	screenOuter["multiblockInformation"] = { x = 3, y = 2, width = 78, height= 35, title = "  Multiblock Information  "}
 	screenOuter["pinnedMachines"] = { x = 85, y = 2, width = 45, height = 20, title = "  Pinned Machines  "}
-	screenOuter["info"] = { x = 85, y = 24, width = 45, height= 13, title = "  Fluid Levels  "}
+	screenOuter["fluidLevels"] = { x = 85, y = 24, width = 45, height= 13, title = "  Fluid Levels  "}
 end
 
   
@@ -93,9 +93,9 @@ local x = screenOuter["pinnedMachines"].x + 2
 local y = screenOuter["pinnedMachines"].y + 1
 
 -- indent the text by 2 spaces from the left side of the section
-local x = screenOuter["info"].x + 2 
+local x = screenOuter["fluidLevels"].x + 2 
 -- start the text at the top of the section
-local y = screenOuter["info"].y + 1 
+local y = screenOuter["fluidLevels"].y + 1 
 
 --initiazling variables. 
 local screenInner = {}
