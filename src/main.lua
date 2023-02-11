@@ -153,7 +153,7 @@ local function printBordersInner(i)
   gpu.setForeground(colors.white)
 
   gpu.setForeground(colors.purple)
-  gpu.set(sI.x + 4, sI.y, sI.title)
+  gpu.set(sI.x + 2, sI.y, sI.title)
   gpu.setForeground(colors.white)
   
 end
