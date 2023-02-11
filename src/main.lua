@@ -246,11 +246,6 @@ local function loop()
 			problems = problems + 1
 		end
 	end
-
-	--This is so finish will be the print the last element in machine 
-	if #machines < finish then
-			finish = #machines
-	end
 	
 	--this sets the fluid level area blank. Allows for new information to be printed every second.
 	gpu.fill(87, 26, 42, 10, " ")
