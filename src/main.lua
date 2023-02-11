@@ -89,13 +89,13 @@ function printBordersOuter(screenOuterName)
 end
 
 -- get the dimensions of the pinnedMachines section. 
-local x = screenOuter["pinnedMachines"].x + 2
-local y = screenOuter["pinnedMachines"].y + 1
+local pinnedMachineX = screenOuter["pinnedMachines"].x + 2
+local pinnedMachineY = screenOuter["pinnedMachines"].y + 1
 
 -- indent the text by 2 spaces from the left side of the section
-local x = screenOuter["fluidLevels"].x + 2 
+local fluidLevelX = screenOuter["fluidLevels"].x + 2 
 -- start the text at the top of the section
-local y = screenOuter["fluidLevels"].y + 1 
+local fluidLevelY = screenOuter["fluidLevels"].y + 1 
 
 --initiazling variables. 
 local screenInner = {}
@@ -232,7 +232,7 @@ event.listen("touch", API.checkxy)
 
 
 local function printTankInfo(tank, tankValue, tankName)
-	gpu.set(x, y+tankValue, tankName..": "..getFluidLevels(tank.getSensorInformation()[4]))
+	gpu.set(fluidLevelX, fluidLevelY+tankValue, tankName..": "..getFluidLevels(tank.getSensorInformation()[4]))
 end
 
 --everything inside this while loop will run every 0.5 seconds by os.sleep(0.5)
