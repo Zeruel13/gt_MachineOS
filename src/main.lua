@@ -174,12 +174,12 @@ end
 
 --this function correctly prints fluid level sensor information
 function getFluidLevels(output)
-    fluidLevel = string.match(output, "^[^L]*")
-    fluidLevel = string.gsub(fluidLevel, "§a", "")
-    fluidMax = string.match(output, "L[^L]*")
-    fluidMax = string.gsub(fluidMax, "L§r", "")
-    fluidMax = string.gsub(fluidMax, "§e", "")
-    return fluidLevel.."/"..fluidMax.."mb"
+	fluidLevel = string.match(output , "§e.*$")
+	fluidLevel = string.gsub(fluidLevel, "§e", "")
+	fluidLevel = string.gsub(fluidLevel, " L§r", "")
+	fluidMax = string.match(output, "%§e(.*)")
+	fluidMax = string.gsub(fluidMax, " L§r", "")
+    return fluidLevel.." / "..fluidMax.."mb"
 end
 
 --gets the number of pages needed for multiblockInformation
