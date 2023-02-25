@@ -115,7 +115,7 @@ local pinnedMachineY = screenOuter["pinnedMachines"].y + 1
 -- indent the text by 2 spaces from the left side of the section
 local fluidLevelX = screenOuter["fluidLevels"].x + 2 
 -- start the text at the top of the section
-local fluidLevelY = screenOuter["fluidLevels"].y + 1 
+local fluidLevelY = screenOuter["fluidLevels"].y + 2
 
 --initiazling variables. 
 local screenInner = {}
