@@ -38,6 +38,23 @@ local colors = {
 	turq = 0x008B8B
 }
 
+--function to print colored text	
+function printColoredText(x, y, text, color)
+  local oldColor = gpu.getForeground()
+  gpu.setForeground(color)
+  gpu.set(x, y, text)
+  gpu.setForeground(oldColor)
+end
+
+--function to set background colors
+function setBackgroundColor(x, y, width, height, text, color)
+	local oldBackground = gpu.getBackground()
+	gpu.setBackground(color)
+	gpu.fill(x, y, width, height, text)
+	gpu.setBackground(oldBackground)
+end
+
+
 --User must put in addresses before continuing 
 local startProg = true
 if (#machines == 0 or #tanks == 0 or #pinnedMachines == 0) then
@@ -57,7 +74,7 @@ local screenOuter = {}
 
 --adds all the borders to the screenOuter table	
 function setScreenOuter()
-	screenOuter["multiblockInformation"] = { x = 3, y = 2, width = 78, height= 35, title = "  Multiblock Information  "}
+	screenOuter["multiblockInformation"] = { x = 3, y = 2, width = 85, height= 35, title = "  Multiblock Information  "}
 	screenOuter["pinnedMachines"] = { x = 92, y = 2, width = 66, height = 20, title = "  Pinned Machines  "}
 	screenOuter["fluidLevels"] = { x = 92, y = 24, width = 66, height= 13, title = "  Fluid Levels  "}
 	screenOuter["energy"] = { x = 3, y = 40, width = 155, height= 9, title = "  Energy Levels  "}
@@ -105,7 +122,7 @@ local fluidLevelY = screenOuter["fluidLevels"].y + 1
 
 --initiazling variables. 
 local screenInner = {}
-local machineXOffset = 37
+local machineXOffset = 40
 local machineYOffset = 5
 local machinexStart = 7
 local machineyStart = 4
@@ -129,52 +146,66 @@ for i = 1, #machines do
 	setScreenInner(currentMachineName, i)
 end
 	
-local function drawHorizontalLine(x, y, width)
-  gpu.fill(x, y, width, 1, "─")
+local function drawBorder(x, y, width, height)
+
+  gpu.setForeground(colors.yellow)
+  -- top and bottom lines
+	gpu.fill(x, y, width, 1, "─")
+	gpu.fill(x, y+height, width, 1, "─")
+
+  -- left and right lines
+	gpu.fill(x, y, 1, height, "│")
+	gpu.fill(x+width, y, 1, height, "│")
+
+  -- corners
+  gpu.set(x, y, "╭")
+  gpu.set(x+width, y, "╮")
+  gpu.set(x, y+height, "╰")
+  gpu.set(x+width, y+height, "╯")
+
+  gpu.setForeground(colors.white)
 end
 
-local function drawVerticalLine(x, y, height)
-  gpu.fill(x, y, 1, height, "│")
-end
+-- Define the width and height of the buttons
+local buttonWidth = 4
+local buttonHeight = 2
 
-local function drawCorner(x, y, char)
-  gpu.set(x, y, char)
+-- Define the horizontal spacing between buttons
+local buttonSpacing = 1
+
+local function drawButton(x, y)
+  -- Draw the border
+  drawBorder(x, y, buttonWidth, buttonHeight)
+
+  -- Add any additional content to the button
+  -- (e.g. text, icons, etc.)
+  -- ...
 end
 
 local function printBordersInner(i)
 
-  local sI = screenInner[i]
+	local sI = screenInner[i]
+	drawBorder(sI.x, sI.y, sI.width, sI.height)
+	printColoredText(sI.x + 2, sI.y, sI.title, colors.purple)
 
-  gpu.setForeground(colors.yellow)
-
-  drawHorizontalLine(sI.x, sI.y, sI.width)
-  drawVerticalLine(sI.x, sI.y, sI.height)
-  drawCorner(sI.x, sI.y, "╭")
-  drawHorizontalLine(sI.x, sI.y + sI.height, sI.width)
-  drawCorner(sI.x, sI.y + sI.height, "╰")
-  drawVerticalLine(sI.x + sI.width, sI.y, sI.height + 1)
-  drawCorner(sI.x + sI.width, sI.y, "╮")
-  drawCorner(sI.x + sI.width, sI.y + sI.height, "╯")
-
-  gpu.setForeground(colors.white)
-
-  gpu.setForeground(colors.purple)
-  gpu.set(sI.x + 2, sI.y, sI.title)
-  gpu.setForeground(colors.white)
-  
 end
+  
   
 --these two for loops iterates through the tables screenOuter and sceenInner and displays all the sections for each. 
 --i.e. This will print the borders and the titles of the borders. 
 for name, data in pairs(screenOuter) do
 	printBordersOuter(name)
 end
+  
+for name, data in pairs(screenInner) do
+	printBordersInner(name)
+end
 
-local printPage = 1
-local startBorder = (printPage - 1) * 12 + 1
-local finishBorder = math.min(printPage * 12, #machines) 
+local machinePrintPage = 1
+local machineStartBorder = (machinePrintPage - 1) * 12 + 1
+local machineFinishBorder = math.min(machinePrintPage * 12, #machines) 
 
-for i = startBorder, finishBorder do
+for i = machineStartBorder, machineFinishBorder do
 	printBordersInner(i) 
 end
 
@@ -185,60 +216,130 @@ function getFluidLevels(output)
 	fluidLevel = string.gsub(fluidLevel, " L§r", "")
 	fluidMax = string.match(output, "%§e(.*)")
 	fluidMax = string.gsub(fluidMax, " L§r", "")
-    return fluidLevel.." / "..fluidMax.."mb"
+    return fluidLevel.." / "..fluidMax.." mb"
+end
+
+
+local tankFluidLevels = {}
+for i, tank in ipairs(tanks) do
+    found = false
+    for g, machine in ipairs(machines) do
+        if(tank.name == machine.name) then
+            found = true
+            break
+        end
+    end
+    if not found then
+        tankName = tank.name
+        -- Add the tank to the new array
+        table.insert(tankFluidLevels, {
+            id = component.get(tank.id),
+            name = tankName
+        })
+    end
 end
 
 --gets the number of pages needed for multiblockInformation
-local numPage = math.ceil(#machines/12)
-local setPage = numPage
+local machineNumPage = math.ceil(#machines/12)
+local machineSetPage = machineNumPage
+
+--gets the number of pages needed for fluid Levels
+local fluidNumPage = math.ceil(#tankFluidLevels/8)
+local fluidSetPage = fluidNumPage
 
 --this function is running multiple times then multiple times
-function createMachineButtons (pgX, i)
-	API.setTable("page"..i, pageMachineButton, pgX+1, 35, pgX+3, 35, tostring(setPage), {on = colors.black, off = colors.yellow})
-	setPage = setPage -1
+function createMachineButtons (machinePGX, i)
+	API.setTable("machinePage"..i, pageMachineButton, machinePGX+1, 35, machinePGX+3, 35, tostring(machineSetPage), {on = colors.black, off = colors.yellow})
+	machineSetPage = machineSetPage -1
 end
+
+--this function is running multiple times then multiple times
+function createFluidButtons (fluidPGX, i)
+	API.setTable("fluidPage"..i, pageFluidButton, fluidPGX+1, 35, fluidPGX+3, 35, tostring(fluidSetPage), {on = colors.black, off = colors.yellow})
+	fluidSetPage = fluidSetPage -1
+end
+
+local fluidYValue = 0
+
+local function printTankInfo(tank, tankName)
+	gpu.set(fluidLevelX, fluidLevelY+fluidYValue, tankName..": "..getFluidLevels(tank.getSensorInformation()[4]))
+end
+
+local fluidPrintPage = 1
+local fluidStartBorder = (fluidPrintPage - 1) * 8 + 1
+local fluidFinishBorder = math.min(fluidPrintPage * 8, #tankFluidLevels) 
 
 --this function will be called everytime a button is hit.  
 function pageMachineButton(text)
 
-		printPage = text
+		machinePrintPage = text
 		
-		startBorder = (printPage - 1) * 12 + 1
-		finishBorder = math.min(printPage * 12, #machines)
+		machineStartBorder = (machinePrintPage - 1) * 12 + 1
+		machineFinishBorder = math.min(machinePrintPage * 12, #machines)
 
 		--clear the area where the Multiblock Information is set 
-		gpu.fill(5, 3, 73, 31, " ")
+		gpu.fill(5, 3, 82, 31, " ")
 		
 		--prints the name of each border 
-		for i = startBorder, finishBorder do
+		for i = machineStartBorder, machineFinishBorder do
 			printBordersInner(i)
 		end
 		
 end
 	
---where to start the outline of the first button. Will always be the same
-pgX = 73
+function pageFluidButton(text)
 
---This loop will run for as many pages there are. Each time it runs, it reduces the number of pages left by 1 and decrease the x value (where to start drawing the border by 5)
-gpu.setForeground(colors.yellow)
-for i = numPage, 1, -1 do
-	gpu.set(pgX, 34, "╭───╮")
-	gpu.set(pgX, 35, "│   │")
-	gpu.set(pgX, 36, "╰───╯")
-	createMachineButtons(pgX, i)
-	pgX = pgX - 5
+		fluidYValue = 0
+
+		fluidPrintPage = text
+		
+		fluidStartBorder = (fluidPrintPage - 1) * 8 + 1
+		fluidFinishBorder = math.min(fluidPrintPage * 8, #tankFluidLevels)
+
+		--clear the area where the Multiblock Information is set 
+		gpu.fill(93, 25, 64, 9, " ")
+		
+		-- Iterate through the tankFluidLevels array and call printTankInfo
+		for i = fluidStartBorder, fluidFinishBorder do
+			local tank = tankFluidLevels[i]
+			printTankInfo(component.proxy(tank.id), tank.name)
+			fluidYValue = fluidYValue + 1
+		end
+		
 end
-gpu.setForeground(colors.white)
+
+local machinePGX = 80
+for i = 1, machineNumPage do
+  -- Calculate the x coordinate of the button
+  local buttonX = machinePGX - (i-1) * (buttonWidth + buttonSpacing)
+
+  -- Draw the button at the specified coordinates
+  drawButton(buttonX, 34)
+  
+  -- Create the button
+  createMachineButtons(buttonX, i)
+  
+end
+
+local fluidPGX = 152
+for i = 1, fluidNumPage do
+
+  -- Calculate the x coordinate of the button
+  local buttonX = fluidPGX - (i-1) * (buttonWidth + buttonSpacing)
+
+  -- Draw the button at the specified coordinates
+  drawButton(buttonX, 34)
+  
+  -- Create the button
+  createFluidButtons(buttonX, i)
+  
+end
 	
 --API.screen is used to iterate through all the buttons and fill the table in buttonAPI
-API.screen()	
+API.screen()
 
 --This checks if a user touches the screen then calls API.checkxy
 event.listen("touch", API.checkxy)
-
-local function printTankInfo(tank, tankValue, tankName)
-	gpu.set(fluidLevelX, fluidLevelY+tankValue, tankName..": "..getFluidLevels(tank.getSensorInformation()[4]))
-end
 
 	--this variable decides what y-level to print out each machine's information. This goes up by 5 after each iteration
 	local xVar = 2
@@ -250,7 +351,7 @@ end
 		--also subtracts 6 to start at the top as i is multiple for the y value in gpu.set
 		if(i>6) then
 			i = i-6
-			xVar = 39
+			xVar = 42
 		end
 			
 		--if the number of problems is equal to 0
@@ -288,27 +389,64 @@ end
 		gpu.set(7+xVar, i*5+2, getFluidLevels(tank.getSensorInformation()[4]))
 	end
 
-local tankFluidLevels = {}
-local tankValue = 0
-for i, tank in ipairs(tanks) do
-    found = false
-    for g, machine in ipairs(machines) do
-        if(tank.name == machine.name) then
-            found = true
+function comma_value(amount)
+    local formatted = tostring(amount)
+    local k
+    while true do  
+        formatted, k = formatted:gsub("^(%d+)(%d%d%d)", '%1,%2')
+        if k == 0 then
             break
         end
     end
-    if not found then
-        tankValue = tankValue + 1
-        tankName = tank.name
-        -- Add the tank to the new array
-        table.insert(tankFluidLevels, {
-            id = component.get(tank.id),
-            value = tankValue,
-            name = tankName
-        })
-    end
+    return formatted
 end
+
+function formatTime(time)
+
+  if not time or time == math.huge or time == -math.huge then
+    return "N/A"
+  end
+  
+  local weeks = math.floor(time / 604800)
+  local days = math.floor((time % 604800) / 86400)
+  local hours = math.floor((time % 86400) / 3600)
+  local minutes = math.floor((time % 3600) / 60)
+  
+  local output = ""
+  
+  if weeks > 0 then
+    output = string.format("%d week%s", weeks, weeks > 1 and "s" or "")
+    if days > 0 or hours > 0 or minutes > 0 then
+      output = output .. ", "
+    end
+  end
+  
+  if days > 0 then
+    output = output .. string.format("%d day%s", days, days > 1 and "s" or "")
+    if hours > 0 or minutes > 0 then
+      output = output .. ", "
+    end
+  end
+  
+  if hours > 0 then
+    output = output .. string.format("%d hour%s", hours, hours > 1 and "s" or "")
+    if minutes > 0 and (weeks > 0 or days > 0 or hours > 0) then
+      output = output .. ", "
+    end
+  end
+  
+  if minutes > 0 then
+    output = output .. string.format("%d minute%s", minutes, minutes > 1 and "s" or "")
+	end
+	
+  if output == "" then
+    output = "Less than one minute"
+  end
+  
+  return output
+end
+
+drawBorder(6, 42, 149, 3)	
 
 local counter = 0
 local timeToFillAVG = 0
@@ -328,40 +466,24 @@ local function loop()
 			problems = problems + 1
 		end
 	end
-	
-	--this sets the fluid level area blank. Allows for new information to be printed every second.
-	gpu.fill(87, 26, 42, 10, " ")
-	
-	local gpuX = 9
-	local gpuY = 5
-	
-	--This sets the inner borders of each multiblockInformation blank. It clears the first six then if it's the 7nth
-	--changes the x and y values and continues to print blank
-	for i = startBorder, finishBorder do
-	
-		--If there is more than one page, i will be greater than 12. Subtracts 12
-		if i > 12 then	
-			i = i-12
-		end
-		
-		--To start printing the right boxes
-		if(i == 7) then
-			gpuY = 5
-			gpuX = 46
-		end
-		
-		gpu.fill(gpuX, gpuY, 30, 3, " ")
-		gpuY = gpuY + 5
 
+	--This is so finish will be the print the last element in machine 
+	if #machines < finish then
+			finish = #machines
 	end
 	
-	-- Iterate through the tankFluidLevels array and call printTankInfo
-	for i, tank in ipairs(tankFluidLevels) do
-		printTankInfo(component.proxy(tank.id), tank.value, tank.name)
+	fluidYValue = 0
+		-- Iterate through the tankFluidLevels array and call printTankInfo
+	for i = fluidStartBorder, fluidFinishBorder do
+		local tank = tankFluidLevels[i]
+		printTankInfo(component.proxy(tank.id), tank.name)
+		fluidYValue = fluidYValue + 1
 	end
-
+	
+	
 	--get the name of the machine at the start - finish index for the machines table. 
-	for i = startBorder, finishBorder do
+	for i = machineStartBorder, machineFinishBorder do
+		
 		machine = machines[i]
 		currentMachineName = machine.name
 
@@ -412,8 +534,8 @@ local function loop()
 	
 		counter = counter + 1
 
-  -- Wait 1 seconds before checking the status again
-  os.sleep(1)
+  -- Wait 0.5 seconds before checking the status again
+  os.sleep(0.5)
 
 --end of the while loop
 end
