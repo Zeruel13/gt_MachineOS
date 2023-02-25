@@ -54,7 +54,6 @@ function setBackgroundColor(x, y, width, height, text, color)
 	gpu.setBackground(oldBackground)
 end
 
-
 --User must put in addresses before continuing 
 local startProg = true
 if (#machines == 0 or #tanks == 0 or #pinnedMachines == 0) then
@@ -67,7 +66,6 @@ if #machines < 13 then
 else
 	finish = 12
 end
-
 
 --initalizes screenOuter table to add entries to later
 local screenOuter = {}
@@ -130,7 +128,7 @@ local function setScreenInner(currentMachineName, i)
 	screenInner[i] =  {
 	
 	title = " "..tostring(currentMachineName).." ",
-	width = 33,
+	width = 37,
 	height = 4,
 	x = machinexStart + machineXOffset * ((i - 1) // 6 % 2),
 	y = machineyStart + machineYOffset * ((i - 1) % 6)
@@ -340,53 +338,56 @@ API.screen()
 --This checks if a user touches the screen then calls API.checkxy
 event.listen("touch", API.checkxy)
 
-	--this variable decides what y-level to print out each machine's information. This goes up by 5 after each iteration
-	local xVar = 2
+--this variable decides what y-level to print out each machine's information. This goes up by 5 after each iteration
+local xVar = 2
 	
-	--this function prints all the MultiBlock Information. 
-	local function printMachineMethods(machine, i)
+--this function prints all the MultiBlock Information. 
+local function printMachineMethods(machine, i)
 	
-		--if i is greater than 6, it needs to print on the right side. Change the X value to 39. 
-		--also subtracts 6 to start at the top as i is multiple for the y value in gpu.set
-		if(i>6) then
-			i = i-6
-			xVar = 42
-		end
+	--if i is greater than 6, it needs to print on the right side. Change the X value to 39. 
+	--also subtracts 6 to start at the top as i is multiple for the y value in gpu.set
+	if(i>6) then
+		i = i-6
+		xVar = 42
+	end
 			
-		--if the number of problems is equal to 0
-		if (string.match(tostring(machine.getSensorInformation()[5]), "§c(%d+)")) == "0" then
-			if (machine.isWorkAllowed()) == true then
-				if(machine.isMachineActive()) == true then
-					gpu.setForeground(colors.green)
-					gpu.set(7+xVar, i*5,"Machine go Brrrrrrr")
+	--if the number of problems is equal to 0
+	if (string.match(tostring(machine.getSensorInformation()[5]), "§c(%d+)")) == "0" then
+		if (machine.isWorkAllowed()) == true then
+			if(machine.isMachineActive()) == true then
+				gpu.setForeground(colors.green)
+				gpu.set(7+xVar, i*5,"Machine go Brrrrrrr")
 
-					gpu.setForeground(colors.white)
-					gpu.set(7+xVar, i*5+1,(string.gsub(machine.getSensorInformation()[1], "§.","")))
-				else
-					gpu.setForeground(colors.orange)
-					gpu.set(7+xVar, i*5,"Machine Status: IDLE")
-					gpu.setForeground(colors.white)
-					
-				end	
+				gpu.setForeground(colors.white)
+				gpu.set(7+xVar, i*5+1,(string.gsub(machine.getSensorInformation()[1], "§.","")))
 			else
-					gpu.setForeground(colors.red)
-					gpu.set(7+xVar, i*5,"Machine processing disabled!!")
-					gpu.setForeground(colors.white)
+				gpu.setForeground(colors.orange)
+				gpu.set(7+xVar, i*5,"Machine Status: IDLE")
+				gpu.setForeground(colors.white)
 					
-			end
-		--if the number of problem isn't equal to 0 
+			end	
 		else
-					gpu.setForeground(colors.red)
-					gpu.set(7+xVar, i*5,"MACHINE HAS PROBLEMS!!!")
-					gpu.setForeground(colors.white)
+			gpu.setForeground(colors.red)
+			gpu.set(7+xVar, i*5,"Machine processing disabled!!")
+			gpu.setForeground(colors.white)
 					
 		end
+	--if the number of problem isn't equal to 0 
+	else
+		gpu.setForeground(colors.red)
+		gpu.set(7+xVar, i*5,"MACHINE HAS PROBLEMS!!!")
+		gpu.setForeground(colors.white)
+					
 	end
 	
-	--function to print the tanks information. 
-	local function printMachineTankInfo(tank, i)
-		gpu.set(7+xVar, i*5+2, getFluidLevels(tank.getSensorInformation()[4]))
-	end
+	xVar = 2
+	
+end
+	
+--function to print the tanks information. 
+local function printMachineTankInfo(tank, i)
+	gpu.set(7+xVar, i*5+2, getFluidLevels(tank.getSensorInformation()[4]))
+end
 
 function comma_value(amount)
     local formatted = tostring(amount)
