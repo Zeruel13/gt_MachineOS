@@ -32,7 +32,10 @@ local colors = {
 	black = 0x000000,
 	white = 0xFFFFFF,
 	orange = 0xF28C28,
-	yellow = 0xFFBF00
+	yellow = 0xFFBF00,
+	lightGreen = 0x90EE90,
+	cyan = 0x00FFFF,
+	turq = 0x008B8B
 }
 
 --User must put in addresses before continuing 
