@@ -105,7 +105,6 @@ function printBordersOuter(screenOuterName)
   
 	-- set title
 	gpu.setBackground(colors.black)
-	gpu.setForeground(colors.blue)
 	gpu.set(sO.x + 4, sO.y, sO.title)
 	gpu.setForeground(colors.white)
 	
