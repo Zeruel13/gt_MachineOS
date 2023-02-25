@@ -19,7 +19,9 @@ local tanks_chunk = loadfile("addressList/tanks.lua")
 local tanks = tanks_chunk()
 local pinnedMachines_chunk = loadfile("addressList/pinnedMachines.lua")
 local pinnedMachines = pinnedMachines_chunk()
-
+local energy_chunk = loadfile("addressList/energy.lua")
+local energy = energy_chunk()
+local energyFiles = require("energyFiles")
 
 --initializes some colors to use 
 local colors = {
@@ -53,13 +55,14 @@ local screenOuter = {}
 --adds all the borders to the screenOuter table	
 function setScreenOuter()
 	screenOuter["multiblockInformation"] = { x = 3, y = 2, width = 78, height= 35, title = "  Multiblock Information  "}
-	screenOuter["pinnedMachines"] = { x = 85, y = 2, width = 45, height = 20, title = "  Pinned Machines  "}
-	screenOuter["fluidLevels"] = { x = 85, y = 24, width = 45, height= 13, title = "  Fluid Levels  "}
+	screenOuter["pinnedMachines"] = { x = 92, y = 2, width = 66, height = 20, title = "  Pinned Machines  "}
+	screenOuter["fluidLevels"] = { x = 92, y = 24, width = 66, height= 13, title = "  Fluid Levels  "}
+	screenOuter["energy"] = { x = 3, y = 40, width = 155, height= 9, title = "  Energy Levels  "}
 end
 
   
 -- set size of the screen for lvl 3 and clear the screen
-gpu.setResolution(132,38)
+gpu.setResolution(160,50)
 gpu.setBackground(colors.black)	
 gpu.fill(1, 1, 132, 38, " ")	
 
@@ -304,6 +307,13 @@ for i, tank in ipairs(tanks) do
     end
 end
 
+local counter = 0
+local timeToFillAVG = 0
+local netEnergyAVG = 0
+local LSC = component.proxy(component.get(energy[1].id))
+local timeToFill = 0
+local energyMax = math.floor(string.gsub(LSC.getSensorInformation()[3], "([^0-9]+)", "") + 0)
+
 --everything inside this while loop will run every 0.5 seconds by os.sleep(0.5)
 local function loop()
 
@@ -375,9 +385,32 @@ local function loop()
 	
 	--Once the # of problems is added up, print it
 	gpu.set(7, 35, "Number of Problems: "..problems)
+	
+	local energyInfo = energyFiles.getEnergyInformation(LSC, energyMax, colors, timeToFillAVG, netEnergyAVG)
+	timeToFillAVG = energyInfo.timeToFillAVG
+	netEnergyAVG = energyInfo.netEnergyAVG
+    
+	gpu.fill(6,46, 95,1, " ")
+	gpu.fill(6, 47, 60, 1, " ")
+	
+	setBackgroundColor(7, 43, 148, 2, " ", colors.turq)
+	setBackgroundColor(7, 43, energyInfo.progressBar, 2, " ", colors.cyan)
+	
+	printColoredText(6, 46, "Net Energy: "..comma_value(energyInfo.netEnergy).."eu/t", energyInfo.netEnergyColor)
+	gpu.set(6, 47, "Energy Level: "..comma_value(energyInfo.energyLevel).." / "..comma_value(energyMax).."eu")
+	gpu.set(75, 46, (string.format("%.2f", energyInfo.percent).."%"))
 
-  -- Wait 0.5 seconds before checking the status again
-  os.sleep(0.5)
+	if counter == 15 then
+		energyFiles.displayEnergyInfo(energyInfo, netEnergyAVG, timeToFillAVG, colors)
+		counter = 0
+		timeToFillAVG = 0
+		netEnergyAVG = 0
+	end
+	
+		counter = counter + 1
+
+  -- Wait 1 seconds before checking the status again
+  os.sleep(1)
 
 --end of the while loop
 end
