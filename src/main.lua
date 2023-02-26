@@ -25,7 +25,7 @@ local energyFiles = require("energyFiles")
 
 --initializes some colors to use 
 local colors = {
-	blue = 0x0047AB,
+	blue = 0x1434A4, -- old blue
 	purple = 0x884EA0,
 	red = 0xC14141,
 	green = 0xDA841,
@@ -33,7 +33,6 @@ local colors = {
 	white = 0xFFFFFF,
 	orange = 0xF28C28,
 	yellow = 0xFFBF00,
-	lightGreen = 0x90EE90,
 	cyan = 0x00FFFF,
 	turq = 0x008B8B
 }
