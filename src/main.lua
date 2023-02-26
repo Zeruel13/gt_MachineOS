@@ -1,8 +1,20 @@
---gt_machineOS created by: Zeruel
---Ver 1.0
+-- gt_machineOS created by: Zeruel
+-- Ver 1.0
 
---Border code originally by Krakaen to use in 'OPENCOMPUTER AUTOMATION PROGRAM'
---buttonAPI ported to OC by MoparDan originally created by DireWolf 20 for ComputerCraft
+-- Border code originally by Krakaen to use in 'OPENCOMPUTER AUTOMATION PROGRAM'
+-- buttonAPI ported to OC by MoparDan originally created by DireWolf 20 for ComputerCraft
+
+-- TODO list
+-- Change to update every 1 second (when a button is pressed, it should refresh on the screen right away
+-- Clean up loop (double check fluid and machine handling)
+-- Comment code
+-- Filter by IDLE, processing disabled, problems
+-- add button to turn off and on machine
+-- Try to break code
+-- Add handling for when user first starts program
+
+-- Future:
+-- Info panel
 
 --components to require
 local component = require("component")
