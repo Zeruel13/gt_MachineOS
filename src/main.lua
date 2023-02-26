@@ -349,8 +349,8 @@ function pageFluidButton(text)
 		fluidStartBorder = (fluidPrintPage - 1) * tanksPerPage + 1
 		fluidFinishBorder = math.min(fluidPrintPage * tanksPerPage, #tankFluidLevels)
 
-		--clear the area where the Multiblock Information is set 
-		gpu.fill(93, 25, 64, 9, " ")
+		--clear the area where the fluid Levels is set 
+		gpu.fill(94, 26, 52, 10, " ")
 		
 		-- Iterate through the tankFluidLevels array and call printTankInfo
 		for i = fluidStartBorder, fluidFinishBorder do
@@ -473,6 +473,8 @@ local function loop()
 		end
 	end
 	
+	--clear the area where the fluid Levels is set 
+	gpu.fill(94, 26, 52, 10, " ")
 	fluidYValue = 0
 		-- Iterate through the tankFluidLevels array and call printTankInfo
 	for i = fluidStartBorder, fluidFinishBorder do
