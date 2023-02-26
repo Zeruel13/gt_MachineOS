@@ -199,8 +199,9 @@ for name, data in pairs(screenInner) do
 end
 
 local machinePrintPage = 1
-local machineStartBorder = (machinePrintPage - 1) * 12 + 1
-local machineFinishBorder = math.min(machinePrintPage * 12, #machines) 
+local machinesPerPage = 12
+local machineStartBorder = (machinePrintPage - 1) * machinesPerPage + 1
+local machineFinishBorder = math.min(machinePrintPage * machinesPerPage, #machines) 
 
 for i = machineStartBorder, machineFinishBorder do
 	printBordersInner(i) 
@@ -233,11 +234,12 @@ for i, tank in ipairs(tanks) do
 end
 
 --gets the number of pages needed for multiblockInformation
-local machineNumPage = math.ceil(#machines/12)
+local machineNumPage = math.ceil(#machines/machinesPerPage)
 local machineSetPage = machineNumPage
 
 --gets the number of pages needed for fluid Levels
-local fluidNumPage = math.ceil(#tankFluidLevels/8)
+local tanksPerPage = 10
+local fluidNumPage = math.ceil(#tankFluidLevels/tanksPerPage)
 local fluidSetPage = fluidNumPage
 
 --this function is running multiple times then multiple times
@@ -259,16 +261,16 @@ local function printTankInfo(tank, tankName)
 end
 
 local fluidPrintPage = 1
-local fluidStartBorder = (fluidPrintPage - 1) * 8 + 1
-local fluidFinishBorder = math.min(fluidPrintPage * 8, #tankFluidLevels) 
+local fluidStartBorder = (fluidPrintPage - 1) * tanksPerPage + 1
+local fluidFinishBorder = math.min(fluidPrintPage * tanksPerPage, #tankFluidLevels) 
 
 --this function will be called everytime a button is hit.  
 function pageMachineButton(text)
 
 		machinePrintPage = text
 		
-		machineStartBorder = (machinePrintPage - 1) * 12 + 1
-		machineFinishBorder = math.min(machinePrintPage * 12, #machines)
+		machineStartBorder = (machinePrintPage - 1) * machinesPerPage + 1
+		machineFinishBorder = math.min(machinePrintPage * machinesPerPage, #machines)
 
 		--clear the area where the Multiblock Information is set 
 		gpu.fill(5, 3, 82, 31, " ")
@@ -286,8 +288,8 @@ function pageFluidButton(text)
 
 		fluidPrintPage = text
 		
-		fluidStartBorder = (fluidPrintPage - 1) * 8 + 1
-		fluidFinishBorder = math.min(fluidPrintPage * 8, #tankFluidLevels)
+		fluidStartBorder = (fluidPrintPage - 1) * tanksPerPage + 1
+		fluidFinishBorder = math.min(fluidPrintPage * tanksPerPage, #tankFluidLevels)
 
 		--clear the area where the Multiblock Information is set 
 		gpu.fill(93, 25, 64, 9, " ")
