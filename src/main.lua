@@ -208,14 +208,10 @@ end
 
 --this function correctly prints fluid level sensor information
 function getFluidLevels(output)
-	fluidLevel = string.match(output , "§e.*$")
-	fluidLevel = string.gsub(fluidLevel, "§e", "")
-	fluidLevel = string.gsub(fluidLevel, " L§r", "")
-	fluidMax = string.match(output, "%§e(.*)")
-	fluidMax = string.gsub(fluidMax, " L§r", "")
+    fluidLevel = string.match(output , "§a(%d[%d,]*) L§r")
+    fluidMax = string.match(output, "§e(%d[%d,]*) L§r")
     return fluidLevel.." / "..fluidMax.." mb"
 end
-
 
 local tankFluidLevels = {}
 for i, tank in ipairs(tanks) do
