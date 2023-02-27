@@ -278,7 +278,10 @@ local fluidFinishBorder = math.min(fluidPrintPage * tanksPerPage, #tankFluidLeve
 	
 --this function prints all the MultiBlock Information. 
 local function printMachineMethods(machine, i)
-			
+
+	-- Clearing the machine method area 
+	gpu.fill(screenInner[i].machineX + 2, screenInner[i].machineY + 1, 35, 3, " ")
+
 	--if the number of problems is equal to 0
 	if (string.match(tostring(machine.getSensorInformation()[5]), "§c(%d+)")) == "0" then
 		if (machine.isWorkAllowed()) == true then
