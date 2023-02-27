@@ -47,7 +47,7 @@ end
 
 function energyFiles.displayEnergyInfo(energyInfo, netEnergyAVG, timeToFillAVG, colors)
     gpu.fill(85, 46, 70, 1, " ")
-    timeToFillAVG = timeToFillAVG / 30
+    timeToFillAVG = timeToFillAVG / 60
     if (energyInfo.percent > 99.99) then
         printColoredText(156 - #"Full!", 46, "Full!", colors.green)
     elseif (energyInfo.percent < 0.01) then

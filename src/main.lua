@@ -519,7 +519,7 @@ local function loop()
 	gpu.set(6, 47, "Energy Level: "..comma_value(energyInfo.energyLevel).." / "..comma_value(energyMax).."eu")
 	gpu.set(75, 46, (string.format("%.2f", energyInfo.percent).."%"))
 
-	if counter == 30 then
+	if counter == 60 then
 		energyFiles.displayEnergyInfo(energyInfo, netEnergyAVG, timeToFillAVG, colors)
 		counter = 0
 		timeToFillAVG = 0
