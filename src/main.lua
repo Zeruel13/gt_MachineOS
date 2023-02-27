@@ -114,7 +114,7 @@ local screenOuter = {}
 --adds all the borders to the screenOuter table	
 function setScreenOuter()
 	screenOuter["multiblockInformation"] = { x = 3, y = 2, width = 85, height= 35, title = "  Multiblock Information  "}
-	screenOuter["pinnedMachines"] = { x = 92, y = 2, width = 66, height = 20, title = "  Pinned Machines  "}
+	screenOuter["pinnedMachines"] = { x = 92, y = 2, width = 66, height = 20, title = "  gt_machineOS  "}
 	screenOuter["fluidLevels"] = { x = 92, y = 24, width = 66, height= 13, title = "  Fluid Levels  "}
 	screenOuter["energy"] = { x = 3, y = 40, width = 155, height= 9, title = "  Energy Levels  "}
 end
@@ -152,6 +152,26 @@ end
 -- get the dimensions of the pinnedMachines section. 
 local pinnedMachineX = screenOuter["pinnedMachines"].x + 2
 local pinnedMachineY = screenOuter["pinnedMachines"].y + 1
+
+--gpu.set(pinnedMachineX + 20, pinnedMachineY + 2, "          ⠀⠀⠀        ⠀⠀⠀Created by: Zeruel")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 2, "⠀⠀⠀             ⣀⡤⠴⠒⠒⠒⠶⢤⣄⡀⠀⠀⠀⠀⠀⠀⠀")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 3, "⠀⠀        ⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⡀⠀⠀⠀⠀⠀")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 4, "⠀        ⠀⠀⠀⠀⡼⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⡀⠀⠀⠀⠀")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 5, "⠀        ⠀⠀⠀⢸⠁⠀⠀⣠⠖⠛⠛⠲⢤⠀⠀⠀⣰⠚⠛⢷⠀⠀⠀⠀")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 6, "⠀       ⠀⠀ ⠀⣿⠀⠀⣸⠃⠀⠀⢀⣀⠈⢧⣠⣤⣯⢠⣤⠘⣆⠀⠀⠀")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 7,"⠀       ⠀⠀⠀⠀⣿⠀⠀⡇⠀⠀⠀⠻⠟⠠⣏⣀⣀⣨⡇⠉⢀⣿⠀⠀⠀")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 8, "⠀⠀        ⠀⢀⡟⠀⠀⠹⡄⠀⠀⠀⠀⠀⠉⠑⠚⠉⠀⣠⡞⢿⠀⠀⠀")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 9, "⠀       ⠀⠀⢀⡼⠁⠀⠀⠀⠙⠳⢤⡄⠀⠀⠀⠀⠀⠀⠀⠁⠙⢦⠳⣄⠀")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 10, "⠀      ⠀ ⢀⡾⠁⠀⠀⠀⠀⠀⠤⣏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠃⠙⡆")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 11, "       ⠀⠀⣼⠁⠀⠀⠀⠀⠀⠀⠀⠈⠳⣄⠀⠀⠀⠀⠀⠀⠀⢠⡏⠀⠀⡇")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 12, "       ⠀⠀⣏⠀⠀⠀⠀⠲⣄⡀⠀⠀⠀⠸⡄⠀⠀⠀⠀⠀⠀⢸⠀⢀⡼⠁")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 13, "       ⢀⡴⢿⠀⠀⠀⠀⠀⢸⠟⢦⡀⠀⢀⡇⠀⠀⠀⠀⠀⠀⠘⠗⣿⠁⠀")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 14, "       ⠸⣦⡘⣦⠀⠀⠀⠀⣸⣄⠀⡉⠓⠚⠀⠀⠀⠀ ⠀⠀⠀⡴⢹⣦⡀")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 15, "       ⠀⠀⠉⠛⠳⢤⣴⠾⠁⠈⠟⠉⣇⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⣠⠞⠁")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 16, "⠀  ⠀     ⠀⠀⠀⠀⠙⢧⣀⠀⠀⣠⠏⠀⠀⢀⣀⣠⠴⠛⠓⠚⠋⠀⠀⠀")
+gpu.set(pinnedMachineX + 12, pinnedMachineY + 17, "⠀  ⠀     ⠀⠀⠀⠀⠀⠀⠉⠙⠋⠉⠉⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀  ")
+gpu.set(pinnedMachineX, pinnedMachineY + 18, "Created by: Zeruel    ⠀⠀⠀  ⠀⠀⠀⠀⠀     ⠀⠀⠀  ⠀⠀⠀⠀⠀     ⠀  ⠀Ver 1.0⠀")
+
 
 -- indent the text by 2 spaces from the left side of the section
 local fluidLevelX = screenOuter["fluidLevels"].x + 2 
@@ -399,13 +419,17 @@ event.listen("touch", API.checkxy)
 
 
 function comma_value(amount)
-    local formatted = tostring(amount)
+    local negative = amount < 0 -- check if the number is negative
+    local formatted = tostring(math.abs(amount)) -- convert to positive for formatting
     local k
-    while true do  
+    while true do
         formatted, k = formatted:gsub("^(%d+)(%d%d%d)", '%1,%2')
         if k == 0 then
             break
         end
+    end
+    if negative then
+        formatted = '-' .. formatted -- add negative sign back
     end
     return formatted
 end
@@ -518,7 +542,7 @@ local function loop()
 	printColoredText(6, 46, "Net Energy: "..comma_value(energyInfo.netEnergy).."eu/t", energyInfo.netEnergyColor)
 	gpu.set(6, 47, "Energy Level: "..comma_value(energyInfo.energyLevel).." / "..comma_value(energyMax).."eu")
 	gpu.set(75, 46, (string.format("%.2f", energyInfo.percent).."%"))
-
+	
 	if counter == 30 then
 		energyFiles.displayEnergyInfo(energyInfo, netEnergyAVG, timeToFillAVG, colors)
 		counter = 0
