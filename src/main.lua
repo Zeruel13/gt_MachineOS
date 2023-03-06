@@ -96,10 +96,6 @@ local buttonSpacing = 1
 local function drawButton(x, y)
   -- Draw the border
   drawBorder(x, y, buttonWidth, buttonHeight)
-
-  -- Add any additional content to the button
-  -- (e.g. text, icons, etc.)
-  -- ...
 end
 
 --User must put in addresses before continuing 
@@ -275,14 +271,28 @@ local fluidSetPage = fluidNumPage
 
 --this function is running multiple times then multiple times
 function createMachineButtons (machinePGX, i)
-	API.setTable("machinePage"..i, pageMachineButton, machinePGX+1, 35, machinePGX+3, 35, tostring(machineSetPage), {on = colors.black, off = colors.yellow})
+	API.setTable("machinePage"..i, pageMachineButton, machinePGX+1, 35, machinePGX+3, 35, tostring(machineSetPage), colors.white, {on = colors.black, off = colors.yellow})
 	machineSetPage = machineSetPage -1
 end
 
 --this function is running multiple times then multiple times
 function createFluidButtons (fluidPGX, i)
-	API.setTable("fluidPage"..i, pageFluidButton, fluidPGX+1, 35, fluidPGX+3, 35, tostring(fluidSetPage), {on = colors.black, off = colors.yellow})
+	API.setTable("fluidPage"..i, pageFluidButton, fluidPGX+1, 35, fluidPGX+3, 35, tostring(fluidSetPage), colors.white, {on = colors.black, off = colors.yellow})
 	fluidSetPage = fluidSetPage -1
+end
+
+function removeMachineControlButtons()
+  for name, data in pairs(button) do
+    if string.find(name, "Control") then
+      button[name] = nil
+    end
+  end
+end
+
+function createMachineControlButton(machine, i, x, y)
+	local buttonLabel = machine.isWorkAllowed() and "-on-" or "-off-"
+	local buttonColor = machine.isWorkAllowed() and colors.green or colors.red
+	API.setTable("Control"..i, function() machine.setWorkAllowed(not machine.isWorkAllowed()) end, x + 31, y + 1, x + 36, y + 1, buttonLabel, buttonColor, {on = colors.black, off = colors.yellow})
 end
 
 local fluidYValue = 0
@@ -301,6 +311,10 @@ local function printMachineMethods(machine, i)
 
 	-- Clearing the machine method area 
 	gpu.fill(screenInner[i].machineX + 2, screenInner[i].machineY + 1, 35, 3, " ")
+		
+	--Machine Control button
+	local machineStatus = machine.isWorkAllowed()
+	createMachineControlButton(machine, i, screenInner[i].machineX, screenInner[i].machineY, machineStatus)
 
 	--if the number of problems is equal to 0
 	if (string.match(tostring(machine.getSensorInformation()[5]), "§c(%d+)")) == "0" then
@@ -318,7 +332,7 @@ local function printMachineMethods(machine, i)
 			end	
 		else
 			gpu.setForeground(colors.red)
-			gpu.set(screenInner[i].machineX + 2, screenInner[i].machineY + 1,"Machine processing disabled!!")
+			gpu.set(screenInner[i].machineX + 2, screenInner[i].machineY + 1,"Processing Disabled!")
 			gpu.setForeground(colors.white)
 					
 		end
@@ -346,6 +360,9 @@ function pageMachineButton(text)
 
 		--clear the area where the Multiblock Information is set 
 		gpu.fill(5, 3, 82, 31, " ")
+			
+		-- remove the existing machine control buttons
+		removeMachineControlButtons()
 		
 		--prints the name of each border 
 		for i = machineStartBorder, machineFinishBorder do
@@ -358,10 +375,14 @@ function pageMachineButton(text)
 			--this prints all the multiblock information
 			printMachineMethods(component.proxy(component.get(machine.id)), i)
 			
+			
 			if machineTankList[i] then
 				printMachineTankInfo(component.proxy(component.get(machineTankList[i])), i)
 			end
+			
 		end		
+		
+		API.screen()
 end
 	
 function pageFluidButton(text)
@@ -410,9 +431,6 @@ for i = 1, fluidNumPage do
   createFluidButtons(buttonX, i)
   
 end
-	
---API.screen is used to iterate through all the buttons and fill the table in buttonAPI
-API.screen()
 
 --This checks if a user touches the screen then calls API.checkxy
 event.listen("touch", API.checkxy)
@@ -552,6 +570,9 @@ local function loop()
 	
 		counter = counter + 1
 
+--API.screen is used to iterate through all the buttons and fill the table in buttonAPI
+API.screen()
+
   -- Wait 1 seconds before checking the status again
   os.sleep(1)
 
@@ -564,6 +585,7 @@ end
 
 gpu.set(6, 7, "To get started, connect some adapters to your machines / tanks.")
 gpu.set(6, 8, "This message will disappear when at least one address is present in each:")
+gpu.set(6, 9, "machines.lua, tanks.lua, and pinnedMachines.lua") 
 gpu.set(6, 9, "machines.lua, tanks.lua, and pinnedMachines.lua") 
 
 
