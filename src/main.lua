@@ -230,20 +230,20 @@ local fluidNumPage = math.ceil(#tankFluidLevels/tanksPerPage)
 local fluidSetPage = fluidNumPage
 
 -- Create a page containing multiblocks 
-local function createMachineButtons (machinePGX, i)
+function createMachineButtons (machinePGX, i)
 	API.setTable("machinePage"..i, pageMachineButton, machinePGX+1, 35, machinePGX+3, 35, tostring(machineSetPage), utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow})
 	machineSetPage = machineSetPage -1
 end
 
 -- Create a page containing tanks
-local function createFluidButtons (fluidPGX, i)
+function createFluidButtons (fluidPGX, i)
 	API.setTable("fluidPage"..i, pageFluidButton, fluidPGX+1, 35, fluidPGX+3, 35, tostring(fluidSetPage), utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow})
 	fluidSetPage = fluidSetPage -1
 end
 
 -- When the user goes to a new page, the button to turn on/off the machine has to be removed so a new one can be added
 -- Remove all buttons with control in their name
-local function removeMachineControlButtons()
+function removeMachineControlButtons()
   for name, data in pairs(button) do
     if string.find(name, "Control") then
       button[name] = nil
@@ -252,7 +252,7 @@ local function removeMachineControlButtons()
 end
 
 -- Create a button that turns on/off a machine
-local function createMachineControlButton(machine, i, x, y)
+function createMachineControlButton(machine, i, x, y)
 	local buttonLabel = machine.isWorkAllowed() and "[ON]" or "[OFF]"
 	local buttonColor = machine.isWorkAllowed() and utils.colors.green or utils.colors.red
 	local xValue = machine.isWorkAllowed() and 32 or 31
@@ -294,7 +294,7 @@ local function printMachineTankInfo(tank, i)
 end
 
 -- When a page button is pressed in the MultiBlock Information section
-local function pageMachineButton(text)
+function pageMachineButton(text)
 		
 		machinePrintPage = text
 		
@@ -341,7 +341,7 @@ local fluidStartBorder = (fluidPrintPage - 1) * tanksPerPage + 1
 local fluidFinishBorder = math.min(fluidPrintPage * tanksPerPage, #tankFluidLevels) 
 
 -- When a page button is pressed in the Fluid Levels section
-local function pageFluidButton(text)
+function pageFluidButton(text)
 
 		fluidYValue = 0
 		fluidPrintPage = text
