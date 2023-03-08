@@ -61,7 +61,7 @@ local screenOuter = {}
 -- Adds all the borders to the screenOuter table	
 function setScreenOuter()
 	screenOuter["multiblockInformation"] = { x = 3, y = 2, width = 85, height= 35, title = "  Multiblock Information  "}
-	screenOuter["pinnedMachines"] = { x = 92, y = 2, width = 66, height = 20, title = "  gt_machineOS  "}
+	screenOuter["controlPanel"] = { x = 92, y = 12, width = 66, height = 10, title = "  Control Panel  "}
 	screenOuter["fluidLevels"] = { x = 92, y = 24, width = 66, height= 13, title = "  Fluid Levels  "}
 	screenOuter["energy"] = { x = 3, y = 40, width = 155, height= 9, title = "  Energy Levels  "}
 end
@@ -95,11 +95,11 @@ function printBordersOuter(screenOuterName)
 end
 
 -- Get the dimensions of the pinnedMachines section. 
-local pinnedMachineX = screenOuter["pinnedMachines"].x + 2
-local pinnedMachineY = screenOuter["pinnedMachines"].y + 1
+local pinnedMachineX = screenOuter["controlPanel"].x + 2
+local pinnedMachineY = screenOuter["controlPanel"].y + 1
 
 --gpu.set(pinnedMachineX + 20, pinnedMachineY + 2, "          ⠀⠀⠀        ⠀⠀⠀Created by: Zeruel")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 2, "⠀⠀⠀             ⣀⡤⠴⠒⠒⠒⠶⢤⣄⡀⠀⠀⠀⠀⠀⠀⠀")
+--[[gpu.set(pinnedMachineX + 12, pinnedMachineY + 2, "⠀⠀⠀             ⣀⡤⠴⠒⠒⠒⠶⢤⣄⡀⠀⠀⠀⠀⠀⠀⠀")
 gpu.set(pinnedMachineX + 12, pinnedMachineY + 3, "⠀⠀        ⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⡀⠀⠀⠀⠀⠀")
 gpu.set(pinnedMachineX + 12, pinnedMachineY + 4, "⠀        ⠀⠀⠀⠀⡼⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⡀⠀⠀⠀⠀")
 gpu.set(pinnedMachineX + 12, pinnedMachineY + 5, "⠀        ⠀⠀⠀⢸⠁⠀⠀⣠⠖⠛⠛⠲⢤⠀⠀⠀⣰⠚⠛⢷⠀⠀⠀⠀")
@@ -115,12 +115,38 @@ gpu.set(pinnedMachineX + 12, pinnedMachineY + 14, "       ⠸⣦⡘⣦⠀⠀⠀�
 gpu.set(pinnedMachineX + 12, pinnedMachineY + 15, "       ⠀⠀⠉⠛⠳⢤⣴⠾⠁⠈⠟⠉⣇⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⣠⠞⠁")
 gpu.set(pinnedMachineX + 12, pinnedMachineY + 16, "⠀  ⠀     ⠀⠀⠀⠀⠙⢧⣀⠀⠀⣠⠏⠀⠀⢀⣀⣠⠴⠛⠓⠚⠋⠀⠀⠀")
 gpu.set(pinnedMachineX + 12, pinnedMachineY + 17, "⠀  ⠀     ⠀⠀⠀⠀⠀⠀⠉⠙⠋⠉⠉⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀  ")
-gpu.set(pinnedMachineX, pinnedMachineY + 18, "Created by: Zeruel    ⠀⠀⠀  ⠀⠀⠀⠀⠀     ⠀⠀⠀  ⠀⠀⠀⠀⠀     ⠀  ⠀Ver 1.0⠀")
+gpu.set(pinnedMachineX, pinnedMachineY + 18, "Created by: Zeruel    ⠀⠀⠀  ⠀⠀⠀⠀⠀     ⠀⠀⠀  ⠀⠀⠀⠀⠀     ⠀  ⠀Ver 1.0⠀")]]
 
-utils.drawBorder(pinnedMachineX + 2, pinnedMachineY + 2, 15, 5)
-utils.drawBorder(pinnedMachineX + 10, pinnedMachineY + 2, 7, 3)
-gpu.set(pinnedMachineX + 10, pinnedMachineY + 2, "─")
---gpu.set(pinnedMachineX + 17, pinnedMachine + 5, 
+function printAsciiArt(x, y, art)
+	
+	local rows = {}
+	local i = 1
+	art:gsub("[^\r\n]+", function(row)
+		rows[i] = row
+		i = i + 1
+	end)
+	gpu.setForeground(utils.colors.cyan)
+	for i, row in ipairs(rows) do
+		for j = 1, #row do
+			gpu.set(x + j - 1, y + i - 1, row:sub(j, j))
+		end
+	end
+	gpu.setForeground(utils.colors.white)
+end
+
+local art = [[                                                                                                     
+        _     __  __            _     _             ____   _____ 
+       | |   |  \/  |          | |   (_)           / __ \ / ____|
+   __ _| |_  | \  / | __ _  ___| |__  _ _ __   ___| |  | | (___  
+  / _` | __| | |\/| |/ _` |/ __| '_ \| | '_ \ / _ \ |  | |\___ \ 
+ | (_| | |_  | |  | | (_| | (__| | | | | | | |  __/ |__| |____) |
+  \__, |\__| |_|  |_|\__,_|\___|_| |_|_|_| |_|\___|\____/|_____/ 
+   __/ | ______                                                  
+  |___/ |______|                                                                                                                                                                                                                                                                                                        
+]]
+
+printAsciiArt(pinnedMachineX - 2, pinnedMachineY - 12, art)
+gpu.set(pinnedMachineX + 35, pinnedMachineY - 2, "Created by: Zeruel    Ver 1.0 ")
 
 -- Indent the text by 2 spaces from the left side of the section
 local fluidLevelX = screenOuter["fluidLevels"].x + 2 
@@ -230,20 +256,20 @@ local fluidNumPage = math.ceil(#tankFluidLevels/tanksPerPage)
 local fluidSetPage = fluidNumPage
 
 -- Create a page containing multiblocks 
-function createMachineButtons (machinePGX, i)
+local function createMachineButtons (machinePGX, i)
 	API.setTable("machinePage"..i, pageMachineButton, machinePGX+1, 35, machinePGX+3, 35, tostring(machineSetPage), utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow})
 	machineSetPage = machineSetPage -1
 end
 
 -- Create a page containing tanks
-function createFluidButtons (fluidPGX, i)
+local function createFluidButtons (fluidPGX, i)
 	API.setTable("fluidPage"..i, pageFluidButton, fluidPGX+1, 35, fluidPGX+3, 35, tostring(fluidSetPage), utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow})
 	fluidSetPage = fluidSetPage -1
 end
 
 -- When the user goes to a new page, the button to turn on/off the machine has to be removed so a new one can be added
 -- Remove all buttons with control in their name
-function removeMachineControlButtons()
+local function removeMachineControlButtons()
   for name, data in pairs(button) do
     if string.find(name, "Control") then
       button[name] = nil
@@ -252,7 +278,7 @@ function removeMachineControlButtons()
 end
 
 -- Create a button that turns on/off a machine
-function createMachineControlButton(machine, i, x, y)
+local function createMachineControlButton(machine, i, x, y)
 	local buttonLabel = machine.isWorkAllowed() and "[ON]" or "[OFF]"
 	local buttonColor = machine.isWorkAllowed() and utils.colors.green or utils.colors.red
 	local xValue = machine.isWorkAllowed() and 32 or 31
@@ -294,8 +320,9 @@ local function printMachineTankInfo(tank, i)
 end
 
 -- When a page button is pressed in the MultiBlock Information section
+-- note: can't be local, is used by buttonAPI.lua
 function pageMachineButton(text)
-		
+	
 		machinePrintPage = text
 		
 		machineStartBorder = (machinePrintPage - 1) * machinesPerPage + 1
@@ -341,6 +368,7 @@ local fluidStartBorder = (fluidPrintPage - 1) * tanksPerPage + 1
 local fluidFinishBorder = math.min(fluidPrintPage * tanksPerPage, #tankFluidLevels) 
 
 -- When a page button is pressed in the Fluid Levels section
+-- note: can't be local, is used by buttonAPI.lua
 function pageFluidButton(text)
 
 		fluidYValue = 0
@@ -488,8 +516,6 @@ end
 gpu.set(6, 7, "To get started, connect some adapters to your machines / tanks.")
 gpu.set(6, 8, "This message will disappear when at least one address is present in each:")
 gpu.set(6, 9, "machines.lua, tanks.lua, and pinnedMachines.lua") 
-gpu.set(6, 9, "machines.lua, tanks.lua, and pinnedMachines.lua") 
-
 
 gpu.set(6, 12, "After connecting machines and adapter, run gtMachineList.lua")
 gpu.set(6, 13, "To make life easier, record the results in a text file using: ")
