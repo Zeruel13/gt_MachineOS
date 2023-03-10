@@ -154,8 +154,6 @@ function printAsciiArt(x, y, art)
 	gpu.setForeground(colors.white)
 end
 
-
-
 -- Returns Utilities
 return {
 	colors = colors,
