@@ -411,7 +411,7 @@ local function loop()
 
 	-- Adding problems up. problems wille be printed at the end 
 	local problems = 0
-	gpu.set(7, 35, "                         ")
+	gpu.fill(7, 35, 23, 1, " ")
 	for i, machine in ipairs (machines) do
 		if (component.proxy(component.get(machine.id)).isWorkAllowed()) == false or string.match(tostring(component.proxy(component.get(machine.id)).getSensorInformation()[5]), "§c(%d+)")  ~= "0" then
 			problems = problems + 1
