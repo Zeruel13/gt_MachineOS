@@ -98,43 +98,26 @@ end
 local pinnedMachineX = screenOuter["controlPanel"].x + 2
 local pinnedMachineY = screenOuter["controlPanel"].y + 1
 
---gpu.set(pinnedMachineX + 20, pinnedMachineY + 2, "          ⠀⠀⠀        ⠀⠀⠀Created by: Zeruel")
---[[gpu.set(pinnedMachineX + 12, pinnedMachineY + 2, "⠀⠀⠀             ⣀⡤⠴⠒⠒⠒⠶⢤⣄⡀⠀⠀⠀⠀⠀⠀⠀")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 3, "⠀⠀        ⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⡀⠀⠀⠀⠀⠀")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 4, "⠀        ⠀⠀⠀⠀⡼⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⡀⠀⠀⠀⠀")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 5, "⠀        ⠀⠀⠀⢸⠁⠀⠀⣠⠖⠛⠛⠲⢤⠀⠀⠀⣰⠚⠛⢷⠀⠀⠀⠀")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 6, "⠀       ⠀⠀ ⠀⣿⠀⠀⣸⠃⠀⠀⢀⣀⠈⢧⣠⣤⣯⢠⣤⠘⣆⠀⠀⠀")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 7,"⠀       ⠀⠀⠀⠀⣿⠀⠀⡇⠀⠀⠀⠻⠟⠠⣏⣀⣀⣨⡇⠉⢀⣿⠀⠀⠀")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 8, "⠀⠀        ⠀⢀⡟⠀⠀⠹⡄⠀⠀⠀⠀⠀⠉⠑⠚⠉⠀⣠⡞⢿⠀⠀⠀")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 9, "⠀       ⠀⠀⢀⡼⠁⠀⠀⠀⠙⠳⢤⡄⠀⠀⠀⠀⠀⠀⠀⠁⠙⢦⠳⣄⠀")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 10, "⠀      ⠀ ⢀⡾⠁⠀⠀⠀⠀⠀⠤⣏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠃⠙⡆")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 11, "       ⠀⠀⣼⠁⠀⠀⠀⠀⠀⠀⠀⠈⠳⣄⠀⠀⠀⠀⠀⠀⠀⢠⡏⠀⠀⡇")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 12, "       ⠀⠀⣏⠀⠀⠀⠀⠲⣄⡀⠀⠀⠀⠸⡄⠀⠀⠀⠀⠀⠀⢸⠀⢀⡼⠁")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 13, "       ⢀⡴⢿⠀⠀⠀⠀⠀⢸⠟⢦⡀⠀⢀⡇⠀⠀⠀⠀⠀⠀⠘⠗⣿⠁⠀")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 14, "       ⠸⣦⡘⣦⠀⠀⠀⠀⣸⣄⠀⡉⠓⠚⠀⠀⠀⠀ ⠀⠀⠀⡴⢹⣦⡀")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 15, "       ⠀⠀⠉⠛⠳⢤⣴⠾⠁⠈⠟⠉⣇⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⣠⠞⠁")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 16, "⠀  ⠀     ⠀⠀⠀⠀⠙⢧⣀⠀⠀⣠⠏⠀⠀⢀⣀⣠⠴⠛⠓⠚⠋⠀⠀⠀")
-gpu.set(pinnedMachineX + 12, pinnedMachineY + 17, "⠀  ⠀     ⠀⠀⠀⠀⠀⠀⠉⠙⠋⠉⠉⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀  ")
-gpu.set(pinnedMachineX, pinnedMachineY + 18, "Created by: Zeruel    ⠀⠀⠀  ⠀⠀⠀⠀⠀     ⠀⠀⠀  ⠀⠀⠀⠀⠀     ⠀  ⠀Ver 1.0⠀")]]
+penguin = [[
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡤⠴⠒⠒⠒⠶⢤⣄⡀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⡀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⡼⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⡀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢸⠁⠀⠀⣠⠖⠛⠛⠲⢤⠀⠀⠀⣰⠚⠛⢷⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⣿⠀⠀⣸⠃⠀⠀⢀⣀⠈⢧⣠⣤⣯⢠⣤⠘⣆⠀⠀⠀
+⠀⠀⠀⠀⠀⣿⠀⠀⡇⠀⠀⠀⠻⠟⠠⣏⣀⣀⣨⡇⠉⢀⣿⠀⠀⠀
+⠀⠀⠀⠀⢀⡟⠀⠀⠹⡄⠀⠀⠀⠀⠀⠉⠑⠚⠉⠀⣠⡞⢿⠀⠀⠀
+⠀⠀⠀⢀⡼⠁⠀⠀⠀⠙⠳⢤⡄⠀⠀⠀⠀⠀⠀⠀⠁⠙⢦⠳⣄⠀
+⠀⠀⢀⡾⠁⠀⠀⠀⠀⠀⠤⣏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠃⠙⡆
+⠀⠀⣼⠁⠀⠀⠀⠀⠀⠀⠀⠈⠳⣄⠀⠀⠀⠀⠀⠀⠀⢠⡏⠀⠀⡇
+⠀⠀⣏⠀⠀⠀⠀⠲⣄⡀⠀⠀⠀⠸⡄⠀⠀⠀⠀⠀⠀⢸⠀⢀⡼⠁
+⢀⡴⢿⠀⠀⠀⠀⠀⢸⠟⢦⡀⠀⢀⡇⠀⠀⠀⠀⠀⠀⠘⠗⣿⠁⠀
+⠸⣦⡘⣦⠀⠀⠀⠀⣸⣄⠀⡉⠓⠚⠀⠀⠀⠀⠀⠀⠀⠀⡴⢹⣦⡀
+⠀⠀⠉⠛⠳⢤⣴⠾⠁⠈⠟⠉⣇⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⣠⠞⠁
+⠀⠀⠀⠀⠀⠀⠙⢧⣀⠀⠀⣠⠏⠀⠀⢀⣀⣠⠴⠛⠓⠚⠋⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠋⠉⠉⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+]]
 
-function printAsciiArt(x, y, art)
-	
-	local rows = {}
-	local i = 1
-	art:gsub("[^\r\n]+", function(row)
-		rows[i] = row
-		i = i + 1
-	end)
-	gpu.setForeground(utils.colors.cyan)
-	for i, row in ipairs(rows) do
-		for j = 1, #row do
-			gpu.set(x + j - 1, y + i - 1, row:sub(j, j))
-		end
-	end
-	gpu.setForeground(utils.colors.white)
-end
-
-local art = [[                                                                                                     
+titleCard = [[                                                                                                     
         _     __  __            _     _             ____   _____ 
        | |   |  \/  |          | |   (_)           / __ \ / ____|
    __ _| |_  | \  / | __ _  ___| |__  _ _ __   ___| |  | | (___  
@@ -145,7 +128,7 @@ local art = [[
   |___/ |______|                                                                                                                                                                                                                                                                                                        
 ]]
 
-printAsciiArt(pinnedMachineX - 2, pinnedMachineY - 12, art)
+utils.printAsciiArt(pinnedMachineX - 2, pinnedMachineY - 12, titleCard)
 gpu.set(pinnedMachineX + 35, pinnedMachineY - 2, "Created by: Zeruel    Ver 1.0 ")
 
 -- Indent the text by 2 spaces from the left side of the section

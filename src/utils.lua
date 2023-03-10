@@ -137,6 +137,24 @@ function formatTime(time)
 	return output
 end
 
+-- prints AsciiArt
+function printAsciiArt(x, y, art)
+	local rows = {}
+	local i = 1
+	art:gsub("[^\n]+", function(row)
+		rows[i] = row
+		i = i + 1
+	end)
+	gpu.setForeground(colors.cyan)
+	for i, row in ipairs(rows) do
+		for j = 1, #row do
+			gpu.set(x + j - 1, y + i - 1, row:sub(j, j))
+		end
+	end
+	gpu.setForeground(colors.white)
+end
+
+
 
 -- Returns Utilities
 return {
@@ -145,5 +163,6 @@ return {
 	setBackgroundColor = setBackgroundColor,
 	drawBorder = drawBorder,
 	comma_value = comma_value,
-	formatTime = formatTime
+	formatTime = formatTime,
+	printAsciiArt = printAsciiArt
 }
