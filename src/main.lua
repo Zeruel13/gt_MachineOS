@@ -389,32 +389,25 @@ function pageFluidButton(text)
 		
 end
 
+local function createPageButtons(numPages, createButtonFunc, pageX)
+
+    
+    for i = 1, numPages do
+        -- Calculate the x coordinate of the button
+        local buttonX = pageX - (i-1) * (pageButtonWidth + pageButtonSpacing)
+
+        -- Draw the button at the specified coordinates
+        drawButton(buttonX, 34)
+        
+        -- Create the button using the specified function
+        createButtonFunc(buttonX, i)
+    end
+end
+
 local machinePGX = 80
-for i = 1, machineNumPage do
-	-- Calculate the x coordinate of the button
-	local buttonX = machinePGX - (i-1) * (buttonWidth + buttonSpacing)
-
-	-- Draw the button at the specified coordinates
-	drawButton(buttonX, 34)
-  
-	-- Create the button
-	createMachineButtons(buttonX, i)
-  
-end
-
+createPageButtons(machineNumPage, createMachineButtons, machinePGX)
 local fluidPGX = 152
-for i = 1, fluidNumPage do
-
-	-- Calculate the x coordinate of the button
-	local buttonX = fluidPGX - (i-1) * (buttonWidth + buttonSpacing)
-
-	-- Draw the button at the specified coordinates
-	drawButton(buttonX, 34)
-  
-	-- Create the button
-	createFluidButtons(buttonX, i)
-  
-end
+createPageButtons(fluidNumPage, createFluidButtons, fluidPGX)
 
 -- Checks if a user touches the screen then calls API.checkxy
 event.listen("touch", API.checkxy)
