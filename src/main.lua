@@ -428,7 +428,6 @@ local function loop()
 		fluidYValue = fluidYValue + 1
 	end
 	
-	
 	-- Get the name of the machine at the start - finish index for the machines table. 
 	for i = machineStartBorder, machineFinishBorder do
 		
@@ -441,8 +440,7 @@ local function loop()
 		-- If there exsists an entry in machineTankList at index i, print the tank info
 		if machineTankList[i] then
 			printMachineTankInfo(component.proxy(component.get(machineTankList[i])), i)
-		end
-			
+		end	
 	end
 	
 	-- Once the # of problems is added up, print it
