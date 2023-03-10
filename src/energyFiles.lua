@@ -84,7 +84,7 @@ function energyFiles.problemCheck(LSC)
 		if LSC.isWorkAllowed() == true then
 			utils.printColoredText(78 - #status/2, 47, status, utils.colors.green)
 		else
-			utils.printColoredText(78 - #status/2, 47, "Machine Status: IDLE", utils.colors.orange)
+			utils.printColoredText(78 - #status/2, 47, "Processing Disabled!", utils.colors.red)
 		end
 	else
 		utils.printColoredText(78 - #status/2, 47, status, utils.colors.red)
