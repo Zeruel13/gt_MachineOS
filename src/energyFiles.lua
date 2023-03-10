@@ -77,4 +77,18 @@ function energyFiles.displayEnergyInfo(energyInfo, netEnergyAVG, timeToFillAVG, 
     end
 end
 
+function energyFiles.problemCheck(LSC)
+	-- get the maintenance status 
+	status = LSC.getSensorInformation()[9]:gsub(".*§a(.-)§r.*", "%1")
+	if status == "Working perfectly" then
+		if LSC.isWorkAllowed() == true then
+			utils.printColoredText(78 - #status/2, 47, status, utils.colors.green)
+		else
+			utils.printColoredText(78 - #status/2, 47, "Machine Status: IDLE", utils.colors.orange)
+		end
+	else
+		utils.printColoredText(78 - #status/2, 47, status, utils.colors.red)
+	end
+end
+
 return energyFiles

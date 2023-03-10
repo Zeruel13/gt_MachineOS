@@ -21,9 +21,10 @@ local component = require("component")
 local event = require("event")
 local gpu = component.gpu
 
--- Require the API from buttonAPI.lua and utils from utils.lua
+-- Require APIs
 local API = require("buttonAPI")
 local utils = require("utils")
+local energyFiles = require("energyFiles")
 
 -- Load the files that store machines / tank addresses
 local machines_chunk = loadfile("addressList/machines.lua")
@@ -34,19 +35,17 @@ local pinnedMachines_chunk = loadfile("addressList/pinnedMachines.lua")
 local pinnedMachines = pinnedMachines_chunk()
 local energy_chunk = loadfile("addressList/energy.lua")
 local energy = energy_chunk()
-local energyFiles = require("energyFiles")
-
 
 -- Define the width and height of the buttons
-local buttonWidth = 4
-local buttonHeight = 2
+local pageButtonWidth = 4
+local pageButtonHeight = 2
 
 -- Define the horizontal spacing between buttons
-local buttonSpacing = 1
+local pageButtonSpacing = 1
 
 local function drawButton(x, y)
   -- Draw the border
-  utils.drawBorder(x, y, buttonWidth, buttonHeight)
+  utils.drawBorder(x, y, pageButtonWidth, pageButtonHeight)
 end
 
 -- User must put in addresses before continuing 
@@ -452,17 +451,17 @@ local function loop()
 	netEnergyAVG = energyInfo.netEnergyAVG
     
 	-- Clear the area to allow for new information to be printed 
-	gpu.fill(6,46, 95,1, " ")
-	gpu.fill(6, 47, 60, 1, " ")
+	gpu.fill(6,46, 95,2, " ")
 	
 	-- Draws the progress bar 
 	utils.setBackgroundColor(7, 43, 148, 2, " ", utils.colors.turq)
 	utils.setBackgroundColor(7, 43, energyInfo.progressBar, 2, " ", utils.colors.cyan)
 	
-	-- Prints Net Energy, Energy Level, and Percent
+	-- Prints Net Energy, Energy Level, Percent, and status
 	utils.printColoredText(6, 46, "Net Energy: "..utils.comma_value(energyInfo.netEnergy).."eu/t", energyInfo.netEnergyColor)
 	gpu.set(6, 47, "Energy Level: "..utils.comma_value(energyInfo.energyLevel).." / "..utils.comma_value(energyMax).."eu")
 	gpu.set(75, 46, (string.format("%.2f", energyInfo.percent).."%"))
+	energyFiles.problemCheck(LSC)
 	
 	-- To get a more accurate time to fill/drain, it collects inforamtion for 30 second before updating it
 	if counter == 30 then
