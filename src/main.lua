@@ -470,7 +470,7 @@ local function loop()
 		-- Variables for calculating time to drain/fill
 		local energyInfo = energyFiles.getEnergyInformation(LSC, energyMax, colors, timeToFillAVG, netEnergyAVG)
 		timeToFillAVG = energyInfo.timeToFillAVG
-		etEnergyAVG = energyInfo.netEnergyAVG
+		netEnergyAVG = energyInfo.netEnergyAVG
     
 		-- Clear the area to allow for new information to be printed 
 		gpu.fill(6,46, 95,2, " ")
