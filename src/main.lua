@@ -36,6 +36,8 @@ local pinnedMachines = pinnedMachines_chunk()
 local energy_chunk = loadfile("addressList/energy.lua")
 local energy = energy_chunk()
 
+local startProg = true
+
 -- Define the width and height of the buttons
 local pageButtonWidth = 4
 local pageButtonHeight = 2
@@ -46,12 +48,6 @@ local pageButtonSpacing = 1
 local function drawButton(x, y)
   -- Draw the border
   utils.drawBorder(x, y, pageButtonWidth, pageButtonHeight)
-end
-
--- User must put in addresses before continuing 
-local startProg = true
-if (#machines == 0 or #tanks == 0 or #pinnedMachines == 0) then
-	startProg = false
 end
 
 -- Initalizes screenOuter table to add entries to later
@@ -207,7 +203,7 @@ function getFluidLevels(output)
     return fluidLevel.." / "..fluidMax.." mb"
 end
 
--- For loop to iterate through all entries in tanks.lua and if there isn't a machine matching the same name, it adds it to tankFluidLevels
+-- Iterate through all entries in tanks.lua and if there isn't a machine matching the same name, it adds it to tankFluidLevels
 -- This is for the Fluid Levels border 
 local tankFluidLevels = {}
 for i, tank in ipairs(tanks) do
@@ -233,7 +229,7 @@ local machineNumPage = math.ceil(#machines/machinesPerPage)
 local machineSetPage = machineNumPage
 
 -- Gets the number of pages needed for fluid Levels
-local tanksPerPage = 10
+local tanksPerPage = 8
 local fluidNumPage = math.ceil(#tankFluidLevels/tanksPerPage)
 local fluidSetPage = fluidNumPage
 
@@ -360,7 +356,7 @@ function pageFluidButton(text)
 		fluidFinishBorder = math.min(fluidPrintPage * tanksPerPage, #tankFluidLevels)
 
 		-- Clear the area where the fluid Levels is set 
-		gpu.fill(94, 26, 52, 10, " ")
+		gpu.fill(94, 26, 52, 8, " ")
 		
 		-- Iterate through the tankFluidLevels array and call printTankInfo
 		for i = fluidStartBorder, fluidFinishBorder do
@@ -394,84 +390,114 @@ createPageButtons(fluidNumPage, createFluidButtons, fluidPGX)
 -- Checks if a user touches the screen then calls API.checkxy
 event.listen("touch", API.checkxy)
 
--- Border for Energy Levels
-utils.drawBorder(6, 42, 149, 3)	
-
--- Initiazling variables for Energy Levels
+-- Initiazling variables for Energy Levels. Checks if there is one valid LSC in energy.lua
+local LSC 
+local energyMax
 local counter = 0
 local timeToFillAVG = 0
 local netEnergyAVG = 0
-local LSC = component.proxy(component.get(energy[1].id))
 local timeToFill = 0
-local energyMax = math.floor(string.gsub(LSC.getSensorInformation()[3], "([^0-9]+)", "") + 0)
+
+if #energy == 1 and component.proxy(component.get(energy[1].id)) then
+
+	-- Border for Energy Levels
+	utils.drawBorder(6, 42, 149, 3)	
+
+	LSC = component.proxy(component.get(energy[1].id))
+	energyMax = math.floor(string.gsub(LSC.getSensorInformation()[3], "([^0-9]+)", "") + 0)
+end
 
 -- Everything inside this while loop will run every 1 second1 by os.sleep(1)
 local function loop()
 
-	-- Adding problems up. problems wille be printed at the end 
-	local problems = 0
-	gpu.fill(7, 35, 23, 1, " ")
-	for i, machine in ipairs (machines) do
-		if (component.proxy(component.get(machine.id)).isWorkAllowed()) == false or string.match(tostring(component.proxy(component.get(machine.id)).getSensorInformation()[5]), "§c(%d+)")  ~= "0" then
-			problems = problems + 1
-		end
-	end
+	-- To check if user entered machines or not
+	if #machines > 0 then
 	
-	-- Clear the area where the fluid Levels is set 
-	gpu.fill(94, 26, 52, 10, " ")
-	fluidYValue = 0
-		-- Iterate through the tankFluidLevels array and call printTankInfo
-	for i = fluidStartBorder, fluidFinishBorder do
-		local tank = tankFluidLevels[i]
-		printTankInfo(component.proxy(tank.id), tank.name)
-		fluidYValue = fluidYValue + 1
-	end
+		-- Adding problems up. problems wille be printed at the end 
+		local problems = 0
+		gpu.fill(7, 35, 23, 1, " ")
 	
-	-- Get the name of the machine at the start - finish index for the machines table. 
-	for i = machineStartBorder, machineFinishBorder do
-		
-		machine = machines[i]
-		currentMachineName = machine.name
-
-		-- Prints all the multiblock information
-		printMachineMethods(component.proxy(component.get(machine.id)), i)
-		
-		-- If there exsists an entry in machineTankList at index i, print the tank info
-		if machineTankList[i] then
-			printMachineTankInfo(component.proxy(component.get(machineTankList[i])), i)
+		for i, machine in ipairs (machines) do
+			if (component.proxy(component.get(machine.id)).isWorkAllowed()) == false or string.match(tostring(component.proxy(component.get(machine.id)).getSensorInformation()[5]), "§c(%d+)")  ~= "0" then
+				problems = problems + 1
+			end
 		end	
+	
+		-- Get the name of the machine at the start - finish index for the machines table. 
+		for i = machineStartBorder, machineFinishBorder do
+		
+			machine = machines[i]
+			currentMachineName = machine.name
+
+			-- Prints all the multiblock information
+			printMachineMethods(component.proxy(component.get(machine.id)), i)
+		
+			-- If there exsists an entry in machineTankList at index i, print the tank info
+			if machineTankList[i] then
+				printMachineTankInfo(component.proxy(component.get(machineTankList[i])), i)
+			end	
+		end
+		
+		-- Once the # of problems is added up, print it
+		gpu.set(7, 35, "Number of Problems: "..problems)
+		
+	else
+	
+	gpu.set(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 2, "There are no machines entered!")
+	
 	end
+
+	-- To check if user entered tanks or not
+	if #tanks > 0 then
+		
+		-- Clear the area where the fluid Levels is set 
+		gpu.fill(94, 26, 52, 8, " ")
 	
-	-- Once the # of problems is added up, print it
-	gpu.set(7, 35, "Number of Problems: "..problems)
+		fluidYValue = 0
+		-- Iterate through the tankFluidLevels array and call printTankInfo
+		for i = fluidStartBorder, fluidFinishBorder do
+			local tank = tankFluidLevels[i]
+			printTankInfo(component.proxy(tank.id), tank.name)
+			fluidYValue = fluidYValue + 1
+		end
+	else	
+		gpu.set(screenOuter["fluidLevels"].x + 2, screenOuter["fluidLevels"].y + 2, "There are no tanks entered!")	
+	end
+
+	-- To check if user entered only one energy source
+	if #energy == 1 then
 	
-	-- Variables for calculating time to drain/fill
-	local energyInfo = energyFiles.getEnergyInformation(LSC, energyMax, colors, timeToFillAVG, netEnergyAVG)
-	timeToFillAVG = energyInfo.timeToFillAVG
-	netEnergyAVG = energyInfo.netEnergyAVG
+		-- Variables for calculating time to drain/fill
+		local energyInfo = energyFiles.getEnergyInformation(LSC, energyMax, colors, timeToFillAVG, netEnergyAVG)
+		timeToFillAVG = energyInfo.timeToFillAVG
+		etEnergyAVG = energyInfo.netEnergyAVG
     
-	-- Clear the area to allow for new information to be printed 
-	gpu.fill(6,46, 95,2, " ")
+		-- Clear the area to allow for new information to be printed 
+		gpu.fill(6,46, 95,2, " ")
 	
-	-- Draws the progress bar 
-	utils.setBackgroundColor(7, 43, 148, 2, " ", utils.colors.turq)
-	utils.setBackgroundColor(7, 43, energyInfo.progressBar, 2, " ", utils.colors.cyan)
+		-- Draws the progress bar 
+		utils.setBackgroundColor(7, 43, 148, 2, " ", utils.colors.turq)
+		utils.setBackgroundColor(7, 43, energyInfo.progressBar, 2, " ", utils.colors.cyan)
 	
-	-- Prints Net Energy, Energy Level, Percent, and status
-	utils.printColoredText(6, 46, "Net Energy: "..utils.comma_value(energyInfo.netEnergy).."eu/t", energyInfo.netEnergyColor)
-	gpu.set(6, 47, "Energy Level: "..utils.comma_value(energyInfo.energyLevel).." / "..utils.comma_value(energyMax).."eu")
-	gpu.set(75, 46, (string.format("%.2f", energyInfo.percent).."%"))
-	energyFiles.problemCheck(LSC)
+		-- Prints Net Energy, Energy Level, Percent, and status
+		utils.printColoredText(6, 46, "Net Energy: "..utils.comma_value(energyInfo.netEnergy).."eu/t", energyInfo.netEnergyColor)
+		gpu.set(6, 47, "Energy Level: "..utils.comma_value(energyInfo.energyLevel).." / "..utils.comma_value(energyMax).."eu")
+		gpu.set(75, 46, (string.format("%.2f", energyInfo.percent).."%"))
+		energyFiles.problemCheck(LSC)
 	
-	-- To get a more accurate time to fill/drain, it collects inforamtion for 30 second before updating it
-	if counter == 30 then
-		energyFiles.displayEnergyInfo(energyInfo, netEnergyAVG, timeToFillAVG, colors)
-		counter = 0
-		timeToFillAVG = 0
-		netEnergyAVG = 0
-	end
-	
+		-- To get a more accurate time to fill/drain, it collects inforamtion for 30 second before updating it
+		if counter == 30 then
+			energyFiles.displayEnergyInfo(energyInfo, netEnergyAVG, timeToFillAVG, colors)
+			counter = 0
+			timeToFillAVG = 0
+			netEnergyAVG = 0
+		end
 		counter = counter + 1
+	elseif #energy == 0 then
+	gpu.set(screenOuter["energy"].x + 2, screenOuter["energy"].y + 2, "There is no LSC entered!")
+	elseif #energy > 1 then
+	gpu.set(screenOuter["energy"].x + 2, screenOuter["energy"].y + 2, "There are too many LSCs entered")
+	end
 
 -- API.screen is used to iterate through all the buttons and fill the table in buttonAPI
 API.screen()
@@ -485,12 +511,3 @@ end
 while startProg do
 	loop()
 end
-
-gpu.set(6, 7, "To get started, connect some adapters to your machines / tanks.")
-gpu.set(6, 8, "This message will disappear when at least one address is present in each:")
-gpu.set(6, 9, "machines.lua, tanks.lua, and pinnedMachines.lua") 
-
-gpu.set(6, 12, "After connecting machines and adapter, run gtMachineList.lua")
-gpu.set(6, 13, "To make life easier, record the results in a text file using: ")
-gpu.set(6, 15, "gtMachineList.lua > Output.txt")
-gpu.set(6, 17, "The text file will be in the same directory as this program.")
