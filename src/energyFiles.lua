@@ -65,7 +65,7 @@ function energyFiles.displayEnergyInfo(energyInfo, netEnergyAVG, timeToFillAVG, 
     if (energyInfo.percent > 99.99) then
         utils.printColoredText(156 - #"Full!", 46, "Full!", utils.colors.green)
     elseif (energyInfo.percent < 0.01) then
-        utils.printColoredText(156 - #"Empty!", 46, "Empty!", utilscolors.red)
+        utils.printColoredText(156 - #"Empty!", 46, "Empty!", utils.colors.red)
     elseif (netEnergyAVG > 0) then
         timeToFillAVGText = "Time to fill: "..utils.formatTime(timeToFillAVG)
         timeToFillAVGX = 156 - #timeToFillAVGText
