@@ -2,8 +2,10 @@
 local component = require("component")
 local gpu = component.gpu
 
+local utils = {}
+
 -- Initializes some colors to use 
-colors = {
+utils.colors = {
 	blue = 0x1434A4, -- old blue
 	purple = 0x884EA0,
 	red = 0xC14141,
@@ -17,7 +19,7 @@ colors = {
 }
 
 -- Print colored text	
-function printColoredText(x, y, text, color)
+function utils.printColoredText(x, y, text, color)
   local oldColor = gpu.getForeground()
   gpu.setForeground(color)
   gpu.set(x, y, text)
@@ -25,7 +27,7 @@ function printColoredText(x, y, text, color)
 end
 
 -- Set background colors
-function setBackgroundColor(x, y, width, height, text, color)
+function utils.setBackgroundColor(x, y, width, height, text, color)
 	local oldBackground = gpu.getBackground()
 	gpu.setBackground(color)
 	gpu.fill(x, y, width, height, text)
@@ -33,9 +35,9 @@ function setBackgroundColor(x, y, width, height, text, color)
 end
 
 -- Draw a yellow border	
-function drawBorder(x, y, width, height)
+function utils.drawBorder(x, y, width, height)
 
-	gpu.setForeground(colors.yellow)
+	gpu.setForeground(utils.colors.yellow)
 	-- top and bottom lines
 	gpu.fill(x, y, width, 1, "─")
 	gpu.fill(x, y+height, width, 1, "─")
@@ -50,12 +52,12 @@ function drawBorder(x, y, width, height)
 	gpu.set(x, y+height, "╰")
 	gpu.set(x+width, y+height, "╯")
 
-	gpu.setForeground(colors.white)
+	gpu.setForeground(utils.colors.white)
 end
 
 -- Change a number into comma format
 -- ex. 400000 -> 400,000
-function comma_value(amount)
+function utils.comma_value(amount)
 
     -- Check if the number is negative
     local negative = amount < 0 
@@ -85,7 +87,7 @@ function comma_value(amount)
 end
 
 -- Given seconds, change into readable time
-function formatTime(time)
+function utils.formatTime(time)
 	-- Check if time value is valid
 	if not time or time == math.huge or time == -math.huge then
 		return "N/A"
@@ -138,29 +140,21 @@ function formatTime(time)
 end
 
 -- prints AsciiArt
-function printAsciiArt(x, y, art)
+function utils.printAsciiArt(x, y, art)
 	local rows = {}
 	local i = 1
 	art:gsub("[^\n]+", function(row)
 		rows[i] = row
 		i = i + 1
 	end)
-	gpu.setForeground(colors.cyan)
+	gpu.setForeground(utils.colors.cyan)
 	for i, row in ipairs(rows) do
 		for j = 1, #row do
 			gpu.set(x + j - 1, y + i - 1, row:sub(j, j))
 		end
 	end
-	gpu.setForeground(colors.white)
+	gpu.setForeground(utils.colors.white)
 end
 
 -- Returns Utilities
-return {
-	colors = colors,
-	printColoredText = printColoredText,
-	setBackgroundColor = setBackgroundColor,
-	drawBorder = drawBorder,
-	comma_value = comma_value,
-	formatTime = formatTime,
-	printAsciiArt = printAsciiArt
-}
+return utils
