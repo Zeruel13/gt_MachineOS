@@ -36,7 +36,8 @@ local pinnedMachines = pinnedMachines_chunk()
 local energy_chunk = loadfile("addressList/energy.lua")
 local energy = energy_chunk()
 
-local startProg = true
+-- Controls the whole loop
+local checkLoop = true
 
 -- Define the width and height of the buttons
 local pageButtonWidth = 4
@@ -64,7 +65,7 @@ end
 -- Set size of the screen for lvl 3 and clear the screen
 gpu.setResolution(160,50)
 gpu.setBackground(utils.colors.black)	
-gpu.fill(1, 1, 132, 38, " ")	
+gpu.fill(1, 1, 160, 50, " ")	
 
 -- Calls the setScreenOuter function. 
 setScreenOuter()
@@ -89,9 +90,12 @@ function printBordersOuter(screenOuterName)
 	
 end
 
+local multiblockInformationX = screenOuter["multiblockInformation"].x + 2
+local multiblockInformationY = screenOuter["multiblockInformation"].y + 1
+
 -- Get the dimensions of the pinnedMachines section. 
-local pinnedMachineX = screenOuter["controlPanel"].x + 2
-local pinnedMachineY = screenOuter["controlPanel"].y + 1
+local controlPanelX = screenOuter["controlPanel"].x + 2
+local controlPanelY = screenOuter["controlPanel"].y + 1
 
 penguin = [[
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡤⠴⠒⠒⠒⠶⢤⣄⡀⠀⠀⠀⠀⠀⠀⠀
@@ -123,9 +127,6 @@ titleCard = [[
   |___/ |______|                                                                                                                                                                                                                                                                                                        
 ]]
 
-utils.printAsciiArt(pinnedMachineX - 2, pinnedMachineY - 12, titleCard)
-gpu.set(pinnedMachineX + 35, pinnedMachineY - 2, "Created by: Zeruel    Ver 1.0 ")
-
 -- Indent the text by 2 spaces from the left side of the section
 local fluidLevelX = screenOuter["fluidLevels"].x + 2 
 -- Start the text at the top of the section
@@ -147,7 +148,6 @@ local function setScreenInner(currentMachineName, i)
 	height = 4,
 	machineX = machinexStart + machineXOffset * ((i - 1) // 6 % 2),
 	machineY = machineyStart + machineYOffset * ((i - 1) % 6)
-	
 	}
 	
 end
@@ -168,7 +168,6 @@ for i = 1, #machines do
 			machineTankList[i] = tank.id
 		end
 	end
-	
 end
 
 -- Draws the border and text for the inner borders
@@ -235,13 +234,13 @@ local fluidSetPage = fluidNumPage
 
 -- Create a page containing multiblocks 
 local function createMachineButtons (machinePGX, i)
-	API.setTable("machinePage"..i, pageMachineButton, machinePGX+1, 35, machinePGX+3, 35, tostring(machineSetPage), utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow})
+	API.setTable("machinePage"..i, pageMachineButton, machinePGX+1, 35, machinePGX+3, 35, tostring(machineSetPage), utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 	machineSetPage = machineSetPage -1
 end
 
 -- Create a page containing tanks
 local function createFluidButtons (fluidPGX, i)
-	API.setTable("fluidPage"..i, pageFluidButton, fluidPGX+1, 35, fluidPGX+3, 35, tostring(fluidSetPage), utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow})
+	API.setTable("fluidPage"..i, pageFluidButton, fluidPGX+1, 35, fluidPGX+3, 35, tostring(fluidSetPage), utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 	fluidSetPage = fluidSetPage -1
 end
 
@@ -260,7 +259,7 @@ local function createMachineControlButton(machine, i, x, y)
 	local buttonLabel = machine.isWorkAllowed() and "[ON]" or "[OFF]"
 	local buttonColor = machine.isWorkAllowed() and utils.colors.green or utils.colors.red
 	local xValue = machine.isWorkAllowed() and 32 or 31
-	API.setTable("Control"..i, function() machine.setWorkAllowed(not machine.isWorkAllowed()) end, x + xValue, y + 1, x + 36, y + 1, buttonLabel, buttonColor, {on = utils.colors.black, off = utils.colors.yellow})
+	API.setTable("Control"..i, function() machine.setWorkAllowed(not machine.isWorkAllowed()) end, x + xValue, y + 1, x + 36, y + 1, buttonLabel, buttonColor, {on = utils.colors.black, off = utils.colors.yellow}, true)
 end
 	
 -- Prints all the MultiBlock Information. 
@@ -301,36 +300,33 @@ end
 -- note: can't be local, is used by buttonAPI.lua
 function pageMachineButton(text)
 	
-		machinePrintPage = text
+	machinePrintPage = text
 		
-		machineStartBorder = (machinePrintPage - 1) * machinesPerPage + 1
-		machineFinishBorder = math.min(machinePrintPage * machinesPerPage, #machines)
+	machineStartBorder = (machinePrintPage - 1) * machinesPerPage + 1
+	machineFinishBorder = math.min(machinePrintPage * machinesPerPage, #machines)
 
-		-- Clear the area where the Multiblock Information is set 
-		gpu.fill(5, 3, 82, 31, " ")
+	-- Clear the area where the Multiblock Information is set 
+	gpu.fill(5, 3, 82, 31, " ")
 			
-		-- Remove the existing machine control buttons
-		removeMachineControlButtons()
+	-- Remove the existing machine control buttons
+	removeMachineControlButtons()
 		
-		-- Prints the name of each border 
-		for i = machineStartBorder, machineFinishBorder do
+	-- Prints the name of each border 
+	for i = machineStartBorder, machineFinishBorder do
 
-			printBordersInner(i)
+		printBordersInner(i)
 
-			machine = machines[i]
-			currentMachineName = machine.name
+		machine = machines[i]
 
-			-- Prints all the multiblock information
-			printMachineMethods(component.proxy(component.get(machine.id)), i)
+		-- Prints all the multiblock information
+		printMachineMethods(component.proxy(component.get(machine.id)), i)
 			
-			-- If there is an entry in machineTankList, print the info for it. 
-			if machineTankList[i] then
-				printMachineTankInfo(component.proxy(component.get(machineTankList[i])), i)
-			end
-			
-		end		
-		
-		API.screen()
+		-- If there is an entry in machineTankList, print the info for it. 
+		if machineTankList[i] then
+			printMachineTankInfo(component.proxy(component.get(machineTankList[i])), i)
+		end
+	end	
+	API.screen()
 end
 
 local fluidYValue = 0
@@ -369,7 +365,6 @@ end
 
 local function createPageButtons(numPages, createButtonFunc, pageX)
 
-    
     for i = 1, numPages do
         -- Calculate the x coordinate of the button
         local buttonX = pageX - (i-1) * (pageButtonWidth + pageButtonSpacing)
@@ -407,8 +402,89 @@ if #energy == 1 and component.proxy(component.get(energy[1].id)) then
 	energyMax = math.floor(string.gsub(LSC.getSensorInformation()[3], "([^0-9]+)", "") + 0)
 end
 
+local function createBackButton()
+utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 12, multiblockInformationX+ 4, 2)
+API.setTable("backButton", backButton, multiblockInformationX+ 4, multiblockInformationY+ 13, multiblockInformationX+ 8,  multiblockInformationY+ 13, "Back", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+API.screen("backButton")
+API.waitForButtonPress()
+end
+
+local function aboutButton()
+
+checkLoop = false
+
+-- Clears the multiblock information section
+gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "This is where text will go to explain what the progam is, who made it, etc.")
+
+createBackButton()
+end
+
+local function helpButton()
+
+	checkLoop = false
+
+	-- Clears the multiblock information section
+	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "This is where text will go to explain how to use the program")
+
+	createBackButton()
+end
+
+function backButton()
+
+	-- Clears the multiblock information section
+	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+	
+	for i = machineStartBorder, machineFinishBorder do
+		printBordersInner(i)
+	end
+	
+	for i = 1, machineNumPage do
+		-- Calculate the x coordinate of the button
+		local buttonX = machinePGX - (i-1) * (pageButtonWidth + pageButtonSpacing)
+
+		-- Draw the button at the specified coordinates
+		drawButton(buttonX, 34)
+	end
+
+	button["backButton"]["isVisible"] = false
+
+	checkLoop = true
+	
+end
+
+function filterButton()
+
+
+end
+
+utils.printAsciiArt(controlPanelX - 2, controlPanelY - 12, titleCard)
+gpu.set(controlPanelX + 35, controlPanelY - 2, "Created by: Zeruel    Ver 1.0 ")
+
+gpu.set(controlPanelX + 1, controlPanelY + 1, "Add / Edit Machines")
+
+utils.drawBorder(controlPanelX + 1, controlPanelY + 3, 14, 2)
+gpu.set(controlPanelX + 3, controlPanelY + 4, "Add Address")
+
+utils.drawBorder(controlPanelX + 1, controlPanelY + 6, 17, 2)
+gpu.set(controlPanelX + 3, controlPanelY + 7, "Edit Addresses")
+
+gpu.set(controlPanelX + 27, controlPanelY + 1, "Filter by Status")
+utils.drawBorder(controlPanelX + 30, controlPanelY + 3, 9, 2)
+API.setTable("filter", filterButton, controlPanelX + 33, controlPanelY + 4, controlPanelX + 38, controlPanelY + 4, "Filter", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+
+utils.drawBorder(controlPanelX + 54, controlPanelY + 3, 8, 2)
+API.setTable("about", aboutButton, controlPanelX + 56, controlPanelY + 4, controlPanelX+ 61, controlPanelY + 4, "About", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+
+utils.drawBorder(controlPanelX + 55, controlPanelY + 6, 7, 2)
+API.setTable("help", helpButton, controlPanelX + 57, controlPanelY + 7, controlPanelX + 61, controlPanelY + 7, "Help", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+
+-- API.screen is used to iterate through all the buttons and fill the table in buttonAPI
+API.screen()
+
 -- Everything inside this while loop will run every 1 second1 by os.sleep(1)
-local function loop()
+local function mainLoop()
 
 	-- To check if user entered machines or not
 	if #machines > 0 then
@@ -425,9 +501,8 @@ local function loop()
 	
 		-- Get the name of the machine at the start - finish index for the machines table. 
 		for i = machineStartBorder, machineFinishBorder do
-		
+	
 			machine = machines[i]
-			currentMachineName = machine.name
 
 			-- Prints all the multiblock information
 			printMachineMethods(component.proxy(component.get(machine.id)), i)
@@ -493,14 +568,15 @@ local function loop()
 			netEnergyAVG = 0
 		end
 		counter = counter + 1
+	-- Checks for none / too many LSCs entered in energy.lua
 	elseif #energy == 0 then
 	gpu.set(screenOuter["energy"].x + 2, screenOuter["energy"].y + 2, "There is no LSC entered!")
 	elseif #energy > 1 then
 	gpu.set(screenOuter["energy"].x + 2, screenOuter["energy"].y + 2, "There are too many LSCs entered")
 	end
 
--- API.screen is used to iterate through all the buttons and fill the table in buttonAPI
-API.screen()
+	-- API.screen is used to iterate through all the buttons and fill the table in buttonAPI
+	API.screen()
 
 	-- Wait 1 seconds before checking the status again
 	os.sleep(1)
@@ -508,6 +584,6 @@ API.screen()
 -- End of the while loop
 end
 
-while startProg do
-	loop()
+while checkLoop do
+	mainLoop()
 end

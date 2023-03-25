@@ -5,7 +5,7 @@ local component = require("component")
 local gpu = component.gpu
 local event = require("event")
 
-function API.setTable(name, func, xmin, ymin, xmax, ymax, text, textColor, backgroundColor) -- color is an object { on : 0x000000, off 0xAAAAAA}
+function API.setTable(name, func, xmin, ymin, xmax, ymax, text, textColor, backgroundColor, isVisible)
   button[name] = {}
   button[name]["text"] = text
   button[name]["func"] = func
@@ -16,10 +16,11 @@ function API.setTable(name, func, xmin, ymin, xmax, ymax, text, textColor, backg
   button[name]["ymax"] = ymax
   button[name]["textColor"] = textColor
   button[name]["backgroundColor"] = backgroundColor
+  button[name]["isVisible"] = isVisible or true
 end
  
 function API.fill(bData)
- 
+
   local yspot = math.floor((bData["ymin"] + bData["ymax"]) /2)
   local xspot = math.floor((bData["xmin"] + bData["xmax"]) /2) - math.floor((string.len(bData["text"])/2))
   local oldBackgroundColor = gpu.getBackground()
@@ -32,14 +33,23 @@ function API.fill(bData)
   gpu.setBackground(curBackgroundColor)
   gpu.setForeground(bData["textColor"])
   gpu.fill(bData["xmin"], bData["ymin"], bData["xmax"] - bData["xmin"] + 1, bData["ymax"] - bData["ymin"] + 1, " ")
-  gpu.set(xspot, yspot, bData["text"])
+  
+  -- Check if isVisible is set to true before writing the button text
+  if bData["isVisible"] then
+    gpu.set(xspot, yspot, bData["text"])
+  end
+  
   gpu.setBackground(oldBackgroundColor)
   gpu.setForeground(oldTextColor)
 end
- 
-function API.screen()
-  for name,data in pairs(button) do
-     API.fill(data)
+
+function API.screen(buttonName)
+  if buttonName then
+    API.fill(button[buttonName])
+  else
+    for name,data in pairs(button) do
+      API.fill(data)
+    end
   end
 end
 
@@ -56,17 +66,31 @@ function API.flash(name,length)
   API.toggleButton(name)
   API.screen()
 end]]
- 
-function API.checkxy(_, _, x, y, _, _)
-  for name, data in pairs(button) do
-    if y >= data["ymin"] and y <= data["ymax"] then
-      if x >= data["xmin"] and x <= data["xmax"] then
-		data["func"](data["text"])
-        --data["func"]()
-		--data["active"] = true
+
+function API.waitForButtonPress()
+  while true do
+    local _, _, x, y = event.pull("touch")
+    for name, data in pairs(button) do
+      if x >= data["xmin"] and x <= data["xmax"] and y >= data["ymin"] and y <= data["ymax"] then
+        data["func"](data["text"])
+        return -- exit the function when a button is pressed
       end
     end
   end
 end
+ 
+function API.checkxy(_, _, x, y, _, _)
+  for name, data in pairs(button) do
+    if data.isVisible and y >= data["ymin"] and y <= data["ymax"] then
+      if x >= data["xmin"] and x <= data["xmax"] then
+        data["func"](data["text"])
+      end
+    end
+  end
+end
+
+
+ --data["func"]()
+ --data["active"] = true
  
 return API
