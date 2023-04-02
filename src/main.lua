@@ -404,8 +404,8 @@ if #energy == 1 and component.proxy(component.get(energy[1].id)) then
 end
 
 local function createBackButton()
-utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 20, multiblockInformationX+ 2, 2)
-API.setTable("backButton", backButton, multiblockInformationX+ 3, multiblockInformationY+ 21, multiblockInformationX+ 7,  multiblockInformationY+ 21, "Back", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 30, multiblockInformationX+ 2, 2)
+API.setTable("backButton", backButton, multiblockInformationX+ 3, multiblockInformationY+ 31, multiblockInformationX+ 7,  multiblockInformationY+ 31, "Back", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 API.screen("backButton")
  -- Unregister checkxy from the touch event listener. If checkxy isn't unregistered, 
  -- both waitForButtonPress and checkxy will be called resulting in a button's function being called twice
