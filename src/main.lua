@@ -19,6 +19,7 @@
 -- Components to require
 local component = require("component")
 local event = require("event")
+local term = require("term")
 local gpu = component.gpu
 
 -- Require APIs
@@ -473,6 +474,7 @@ local function helpButton()
 	createBackButton()
 end
 
+-- Note, can't be local as it accessses buttonAPI
 function backButton()
 
 	button["backButton"]["isVisible"] = false
@@ -501,7 +503,7 @@ function backButton()
 	checkLoop = true
 end
 
-function filterButton()
+local function filterButton()
 
 checkLoop = false
 
@@ -519,11 +521,83 @@ gpu.set(controlPanelX + 35, controlPanelY - 2, "Created by: Zeruel    Ver 1.0 ")
 
 gpu.set(controlPanelX + 1, controlPanelY + 1, "Add / Edit Machines")
 
+local function addButton()
+
+	checkLoop = false
+
+	-- Clears the multiblock information section
+	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Write stuff here for adding machines")
+	
+	-- Set the maximum length for the machine name and address
+	local maxNameLength = 20
+	local maxAddressLength = 8
+
+	-- Set the cursor position and prompt the user for the machine name
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Enter the name of the machine:")
+	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 9)
+	local machineName = io.read()
+	
+	while string.len(machineName) > maxNameLength do 
+		-- Set the cursor position and prompt the user for the machine name
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Name must not be more than 20 characters")
+		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 9, 80, 1, " ")
+		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 9)
+		machineName = io.read()
+	end
+
+	-- Set the cursor position and prompt the user for the machine address
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 12, "Enter the address of the machine:")
+	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 13)
+	local machineAddress = io.read()
+	
+	while string.len(machineAddress) ~= maxAddressLength do
+		-- Set the cursor position and prompt the user for the machine address
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "Address must be 8 characters")
+		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 13, 80, 1, " ")
+		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 13)
+		machineAddress = io.read()
+	end
+	
+	-- read the machines.lua file into a table
+	local machines = {}
+	
+	for line in io.lines("addresslist/machines.lua") do
+		table.insert(machines, line)
+	end
+
+	-- insert the new machine at the desired position
+	local position = #machines - 2 -- insert before the last line (which is 'return machines')
+	table.insert(machines, position, "	{id = \"" .. machineAddress .. "\", name = \"" .. machineName .. "\"},")
+
+	-- write the modified table back to the machines.lua file
+	local file = io.open("addresslist/machines.lua", "w")
+	file:write(table.concat(machines, "\n"))
+
+	-- Close the file
+	file:close()
+
+	-- Print a confirmation message
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, "machine added to machines.lua")
+
+end
+
+local function editButton()
+
+	checkLoop = false
+
+	-- Clears the multiblock information section
+	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "White stuff here for editing machines")
+
+	createBackButton()
+end
+
 utils.drawBorder(controlPanelX + 1, controlPanelY + 3, 14, 2)
-gpu.set(controlPanelX + 3, controlPanelY + 4, "Add Address")
+API.setTable("Add", addButton, controlPanelX + 3, controlPanelY + 4, controlPanelX + 13, controlPanelY + 4, "Add Address", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
 utils.drawBorder(controlPanelX + 1, controlPanelY + 6, 17, 2)
-gpu.set(controlPanelX + 3, controlPanelY + 7, "Edit Addresses")
+API.setTable("Edit", editButton, controlPanelX + 3, controlPanelY + 7, controlPanelX + 17, controlPanelY + 7, "Edit Addresses", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
 gpu.set(controlPanelX + 27, controlPanelY + 1, "Filter by Status")
 utils.drawBorder(controlPanelX + 30, controlPanelY + 3, 9, 2)
