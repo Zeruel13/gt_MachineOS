@@ -20,6 +20,7 @@
 local component = require("component")
 local event = require("event")
 local term = require("term")
+local computer = require("computer")
 local gpu = component.gpu
 
 -- Require APIs
@@ -516,6 +517,23 @@ createBackButton()
 
 end
 
+local function rebootButton()
+computer.shutdown(true)
+end
+
+local function createRebootButton()
+utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 30, multiblockInformationX+ 4, 2)
+API.setTable("rebootButton", rebootButton, multiblockInformationX+ 3, multiblockInformationY+ 31, multiblockInformationX+ 9,  multiblockInformationY+ 31, "Reboot", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+API.screen("rebootButton")
+ -- Unregister checkxy from the touch event listener. If checkxy isn't unregistered, 
+ -- both waitForButtonPress and checkxy will be called resulting in a button's function being called twice
+event.ignore("touch", API.checkxy)
+
+-- Program will do nothing until a button is pressed. 
+API.waitForButtonPress("rebootButton")
+end
+
+
 utils.printAsciiArt(controlPanelX - 2, controlPanelY - 12, titleCard)
 gpu.set(controlPanelX + 35, controlPanelY - 2, "Created by: Zeruel    Ver 1.0 ")
 
@@ -579,6 +597,8 @@ local function addButton()
 
 	-- Print a confirmation message
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, "machine added to machines.lua")
+	
+	createRebootButton()
 
 end
 
