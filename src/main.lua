@@ -27,6 +27,7 @@ local gpu = component.gpu
 local API = require("buttonAPI")
 local utils = require("utils")
 local energyFiles = require("energyFiles")
+local gtMachineFind = require("gtMachineFind")
 
 -- Load the files that store machines / tank addresses
 local machines_chunk = loadfile("addressList/machines.lua")
@@ -490,6 +491,8 @@ function backButton()
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 	
+	
+	-- Print the borders again
 	for i = machineStartBorder, machineFinishBorder do
 		printBordersInner(i)
 	end
@@ -547,59 +550,81 @@ local function addButton()
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Write stuff here for adding machines")
 	
-	-- Set the maximum length for the machine name and address
-	local maxNameLength = 20
-	local maxAddressLength = 8
+	local machineList = gtMachineFind
 
-	-- Set the cursor position and prompt the user for the machine name
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Enter the name of the machine:")
-	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 9)
-	local machineName = io.read()
+	if #machineList ~= 1 then
+		if #machineList == 0 then
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "No new address found. Please attach an adapter to a gt_machine and try again.")
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Please attach an adapter to a gt_machine and try again.")
+			createRebootButton()
+		else
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "More than one address found.")
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Please only add one gt_machine at a time and try again.")
+			createRebootButton()
+		end
+	else
 	
-	while string.len(machineName) > maxNameLength do 
+		machineAddress = machineList[1]
+	
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "One address found. Enter the type of machine below: multiblock / tank / LSC")
+		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 7)
+		local machineType = io.read()
+		
+		while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "lsc" do
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC")
+			gpu.fill(multiblockInformationX + 1, multiblockInformationY + 7, 80, 1, " ")
+			term.setCursor(multiblockInformationX + 1, multiblockInformationY + 7)
+			machineType = io.read()
+		end
+	
+		-- Set the maximum length for the machine name and address
+		local maxNameLength = 20
+
 		-- Set the cursor position and prompt the user for the machine name
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Name must not be more than 20 characters")
-		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 9, 80, 1, " ")
-		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 9)
-		machineName = io.read()
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Enter the name of the machine:")
+		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 11)
+		local machineName = io.read()
+	
+		while string.len(machineName) > maxNameLength do 
+			-- Set the cursor position and prompt the user for the machine name
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 12, "Name must not be more than 20 characters")
+			gpu.fill(multiblockInformationX + 1, multiblockInformationY + 11, 80, 1, " ")
+			term.setCursor(multiblockInformationX + 1, multiblockInformationY + 11)
+			machineName = io.read()
+		end
+		
+		if machineType == "multiblock" then
+			fileType = "machines"
+		elseif machineType == "tank" then
+			fileType = "tanks"
+		else 
+			fileType = "energy"
+		end
+		
+		-- read the file into a table
+		local gtMachineTable = {}
+		
+		for line in io.lines("addresslist/"..fileType..".lua") do
+			table.insert(gtMachineTable, line)
+		end
+		
+		-- insert the new machine at the desired position
+		local position = #gtMachineTable - 2 -- insert before the last line (which is 'return')
+		table.insert(gtMachineTable, position, "	{id = \"" .. machineAddress .. "\", name = \"" .. machineName .. "\"},")
+
+		-- write the modified table back to the correct file
+		local file = io.open("addresslist/"..fileType..".lua", "w")
+		file:write(table.concat(gtMachineTable, "\n"))
+
+		-- Close the file
+		file:close()
+
+		-- Print a confirmation message
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, machineType.." added to "..fileType..".lua")
+		
+		createRebootButton()
+		
 	end
-
-	-- Set the cursor position and prompt the user for the machine address
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 12, "Enter the address of the machine:")
-	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 13)
-	local machineAddress = io.read()
-	
-	while string.len(machineAddress) ~= maxAddressLength do
-		-- Set the cursor position and prompt the user for the machine address
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "Address must be 8 characters")
-		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 13, 80, 1, " ")
-		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 13)
-		machineAddress = io.read()
-	end
-	
-	-- read the machines.lua file into a table
-	local machines = {}
-	
-	for line in io.lines("addresslist/machines.lua") do
-		table.insert(machines, line)
-	end
-
-	-- insert the new machine at the desired position
-	local position = #machines - 2 -- insert before the last line (which is 'return machines')
-	table.insert(machines, position, "	{id = \"" .. machineAddress .. "\", name = \"" .. machineName .. "\"},")
-
-	-- write the modified table back to the machines.lua file
-	local file = io.open("addresslist/machines.lua", "w")
-	file:write(table.concat(machines, "\n"))
-
-	-- Close the file
-	file:close()
-
-	-- Print a confirmation message
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, "machine added to machines.lua")
-	
-	createRebootButton()
-
 end
 
 local function editButton()

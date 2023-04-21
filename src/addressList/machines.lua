@@ -3,7 +3,6 @@
 --{id = "52444", name = "Phthalic Acid"}
 
 local machines = {
-
 }
 
 return machines
