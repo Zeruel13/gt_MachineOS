@@ -700,12 +700,33 @@ API.setTable("help", helpButton, controlPanelX + 57, controlPanelY + 7, controlP
 -- API.screen is used to iterate through all the buttons and fill the table in buttonAPI
 API.screen()
 
+local firstTime = true
+
 -- Everything inside this while loop will run every 1 second1 by os.sleep(1)
 local function mainLoop()
 
 	-- To check if user entered machines or not
 	if #machines > 0 then
 		if machineCheck(machines) then
+			if firstTime then
+			
+				-- Clears the multiblock information section
+				gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+				
+				for i = machineStartBorder, machineFinishBorder do
+					printBordersInner(i)
+				end
+				
+				for i = 1, machineNumPage do
+					-- Calculate the x coordinate of the button
+					local buttonX = machinePGX - (i-1) * (pageButtonWidth + pageButtonSpacing)
+
+					-- Draw the button at the specified coordinates
+					drawButton(buttonX, 34)
+				end
+				
+				firstTime = false
+			end
 		
 			-- Adding problems up. problems will be printed at the end 
 			local problems = 0
@@ -739,6 +760,7 @@ local function mainLoop()
 			gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 4, "There are errors with the machine addresses!!!", utils.colors.red)
 			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 5, "See edit Addresses for details.", utils.colors.red)
+			firstTime = true
 		end
 	else
 		gpu.set(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 2, "There are no machines entered!")
