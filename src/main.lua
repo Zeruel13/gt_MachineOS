@@ -291,7 +291,6 @@ local function printMachineMethods(machine, i)
 	else
 		utils.printColoredText(screenInner[i].machineX + 2, screenInner[i].machineY + 1,"MACHINE HAS PROBLEMS!!!", utils.colors.red)				
 	end
-	
 end
 	
 -- Print the tanks information. 
@@ -638,6 +637,18 @@ local function editButton()
 	createBackButton()
 end
 
+local function machineCheck(machines)
+  for i, machine in ipairs(machines) do
+    local machineCheck = component.get(machine.id)
+    if not machineCheck then
+      return false -- machine not found
+    end
+  end
+  return true -- all machines found
+end
+
+
+
 utils.drawBorder(controlPanelX + 1, controlPanelY + 3, 14, 2)
 API.setTable("Add", addButton, controlPanelX + 3, controlPanelY + 4, controlPanelX + 13, controlPanelY + 4, "Add Address", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
@@ -662,37 +673,43 @@ local function mainLoop()
 
 	-- To check if user entered machines or not
 	if #machines > 0 then
-	
-		-- Adding problems up. problems wille be printed at the end 
-		local problems = 0
-		gpu.fill(7, 35, 23, 1, " ")
-	
-		for i, machine in ipairs (machines) do
-			if (component.proxy(component.get(machine.id)).isWorkAllowed()) == false or string.match(tostring(component.proxy(component.get(machine.id)).getSensorInformation()[5]), "§c(%d+)")  ~= "0" then
-				problems = problems + 1
-			end
-		end	
-	
-		-- Get the name of the machine at the start - finish index for the machines table. 
-		for i = machineStartBorder, machineFinishBorder do
-	
-			machine = machines[i]
-
-			-- Prints all the multiblock information
-			printMachineMethods(component.proxy(component.get(machine.id)), i)
+		if machineCheck(machines) then
 		
-			-- If there exsists an entry in machineTankList at index i, print the tank info
-			if machineTankList[i] then
-				printMachineTankInfo(component.proxy(component.get(machineTankList[i])), i)
+			-- Adding problems up. problems will be printed at the end 
+			local problems = 0
+			gpu.fill(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 33, 23, 1, " ")
+		
+			for i, machine in ipairs (machines) do
+				if (component.proxy(component.get(machine.id)).isWorkAllowed()) == false or string.match(tostring(component.proxy(component.get(machine.id)).getSensorInformation()[5]), "§c(%d+)")  ~= "0" then
+					problems = problems + 1
+				end
 			end	
+		
+			-- Get the name of the machine at the start - finish index for the machines table. 
+			for i = machineStartBorder, machineFinishBorder do
+		
+				machine = machines[i]
+
+				-- Prints all the multiblock information
+				printMachineMethods(component.proxy(component.get(machine.id)), i)
+			
+				-- If there exsists an entry in machineTankList at index i, print the tank info
+				if machineTankList[i] then
+					printMachineTankInfo(component.proxy(component.get(machineTankList[i])), i)
+				end	
+			end
+			
+			-- Once the # of problems is added up, print it
+			gpu.set(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 33, "Number of Problems: "..problems)
+			API.screen()
+		else
+			-- Clears the multiblock information section
+			gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 4, "There are errors with the machine addresses!!!", utils.colors.red)
+			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 5, "See edit Addresses for details.", utils.colors.red)
 		end
-		
-		-- Once the # of problems is added up, print it
-		gpu.set(7, 35, "Number of Problems: "..problems)
-		
 	else
-	
-	gpu.set(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 2, "There are no machines entered!")
+		gpu.set(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 2, "There are no machines entered!")
 	
 	end
 
@@ -750,7 +767,7 @@ local function mainLoop()
 	end
 
 	-- API.screen is used to iterate through all the buttons and fill the table in buttonAPI
-	API.screen()
+	--API.screen()
 
 	-- Wait 1 seconds before checking the status again
 	os.sleep(1)
@@ -759,5 +776,5 @@ local function mainLoop()
 end
 
 while checkLoop do
-	mainLoop()
+    mainLoop()
 end
