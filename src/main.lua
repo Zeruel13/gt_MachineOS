@@ -402,6 +402,7 @@ if #energy == 1 and component.proxy(component.get(energy[1].id)) then
 
 	LSC = component.proxy(component.get(energy[1].id))
 	energyMax = math.floor(string.gsub(LSC.getSensorInformation()[3], "([^0-9]+)", "") + 0)
+	
 end
 
 local function createBackButton()
@@ -541,6 +542,8 @@ gpu.set(controlPanelX + 35, controlPanelY - 2, "Created by: Zeruel    Ver 1.0 ")
 
 gpu.set(controlPanelX + 1, controlPanelY + 1, "Add / Edit Machines")
 
+local machineType
+
 local function addButton()
 
 	checkLoop = false
@@ -549,10 +552,10 @@ local function addButton()
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Write stuff here for adding machines")
 	
-	local machineList = gtMachineFind
+	local newMachineList = gtMachineFind.new
 
-	if #machineList ~= 1 then
-		if #machineList == 0 then
+	if #newMachineList ~= 1 then
+		if #newMachineList == 0 then
 			gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "No new address found. Please attach an adapter to a gt_machine and try again.")
 			gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Please attach an adapter to a gt_machine and try again.")
 			createRebootButton()
@@ -563,11 +566,11 @@ local function addButton()
 		end
 	else
 	
-		machineAddress = machineList[1]
+		machineAddress = newMachineList[1]
 	
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "One address found. Enter the type of machine below: multiblock / tank / LSC")
 		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 7)
-		local machineType = io.read()
+		machineType = io.read()
 		
 		while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "lsc" do
 			gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC")
@@ -634,7 +637,36 @@ local function editButton()
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "White stuff here for editing machines")
 
-	createBackButton()
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "What type of machine would you like to edit? multiblock / tank / energy")
+	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 5)
+	machineType = io.read()
+		
+	while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "lsc" do
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "Machine type must be multiblock / tank / LSC")
+		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 5, 80, 1, " ")
+		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 5)
+		machineType = io.read()
+	end
+	
+	if machineType == "multiblock" then
+	
+	elseif machineType == "tank" then
+	
+	else
+	
+	end
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 end
 
 local function machineCheck(machines)

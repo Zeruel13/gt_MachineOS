@@ -68,4 +68,10 @@ for i, value in ipairs(gt_machineNetwork) do
   end
 end
 
-return gt_machineNew
+local results = {
+	new = gt_machineNew,
+	nils = gt_machineNil,
+}
+
+return results
+
