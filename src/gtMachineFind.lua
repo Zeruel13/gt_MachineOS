@@ -11,9 +11,9 @@ local energy = energy_chunk()
 
 local gtMachineFind = {}
 
-function table.find(t, value)
+function table.find(t, id)
   for i, v in ipairs(t) do
-    if v == value then
+    if v.id == id then
       return i
     end
   end
@@ -24,18 +24,32 @@ end
 local gt_machineList = {}
 local gt_machineNetwork = {}
 local gt_machineNew = {} 
+local gt_machineNil = {}
 
 --These three for loops add gt_machines from the three files to the gt_machineList table
 for i, machine in ipairs(machines) do
-	table.insert(gt_machineList , component.get(machine.id))
+	if component.get(machine.id) ~= nil then
+		table.insert(gt_machineList , {name = machine.name, id = component.get(machine.id)})
+	else
+		table.insert(gt_machineNil , machine.id)
+	end
 end
 
 for i, tank in ipairs (tanks) do
-	table.insert(gt_machineList , component.get(tank.id))
+	if component.get(tank.id) ~= nil then
+		table.insert(gt_machineList , {name = tank.name, id = component.get(tank.id)})
+	else
+		table.insert(gt_machineNil , tank.id)
+		
+	end
 end
 
 for i, energy in ipairs (energy) do
-	table.insert(gt_machineList , component.get(energy.id))
+	if component.get(energy.id) ~= nil then
+		table.insert(gt_machineList , {name = energy.name, id = component.get(energy.id)})
+	else
+		table.insert(gt_machineNil , energy.id)
+	end
 end
 
 --This goes through all components connected to your OC computer. If it has the name gt_machine, add it to the gt_machineNetwork table
