@@ -11,13 +11,13 @@ local machines_chunk = loadfile("addressList/machines.lua")
 local machines = machines_chunk()
 local tanks_chunk = loadfile("addressList/tanks.lua")
 local tanks = tanks_chunk()
-local pinnedMachines_chunk = loadfile("addressList/pinnedMachines.lua")
-local pinnedMachines = pinnedMachines_chunk()
+local energy_chunk = loadfile("addressList/energy.lua")
+local energy = energy_chunk()
 
 
-function table.find(t, value)
+function table.find(t, id)
   for i, v in ipairs(t) do
-    if v == value then
+    if v.id == id then
       return i
     end
   end
@@ -30,18 +30,32 @@ term.clear()
 --create two tables, one to store what machines are in your list and one for what's on the network
 gt_machineList = {}
 gt_machineNetwork = {}
+gt_machineNil = {}
 
 --These three for loops add gt_machines from the three files to the gt_machineList table
 for i, machine in ipairs(machines) do
-	table.insert(gt_machineList , component.get(machine.id))
+	if component.get(machine.id) ~= nil then
+		table.insert(gt_machineList , {name = machine.name, id = component.get(machine.id)})
+	else
+		table.insert(gt_machineNil , machine.id)
+	end
 end
 
 for i, tank in ipairs (tanks) do
-	table.insert(gt_machineList , component.get(tank.id))
+	if component.get(tank.id) ~= nil then
+		table.insert(gt_machineList , {name = tank.name, id = component.get(tank.id)})
+	else
+		table.insert(gt_machineNil , tank.id)
+		
+	end
 end
 
-for i, pinnedMachine in ipairs (pinnedMachines) do
-	table.insert(gt_machineList , component.get(pinnedMachine.id))
+for i, energy in ipairs (energy) do
+	if component.get(energy.id) ~= nil then
+		table.insert(gt_machineList , {name = energy.name, id = component.get(energy.id)})
+	else
+		table.insert(gt_machineNil , energy.id)
+	end
 end
 
 --This goes through all components connected to your OC computer. If it has the name gt_machine, add it to the gt_machineNetwork table
@@ -59,10 +73,8 @@ print("The following is not present in the compnent list and something has gone 
 print("-----------------------------")
 
 --If a gt_machine is on your list (in one of the lua files but not connected to the network, print the value
-for i, value in ipairs(gt_machineList) do
-  if not table.find(gt_machineNetwork, value) then
+for i, value in ipairs(gt_machineNil) do
     print(value)
-  end
 end
 
 --print formatting
@@ -71,19 +83,24 @@ print("-----------------------------")
 
 --If a gt_machine is connected to the network but not in your list (not in a lua file yet), print the value
 for i, value in ipairs(gt_machineNetwork) do
-  if not table.find(gt_machineList, value) then
+  local index = table.find(gt_machineList, value)
+  if not index then
     print(value)
   end
 end
+
 
 --print formatting
 print()
 print("\nThe following is present in both tables and nothing needs to be done:")
 print("-----------------------------")
 
---if a gt_machine is connected to your network and on your list (in a lua file), print the value 
-for i, value in ipairs(gt_machineList) do
-  if table.find(gt_machineNetwork, value) then
-    print(value)
+--if a gt_machine is connected to your network and on your list (in a lua file), print the value and its name
+for i, value in ipairs(gt_machineNetwork) do
+  local index = table.find(gt_machineList, value)
+  if index then
+    local name = gt_machineList[index].name
+    print(name, value)
   end
 end
+
