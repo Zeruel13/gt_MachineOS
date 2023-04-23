@@ -539,10 +539,73 @@ end
 
 utils.printAsciiArt(controlPanelX - 2, controlPanelY - 12, titleCard)
 gpu.set(controlPanelX + 35, controlPanelY - 2, "Created by: Zeruel    Ver 1.0 ")
+		
+-- function for adding a line to the end of the file
+local function addMachine(fileType, machineAddress, machineName)
 
-gpu.set(controlPanelX + 1, controlPanelY + 1, "Add / Edit Machines")
+    -- read the file into a table
+    local gtMachineTable = {}
+    for line in io.lines("addresslist/"..fileType..".lua") do
+        table.insert(gtMachineTable, line)
+    end
+    
+	-- insert the new machine at the desired position
+	local position = #gtMachineTable - 2 -- insert before the last line (which is 'return')
+	table.insert(gtMachineTable, position, "	{id = \"" .. machineAddress .. "\", name = \"" .. machineName .. "\"},")
+	
+    -- write the modified table back to the correct file
+    local file = io.open("addresslist/"..fileType..".lua", "w")
+    file:write(table.concat(gtMachineTable, "\n"))
+
+    -- Close the file
+    file:close()
+	
+end
+
+-- function for moving a line in the file
+local function moveMachine(fileType, machineIndex, newLineNum)
+
+    -- read the file into a table
+    local gtMachineTable = {}
+    for line in io.lines("addresslist/"..fileType..".lua") do
+        table.insert(gtMachineTable, line)
+    end
+    
+    -- remove the desired line
+    local removedLine = table.remove(gtMachineTable, machineIndex + 5)
+
+    -- insert the removed line at the new position
+    table.insert(gtMachineTable, newLineNum + 5, removedLine)
+
+    -- write the modified table back to the correct file
+    local file = io.open("addresslist/"..fileType..".lua", "w")
+    file:write(table.concat(gtMachineTable, "\n"))
+
+    -- Close the file
+    file:close()
+end
+
+-- function for deleting a line from the file
+local function deleteMachine(fileType, machineIndex)
+    -- read the file into a table
+    local gtMachineTable = {}
+    for line in io.lines("addresslist/"..fileType..".lua") do
+        table.insert(gtMachineTable, line)
+    end
+    
+    -- remove the desired line
+    local removedLine = table.remove(gtMachineTable, machineIndex + 5)
+
+    -- write the modified table back to the correct file
+    local file = io.open("addresslist/"..fileType..".lua", "w")
+    file:write(table.concat(gtMachineTable, "\n"))
+
+    -- Close the file
+    file:close()
+end
 
 local machineType
+local fileType
 
 local function addButton()
 
@@ -595,38 +658,32 @@ local function addButton()
 			machineName = io.read()
 		end
 		
-		if machineType == "multiblock" then
-			fileType = "machines"
-		elseif machineType == "tank" then
-			fileType = "tanks"
-		else 
-			fileType = "energy"
-		end
+		fileType = {
+			multiblock = "machines",
+			tank = "tanks",
+			energy = "energy"
+		}
 		
-		-- read the file into a table
-		local gtMachineTable = {}
+		addMachine(fileType[machineType], machineAddress, machineName)
 		
-		for line in io.lines("addresslist/"..fileType..".lua") do
-			table.insert(gtMachineTable, line)
-		end
-		
-		-- insert the new machine at the desired position
-		local position = #gtMachineTable - 2 -- insert before the last line (which is 'return')
-		table.insert(gtMachineTable, position, "	{id = \"" .. machineAddress .. "\", name = \"" .. machineName .. "\"},")
-
-		-- write the modified table back to the correct file
-		local file = io.open("addresslist/"..fileType..".lua", "w")
-		file:write(table.concat(gtMachineTable, "\n"))
-
-		-- Close the file
-		file:close()
-
 		-- Print a confirmation message
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, machineType.." added to "..fileType..".lua")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, machineType.." added to "..fileType[machineType]..".lua")
 		
 		createRebootButton()
 		
 	end
+end
+
+local function printMachines(array)
+    
+    -- Print the name and index of each element in the array
+    for i, machine in ipairs(array) do
+        local column = math.floor((i - 1) / 24)
+        local row = (i - 1) % 24
+        local x = multiblockInformationX + 1 + (column * 28)
+        local y = multiblockInformationY + 1 + row
+        gpu.set(x, y, i .. ". " .. machine.name)
+    end
 end
 
 local function editButton()
@@ -635,38 +692,79 @@ local function editButton()
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "White stuff here for editing machines")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Write stuff here for editing machines")
 
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "What type of machine would you like to edit? multiblock / tank / energy")
-	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 5)
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "What type of machine would you like to edit? multiblock / tank / LSC")
+	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 7)
 	machineType = io.read()
 		
 	while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "lsc" do
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "Machine type must be multiblock / tank / LSC")
-		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 5, 80, 1, " ")
-		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 5)
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC")
+		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 7, 80, 1, " ")
+		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 7)
 		machineType = io.read()
 	end
 	
-	if machineType == "multiblock" then
+		fileType = {
+		multiblock = "machines",
+		tank = "tanks",
+		energy = "energy"
+	}
 	
-	elseif machineType == "tank" then
+	-- Clears the multiblock information section
+	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 	
-	else
+	-- Select the appropriate array based on the machine type
+    local array = ({
+        multiblock = machines,
+        tank = tanks,
+        energy = energy
+    })[machineType]
 	
+	printMachines(array)
+	
+	local machineNum 
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 26, "Select the number of the machine you want to edit.")
+	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 27)
+	machineNum = tonumber(io.read())
+	
+	while not machineNum or machineNum > #array or machineNum < 1 do 
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 28, "Must be a number from 1 - "..#array)
+		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 27, 80, 1, " ")
+		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 27)
+		machineNum = tonumber(io.read())
 	end
 	
+	-- Clears the multiblock information section
+	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 	
+	local editOption
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "Editing: "..machineNum..". "..array[machineNum].name)
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "Enter a new number to change position or type 'delete' to remove the machine")
+	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 3)
+	editOption = io.read()
 	
+	while not editOption or (editOption ~= "delete" and (tonumber(editOption) > #array or tonumber(editOption) < 1)) do 
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Input must be a number between 1 and "..#array.." or 'delete'")
+		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 3, 80, 1, " ")
+		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 3)
+		editOption = tonumber(io.read())
+	end
 	
+
 	
+	if editOption == "delete" then
+		deleteMachine(fileType[machineType], machineNum)
+		-- Print a confirmation message
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, array[machineNum].name.." deleted from "..fileType[machineType]..".lua")
+	else
+		moveMachine(fileType[machineType], machineNum, editOption)
+		-- Print a confirmation message
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6,  array[machineNum].name.." moved from position "..machineNum.." to "..editOption.." in "..fileType[machineType]..".lua")
+	end
 	
-	
-	
-	
-	
-	
-	
+	createRebootButton()
+
 end
 
 local function machineCheck(machines)
@@ -680,7 +778,7 @@ local function machineCheck(machines)
 end
 
 
-
+gpu.set(controlPanelX + 1, controlPanelY + 1, "Add / Edit Machines")
 utils.drawBorder(controlPanelX + 1, controlPanelY + 3, 14, 2)
 API.setTable("Add", addButton, controlPanelX + 3, controlPanelY + 4, controlPanelX + 13, controlPanelY + 4, "Add Address", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
