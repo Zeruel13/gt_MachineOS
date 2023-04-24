@@ -60,17 +60,9 @@ Once installed, run
 
 
 ## Gifs
-![](Display.gif)
+![](DisplayV2.gif)
 
-![](Page.gif)
-
-
-Adding a new machine. If gt_MachineOs does not detect it, reboot the program.
-![](Add.gif)
-
-
-Editing a machine.
-![](Edit.gif)
+![](PageV2.gif)
 
 ## Disclaimer
 My first code for lua. This project was originally designed as a way to learn lua. 
