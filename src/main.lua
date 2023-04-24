@@ -513,7 +513,7 @@ checkLoop = false
 
 -- Clears the multiblock information section
 gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "This is where text will go to explain what filtering is")
+gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "This is where text will go to explain what filtering is.")
 
 createFilterButtons()
 createBackButton()
@@ -642,7 +642,10 @@ local function addButton()
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Write stuff here for adding machines")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "This page adds a multiblock, tank, or an LSC to gt_MachineOS.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "Connect the machine to your OC Network for gt_MachineOS to detect it.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Attach the machine to an adapter or use an MFU for wireless connection.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Note that only one machine can be added to the OC network at a time.")
 	
 	local newMachineList = gtMachineFind.new
 
@@ -660,13 +663,13 @@ local function addButton()
 	
 		machineAddress = newMachineList[1]
 	
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "One address found. Enter the type of machine below: multiblock / tank / LSC")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "One address found. Enter the type of machine below: multiblock / tank / LSC.")
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Enter type of machine: ")
 		machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
 		 
 		
 		while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "lsc" do
-			gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC")
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC.")
 			gpu.fill(multiblockInformationX + 24, multiblockInformationY + 7, 40, 1, " ")
 			machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
 		end
@@ -687,7 +690,7 @@ local function addButton()
 		addMachine(fileType[machineType], machineAddress, machineName)
 		
 		-- Print a confirmation message
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, machineType.." added to "..fileType[machineType]..".lua")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, machineType.." added to "..fileType[machineType]..".lua.")
 		
 		createRebootButton()
 		
@@ -712,13 +715,14 @@ local function editButton()
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Write stuff here for editing machines")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "What type of machine would you like to edit? multiblock / tank / LSC")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "This page edits exisiting machines in gt_MachineOS.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "You can change the position of a machine or delete it.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "What type of machine would you like to edit? multiblock / tank / LSC.")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Enter type of machine: ")
 	machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
 		
 	while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "lsc" do
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC.")
 		gpu.fill(multiblockInformationX + 24, multiblockInformationY + 7, 40, 1, " ")
 		machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
 	end
@@ -747,7 +751,7 @@ local function editButton()
 	machineNum = readInput(multiblockInformationX + 15, multiblockInformationY + 27, "number")
 
 	while not machineNum or machineNum > #array or machineNum < 1 do 
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 28, "Must be a number from 1 - "..#array)
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 28, "Must be a number from 1 - "..#array..".")
 		gpu.fill(multiblockInformationX + 15, multiblockInformationY + 27, 60, 1, " ")
 		machineNum = readInput(multiblockInformationX + 15, multiblockInformationY + 27, "number")
 	end
@@ -758,12 +762,12 @@ local function editButton()
 	
 	local editOption
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "Editing: "..machineNum..". "..array[machineNum].name)
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "Enter a new number to change position or type 'delete' to remove the machine")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "Enter a new number to change position or type 'delete' to remove the machine.")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Enter number or delete: ")
 	editOption = readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string")
 	
 	while not editOption or (editOption ~= "delete" and (tonumber(editOption) > #array or tonumber(editOption) < 1)) do 
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Input must be a number between 1 and "..#array.." or 'delete'")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Input must be a number between 1 and "..#array.." or 'delete'.")
 		gpu.fill(multiblockInformationX + 25, multiblockInformationY + 3, 50, 1, " ")
 		editOption = readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string")
 	end
@@ -771,11 +775,11 @@ local function editButton()
 	if editOption == "delete" then
 		deleteMachine(fileType[machineType], machineNum)
 		-- Print a confirmation message
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, array[machineNum].name.." deleted from "..fileType[machineType]..".lua")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, array[machineNum].name.." deleted from "..fileType[machineType]..".lua.")
 	else
 		moveMachine(fileType[machineType], machineNum, editOption)
 		-- Print a confirmation message
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6,  array[machineNum].name.." moved from position "..machineNum.." to "..editOption.." in "..fileType[machineType]..".lua")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6,  array[machineNum].name.." moved from position "..machineNum.." to "..editOption.." in "..fileType[machineType]..".lua.")
 	end
 	
 	createRebootButton()
@@ -872,7 +876,10 @@ local function mainLoop()
 			-- Clears the multiblock information section
 			gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 4, "There are errors with the machine addresses!!!", utils.colors.red)
-			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 5, "See edit Addresses for details.", utils.colors.red)
+			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 5, "This error appears when a machine has been added to gt_MachineOS", utils.colors.red)
+			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 6, "but your OC network can't access it.", utils.colors.red)
+			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 7, "This could happen because if a cable, adapater, or MFU has been removed.", utils.colors.red)
+			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 8, "Go to edit addresses and delete the machine has has been removed from your OC network.", utils.colors.red)
 			firstTime = true
 		end
 	else
