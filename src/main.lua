@@ -428,6 +428,41 @@ end
 
 loadLSC()
 
+local function reloadMachines(fileType)
+
+	-- Unload the module
+	package.loaded["gtMachineFind"] = nil
+
+	-- Require the module again (it will be reloaded)
+	gtMachineFind = require("gtMachineFind")
+		
+	if fileType == "machines" then	
+		
+		-- Reload the machines.lua file
+		machines_chunk = loadfile("addressList/machines.lua")
+		machines = machines_chunk()
+		
+		-- Reload function required to load machines
+		loadMachines()
+	elseif fileType == "tanks" then
+	
+		-- Reload the tanks.lua file
+		tanks_chunk = loadfile("addressList/tanks.lua")
+		tanks = tanks_chunk()
+		
+		-- Reload function required to load tanks
+		loadTanks()
+	else
+	
+		-- Reload the energy.lua file
+		energy_chunk = loadfile("addressList/energy.lua")
+		energy = energy_chunk()
+	
+		-- Reload function required to load LSC
+		loadLSC()
+	end
+end
+
 local function createBackButton()
 utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 30, multiblockInformationX+ 2, 2)
 API.setTable("backButton", backButton, multiblockInformationX+ 3, multiblockInformationY+ 31, multiblockInformationX+ 7,  multiblockInformationY+ 31, "Back", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
@@ -734,11 +769,11 @@ local function addButton()
 		if #newMachineList == 0 then
 			gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "No new address found. Please attach an adapter to a gt_machine and try again.")
 			gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Please attach an adapter to a gt_machine and try again.")
-			createRebootButton()
+			createBackButton()
 		else
 			gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "More than one address found.")
 			gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Please only add one gt_machine at a time and try again.")
-			createRebootButton()
+			createBackButton()
 		end
 	else
 	
@@ -775,24 +810,7 @@ local function addButton()
 		-- Print a confirmation message
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, machineType.." added to "..fileType[machineType]..".lua.")
 		
-		
-		-- Unload the module
-		package.loaded["gtMachineFind"] = nil
-
-		-- Require the module again (it will be reloaded)
-		gtMachineFind = require("gtMachineFind")
-		
-		-- Reload the machines.lua file
-		machines_chunk = loadfile("addressList/machines.lua")
-		machines = machines_chunk()
-		tanks_chunk = loadfile("addressList/tanks.lua")
-		tanks = tanks_chunk()
-		energy_chunk = loadfile("addressList/energy.lua")
-		energy = energy_chunk()
-		
-		loadMachines()
-		loadTanks()
-		loadLSC()
+		reloadMachines(fileType[machineType])
 
 		createBackButton()
 	end
@@ -903,8 +921,10 @@ local function editButton()
 		-- Print a confirmation message
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6,  array[machineNum].name.." moved from position "..machineNum.." to "..editOption.." in "..fileType[machineType]..".lua.")
 	end
-	
-	createRebootButton()
+
+		reloadMachines(fileType[machineType])
+		
+		createBackButton()
 end
 
 local function machineCheck(machines)
