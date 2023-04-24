@@ -405,16 +405,28 @@ local counter = 0
 local timeToFillAVG = 0
 local netEnergyAVG = 0
 local timeToFill = 0
+local energyCheck = false
 
-if #energy == 1 and component.proxy(component.get(energy[1].id)) then
 
-	-- Border for Energy Levels
-	utils.drawBorder(6, 42, 149, 3)	
+function loadLSC()
 
-	LSC = component.proxy(component.get(energy[1].id))
-	energyMax = math.floor(string.gsub(LSC.getSensorInformation()[3], "([^0-9]+)", "") + 0)
-	
+	-- Clears the energy section
+	gpu.fill(screenOuter["energy"].x + 2, screenOuter["energy"].y + 1, 152, 8, " ")
+
+	if #energy == 1 and component.proxy(component.get(energy[1].id)) and component.proxy(component.get(energy[1].id)).getSensorInformation()[7] ~= nil then
+
+		energyCheck = true
+		
+		-- Border for Energy Levels
+		utils.drawBorder(screenOuter["energy"].x + 3, screenOuter["energy"].y + 2, 149, 3)	
+
+		LSC = component.proxy(component.get(energy[1].id))
+		energyMax = math.floor(string.gsub(LSC.getSensorInformation()[3], "([^0-9]+)", "") + 0)
+		
+	end
 end
+
+loadLSC()
 
 local function createBackButton()
 utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 30, multiblockInformationX+ 2, 2)
@@ -780,6 +792,7 @@ local function addButton()
 		
 		loadMachines()
 		loadTanks()
+		loadLSC()
 
 		createBackButton()
 	end
@@ -831,7 +844,8 @@ local function editButton()
     local array = ({
         multiblock = machines,
         tank = tanks,
-        energy = energy
+        lsc = energy,
+		LSC = energy
     })[machineType]
 	
 	printMachines(array)
@@ -1049,7 +1063,7 @@ local function mainLoop()
 	end
 
 	-- To check if user entered only one energy source
-	if #energy == 1 then
+	if energyCheck then
 	
 		-- Variables for calculating time to drain/fill
 		local energyInfo = energyFiles.getEnergyInformation(LSC, energyMax, colors, timeToFillAVG, netEnergyAVG)
@@ -1079,9 +1093,11 @@ local function mainLoop()
 		counter = counter + 1
 	-- Checks for none / too many LSCs entered in energy.lua
 	elseif #energy == 0 then
-	gpu.set(screenOuter["energy"].x + 2, screenOuter["energy"].y + 2, "There is no LSC entered!")
+		gpu.set(screenOuter["energy"].x + 2, screenOuter["energy"].y + 2, "There is no LSC entered!")
 	elseif #energy > 1 then
-	gpu.set(screenOuter["energy"].x + 2, screenOuter["energy"].y + 2, "There are too many LSCs entered")
+		gpu.set(screenOuter["energy"].x + 2, screenOuter["energy"].y + 2, "There are too many LSCs entered")
+	else
+		gpu.set(screenOuter["energy"].x + 2, screenOuter["energy"].y + 2, "Not a valid LSC!")
 	end
 
 	-- Wait 1 seconds before checking the status again
