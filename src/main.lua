@@ -466,7 +466,16 @@ local function aboutButton()
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "This is where text will go to explain what the progam is, who made it, etc.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "Welcome to the 'About' page for gt_MachineOS.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Created by: Zeruel.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 5, "References / Thank you list ")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "Border code by Krakaen for 'OPENCOMPUTER AUTOMATION PROGRAM'.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "buttonAPI by DireWolf20, ported to OC by MoparDan.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Gordominossi for inspiration and consulting.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "This program was created to combat machine maintenance frustration.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 11, "As with all programs, the scope increased dramatically")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 13, "This is the first Lua program I wrote and learned a lot while making it.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "Hope you enjoy using it as much as I enjoyed making it!")
 
 	createBackButton()
 end
@@ -479,7 +488,19 @@ local function helpButton()
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "This is where text will go to explain how to use the program")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "Welcome to the 'Help' page for gt_MachineOS.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "To start, connect a machine to your OC Network for gt_MachineOS to detect it.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Attach the machine to an adapter or use an MFU for wireless connection.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "Note that only one machine can be added to the OC network at a time.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "i.e., only attach one machine to an adapter / MFU at a time. ")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 9, "Then, hit the 'Add Address' button and let the program guide you. ")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 11, "Tip:")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 12, "Name a tank and multiblock the same for it to appear in the multiblock section!")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "Machines can also be edited using the 'Edit Addresses' button.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 15, "You can change the position of a machine or delete it.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, "Multiblocks can be remotely turned on/off via top-right button. ")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 18, "If there's a maintanance issue gt_MachineOS will notify you. ")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 18, "LSC calculates time to drain/fill every 30 seconds.")
 
 	createBackButton()
 end
@@ -656,7 +677,7 @@ local function addButton()
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "This page adds a multiblock, tank, or an LSC to gt_MachineOS.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "Connect the machine to your OC Network for gt_MachineOS to detect it.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "Connect a machine to your OC Network for gt_MachineOS to detect it.")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Attach the machine to an adapter or use an MFU for wireless connection.")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Note that only one machine can be added to the OC network at a time.")
 	
