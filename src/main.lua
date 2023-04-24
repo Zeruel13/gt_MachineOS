@@ -34,8 +34,6 @@ local machines_chunk = loadfile("addressList/machines.lua")
 local machines = machines_chunk()
 local tanks_chunk = loadfile("addressList/tanks.lua")
 local tanks = tanks_chunk()
-local pinnedMachines_chunk = loadfile("addressList/pinnedMachines.lua")
-local pinnedMachines = pinnedMachines_chunk()
 local energy_chunk = loadfile("addressList/energy.lua")
 local energy = energy_chunk()
 
@@ -155,23 +153,28 @@ local function setScreenInner(currentMachineName, i)
 	
 end
 
--- machineTankList stores tank information if there is a multiblock with the same name
-machineTankList = {}
+local function loadMachines()
 
-for i = 1, #machines do
+	-- machineTankList stores tank information if there is a multiblock with the same name
+	machineTankList = {}
 
-	-- Calls setScreenInner which adds all the machines to screenInner
-	local machine = machines[i]
-	local currentMachineName = machine.name
-	setScreenInner(currentMachineName, i)
-	
-	-- If the tank name and machine name match, add it to machineTankList at index i 
-	for g, tank in ipairs(tanks) do
-		if tank.name == currentMachineName then
-			machineTankList[i] = tank.id
+	for i = 1, #machines do
+
+		-- Calls setScreenInner which adds all the machines to screenInner
+		local machine = machines[i]
+		local currentMachineName = machine.name
+		setScreenInner(currentMachineName, i)
+		
+		-- If the tank name and machine name match, add it to machineTankList at index i 
+		for g, tank in ipairs(tanks) do
+			if tank.name == currentMachineName then
+				machineTankList[i] = tank.id
+			end
 		end
 	end
 end
+
+loadMachines()
 
 -- Draws the border and text for the inner borders
 local function printBordersInner(i)
@@ -205,26 +208,34 @@ function getFluidLevels(output)
     return fluidLevel.." / "..fluidMax.." mb"
 end
 
--- Iterate through all entries in tanks.lua and if there isn't a machine matching the same name, it adds it to tankFluidLevels
--- This is for the Fluid Levels border 
-local tankFluidLevels = {}
-for i, tank in ipairs(tanks) do
-    found = false
-    for g, machine in ipairs(machines) do
-        if(tank.name == machine.name) then
-            found = true
-            break
-        end
-    end
-    if not found then
-        tankName = tank.name
-        -- Add the tank to the new array
-        table.insert(tankFluidLevels, {
-            id = component.get(tank.id),
-            name = tankName
-        })
-    end
+local tankFluidLevels
+local function loadTanks()
+
+	tankFluidLevels = {}
+
+	-- Iterate through all entries in tanks.lua and if there isn't a machine matching the same name, it adds it to tankFluidLevels
+	-- This is for the Fluid Levels border 
+	
+	for i, tank in ipairs(tanks) do
+		found = false
+		for g, machine in ipairs(machines) do
+			if(tank.name == machine.name) then
+				found = true
+				break
+			end
+		end
+		if not found then
+			tankName = tank.name
+			-- Add the tank to the new array
+			table.insert(tankFluidLevels, {
+				id = component.get(tank.id),
+				name = tankName
+			})
+		end
+	end
 end
+
+loadTanks()
 
 -- Gets the number of pages needed for multiblockInformation
 local machineNumPage = math.ceil(#machines/machinesPerPage)
@@ -752,7 +763,25 @@ local function addButton()
 		-- Print a confirmation message
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, machineType.." added to "..fileType[machineType]..".lua.")
 		
-		createRebootButton()
+		
+		-- Unload the module
+		package.loaded["gtMachineFind"] = nil
+
+		-- Require the module again (it will be reloaded)
+		gtMachineFind = require("gtMachineFind")
+		
+		-- Reload the machines.lua file
+		machines_chunk = loadfile("addressList/machines.lua")
+		machines = machines_chunk()
+		tanks_chunk = loadfile("addressList/tanks.lua")
+		tanks = tanks_chunk()
+		energy_chunk = loadfile("addressList/energy.lua")
+		energy = energy_chunk()
+		
+		loadMachines()
+		loadTanks()
+
+		createBackButton()
 	end
 end
 
