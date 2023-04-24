@@ -435,39 +435,47 @@ end
 
 local function createFilterButtons()
 
-utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 2, multiblockInformationX+ 8, 2)
-API.setTable("processingFilterButton", processingFilterButton, multiblockInformationX+ 4, multiblockInformationY + 3, multiblockInformationX + 13, multiblockInformationY + 3, "Processing", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+	checkLoop = false
+	disableControlPanel()
+	disableMachineButtons()
 
-utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 6, multiblockInformationX+ 2, 2)
-API.setTable("idleFilterButton", idleFilterButton, multiblockInformationX+ 4, multiblockInformationY + 7, multiblockInformationX + 7, multiblockInformationY + 7, "Idle", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 2, multiblockInformationX+ 8, 2)
+	API.setTable("processingFilterButton", processingFilterButton, multiblockInformationX+ 4, multiblockInformationY + 3, multiblockInformationX + 13, multiblockInformationY + 3, "Processing", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 10, multiblockInformationX+ 17, 2)
-API.setTable("processingDisabledFilterButton", processingDisabledFilterButton, multiblockInformationX+ 4, multiblockInformationY + 11, multiblockInformationX + 20, multiblockInformationY + 11, "Processing Disabled", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 6, multiblockInformationX+ 2, 2)
+	API.setTable("idleFilterButton", idleFilterButton, multiblockInformationX+ 4, multiblockInformationY + 7, multiblockInformationX + 7, multiblockInformationY + 7, "Idle", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 14, multiblockInformationX+ 10, 2)
-API.setTable("problemFilterButton", problemFilterButton, multiblockInformationX+ 4, multiblockInformationY + 15, multiblockInformationX + 15, multiblockInformationY + 15, "Has Problems", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 10, multiblockInformationX+ 17, 2)
+	API.setTable("processingDisabledFilterButton", processingDisabledFilterButton, multiblockInformationX+ 4, multiblockInformationY + 11, multiblockInformationX + 20, multiblockInformationY + 11, "Processing Disabled", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-API.screen("processingFilterButton")
-API.screen("idleFilterButton")
-API.screen("processingDisabledFilterButton")
-API.screen("problemFilterButton")
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 14, multiblockInformationX+ 10, 2)
+	API.setTable("problemFilterButton", problemFilterButton, multiblockInformationX+ 4, multiblockInformationY + 15, multiblockInformationX + 15, multiblockInformationY + 15, "Has Problems", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+
+	API.screen("processingFilterButton")
+	API.screen("idleFilterButton")
+	API.screen("processingDisabledFilterButton")
+	API.screen("problemFilterButton")
 
 end
 
 local function aboutButton()
 
-checkLoop = false
+	checkLoop = false
+	disableControlPanel()
+	disableMachineButtons()
 
--- Clears the multiblock information section
-gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "This is where text will go to explain what the progam is, who made it, etc.")
+	-- Clears the multiblock information section
+	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "This is where text will go to explain what the progam is, who made it, etc.")
 
-createBackButton()
+	createBackButton()
 end
 
 local function helpButton()
 
 	checkLoop = false
+	disableControlPanel()
+	disableMachineButtons()
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
@@ -479,14 +487,17 @@ end
 -- Note, can't be local as it accessses buttonAPI
 function backButton()
 
-	button["backButton"]["isVisible"] = false
+	button["backButton"]["isEnabled"] = false
 	
 	if button["processingFilterButton"] then
-		button["processingFilterButton"]["isVisible"] = false
-		button["idleFilterButton"]["isVisible"] = false
-		button["processingDisabledFilterButton"]["isVisible"] = false
-		button["problemFilterButton"]["isVisible"] = false
+		button["processingFilterButton"]["isEnabled"] = false
+		button["idleFilterButton"]["isEnabled"] = false
+		button["processingDisabledFilterButton"]["isEnabled"] = false
+		button["problemFilterButton"]["isEnabled"] = false
 	end
+	
+	enableControlPanel()
+	enableMachineButtons()
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
@@ -639,6 +650,8 @@ local machineName
 local function addButton()
 
 	checkLoop = false
+	disableControlPanel()
+	disableMachineButtons()
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
@@ -693,7 +706,6 @@ local function addButton()
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, machineType.." added to "..fileType[machineType]..".lua.")
 		
 		createRebootButton()
-		
 	end
 end
 
@@ -712,6 +724,8 @@ end
 local function editButton()
 
 	checkLoop = false
+	disableControlPanel()
+	disableMachineButtons()
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
@@ -783,7 +797,6 @@ local function editButton()
 	end
 	
 	createRebootButton()
-
 end
 
 local function machineCheck(machines)
@@ -796,13 +809,12 @@ local function machineCheck(machines)
   return true -- all machines found
 end
 
-
 gpu.set(controlPanelX + 1, controlPanelY + 1, "Add / Edit Machines")
 utils.drawBorder(controlPanelX + 1, controlPanelY + 3, 14, 2)
-API.setTable("Add", addButton, controlPanelX + 3, controlPanelY + 4, controlPanelX + 13, controlPanelY + 4, "Add Address", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+API.setTable("add", addButton, controlPanelX + 3, controlPanelY + 4, controlPanelX + 13, controlPanelY + 4, "Add Address", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
 utils.drawBorder(controlPanelX + 1, controlPanelY + 6, 17, 2)
-API.setTable("Edit", editButton, controlPanelX + 3, controlPanelY + 7, controlPanelX + 17, controlPanelY + 7, "Edit Addresses", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+API.setTable("edit", editButton, controlPanelX + 3, controlPanelY + 7, controlPanelX + 17, controlPanelY + 7, "Edit Addresses", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
 gpu.set(controlPanelX + 27, controlPanelY + 1, "Filter by Status")
 utils.drawBorder(controlPanelX + 30, controlPanelY + 3, 9, 2)
@@ -813,6 +825,44 @@ API.setTable("about", aboutButton, controlPanelX + 56, controlPanelY + 4, contro
 
 utils.drawBorder(controlPanelX + 55, controlPanelY + 6, 7, 2)
 API.setTable("help", helpButton, controlPanelX + 57, controlPanelY + 7, controlPanelX + 61, controlPanelY + 7, "Help", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+
+function disableControlPanel()
+
+	button["add"]["isEnabled"] = false
+	button["edit"]["isEnabled"] = false
+	button["filter"]["isEnabled"] = false
+	button["about"]["isEnabled"] = false
+	button["help"]["isEnabled"] = false
+
+end
+
+function enableControlPanel()
+
+	button["add"]["isEnabled"] = true
+	button["edit"]["isEnabled"] = true
+	button["filter"]["isEnabled"] = true
+	button["about"]["isEnabled"] = true
+	button["help"]["isEnabled"] = true
+
+end
+
+function disableMachineButtons()
+
+	for name, data in pairs(button) do
+		if string.find(name, "Control") or string.find(name, "machinePage") then
+		button[name]["isEnabled"] = false
+		end
+	end
+end
+
+function enableMachineButtons()
+
+	for name, data in pairs(button) do
+		if string.find(name, "Control") or string.find(name, "machinePage") then
+		button[name]["isEnabled"] = true
+		end
+	end
+end
 
 -- API.screen is used to iterate through all the buttons and fill the table in buttonAPI
 API.screen()
@@ -939,9 +989,6 @@ local function mainLoop()
 	elseif #energy > 1 then
 	gpu.set(screenOuter["energy"].x + 2, screenOuter["energy"].y + 2, "There are too many LSCs entered")
 	end
-
-	-- API.screen is used to iterate through all the buttons and fill the table in buttonAPI
-	--API.screen()
 
 	-- Wait 1 seconds before checking the status again
 	os.sleep(1)

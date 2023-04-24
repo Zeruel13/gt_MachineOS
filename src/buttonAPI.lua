@@ -5,7 +5,7 @@ local component = require("component")
 local gpu = component.gpu
 local event = require("event")
 
-function API.setTable(name, func, xmin, ymin, xmax, ymax, text, textColor, backgroundColor, isVisible)
+function API.setTable(name, func, xmin, ymin, xmax, ymax, text, textColor, backgroundColor, isEnabled)
   button[name] = {}
   button[name]["text"] = text
   button[name]["func"] = func
@@ -16,13 +16,13 @@ function API.setTable(name, func, xmin, ymin, xmax, ymax, text, textColor, backg
   button[name]["ymax"] = ymax
   button[name]["textColor"] = textColor
   button[name]["backgroundColor"] = backgroundColor
-  button[name]["isVisible"] = isVisible or true
+  button[name]["isEnabled"] = isEnabled or true
 end
  
 function API.fill(bData)
 
-	-- If a button is not visible, nothing should be done for that button
-	if not bData["isVisible"] then
+	-- If a button is not enabled, nothing should be done for that button
+	if not bData["isEnabled"] then
 		return
 	end
 
@@ -47,8 +47,10 @@ end
 
 function API.screen(buttonName)
   if buttonName then
-    API.fill(button[buttonName])
+	-- When API.screen is called with a specific buttonName as an argument, it updates only the button with the given name. 
+    API.fill(button[buttonName]) 
   else
+	-- When API.screen is called with no argument, it updates all of the buttons on the screen. 
     for name,data in pairs(button) do
       API.fill(data)
     end
@@ -93,7 +95,7 @@ end
  
 function API.checkxy(_, _, x, y, _, _)
   for name, data in pairs(button) do
-    if data.isVisible and y >= data["ymin"] and y <= data["ymax"] then
+    if data.isEnabled and y >= data["ymin"] and y <= data["ymax"] then
       if x >= data["xmin"] and x <= data["xmax"] then
         data["func"](data["text"])
       end
