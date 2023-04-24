@@ -712,8 +712,9 @@ local function addButton()
 		local maxNameLength = 20
 
 		-- Set the cursor position and prompt the user for the machine name
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Enter the name of the machine (20 characters max): ")
-		machineName = readInput(multiblockInformationX + 32, multiblockInformationY + 10, "string")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Enter the name of the machine below (20 characters max).")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 11, "Enter name: ")
+		machineName = readInput(multiblockInformationX + 13, multiblockInformationY + 11, "string")
 		
 		fileType = {
 			multiblock = "machines",
