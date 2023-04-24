@@ -1,10 +1,16 @@
 # gt_machineOS
-gt_machineOS is a program for OpenComputers to be used in GT New Horizons. It's used to display information about your Multiblocks such progress, problems, and fluid levels your want to associate a tank with your Multiblock (LCR for example)
+gt_machineOS is a program for OpenComputers to be used in GT New Horizons. It's used to display information about your Multiblocks such progress, problems, and fluid levels of a tank that is associated with the multiblock (LCR for example)
 
 Features:
-- Up to 7 pages of machines in Multiblock Information (84 total machines!)
-- Up to 3 pinned machines (cleanroom recommended)
-- 10 fluid tanks to monitor
+- Up to 6 pages of machines in Multiblock Information (72 total machines!)
+    - Display working status and any problems
+    - Display progress crafting
+- Up to 5 pages of tanks in Fluid Levels (50 total tanks!)
+    - Display current and max fluid levels
+- monitor your LSC
+    - Energy bar to easily see current power
+    - Average time to fill / drain that updates every 30 seconds
+    - Displays net energy
 
 Originally inspired by Sampsa's and Gordominossi's InfOS
 
@@ -42,20 +48,15 @@ Once installed, run
 ```main.lua```
 
 ## Usage
-- All machines/tanks need an adapter connected to the machine. You can do this by placing it directly beside, or placing the adapter less than 3 blocks away and use an MFU to wirelessly connect the adapter to the machine
-- gtMacineList.lua can be used to easily keep track of what machines you've connected to the network vs. what machines are being used by gt_machineOS. 
-    - to use gtMachineList.lua, type
-    ```lua
-    gtMachineList.lua > output.txt
-    ```
-    - this will create a text file called output.txt in the same directory as gtMachineList.lua. It will display the addresees of all gt_machines in an easy to read format 
-    - Add the addresses of each machine to the files **machines.lua**, **pinnedMachines.lua**, or **tanks.lua** depending on where you want to add them. 
-        - Addresses in machines.lua will be displayed under Multiblock Information
-        - Addresses in tanks.lua can be used for displaying under Fluid Level or tied to a Multiblock (helpful for LCRs)
-        - Adresses in pinnedMachines will be displayed under Pinned Machines
-   - **Note:** as of now, any machines displayed under Fluid Levels or Pinned Machines has to be configured manually in main.lua
-        - Fluid levels can be configured starting at line **338**
-        - Pinned Machines can be configured starting at line **369**
+- All machines/tanks need an adapter connected to the machine. You can do this by placing it directly beside, or placing the adapter less than 5 blocks away and use an MFU to wirelessly connect the adapter to the machine
+- Note that the program will only let you add machines if you add them one by one. 
+    - Once you've added one machine, press 'Add Address' and the program will guide you. 
+-Tip: Naming a tank and multiblock the same for it to appear in the multiblock section!
+- Machines can also be edited using the 'Edit Addresses' button.
+    - You can change the position of a machine or delete it.
+- Multiblocks can be remotely turned on/off via the top-right button.
+- If there's a mintanance issue with a multiblock or your LSC, gt_MachineOS will notify you.
+- LSC calculates time to drain / fill every 30 seconds. 
 
 
 ## Gifs
