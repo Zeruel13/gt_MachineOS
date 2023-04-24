@@ -87,7 +87,7 @@ function energyFiles.problemCheck(LSC)
 			utils.printColoredText(78 - #status/2, 47, "Processing Disabled!", utils.colors.red)
 		end
 	else
-		utils.printColoredText(78 - #status/2, 47, "Has Problems!!!", utils.colors.red)
+		utils.printColoredText(70, 47, "Has Problems!!!", utils.colors.red)
 	end
 end
 
