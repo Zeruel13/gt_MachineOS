@@ -604,8 +604,37 @@ local function deleteMachine(fileType, machineIndex)
     file:close()
 end
 
+local function readInput(x, y, valueType)
+  local input = ""
+  term.setCursor(x, y)
+  while true do
+    local _, _, char, code = event.pull("key_down")
+    if code == 28 then -- 28 is the scan code for enter
+      if valueType == "number" then
+        return tonumber(input)
+      elseif valueType == "string" then
+        return input
+      else
+        return nil
+      end
+    elseif code == 14 then -- 14 is the scan code for backspace
+      if #input > 0 then
+		input = string.sub(input, 1, -2)
+        term.setCursor(x, y)
+        term.write(input)
+        term.write(" ") -- erases the last character
+        term.setCursor(x + #input, y) -- move cursor back to end of input
+      end
+    elseif char ~= 0 and #input < 20 then
+      input = input .. string.char(char)
+      term.write(string.char(char))
+    end
+  end
+end
+
 local machineType
 local fileType
+local machineName
 
 local function addButton()
 
@@ -632,31 +661,22 @@ local function addButton()
 		machineAddress = newMachineList[1]
 	
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "One address found. Enter the type of machine below: multiblock / tank / LSC")
-		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 7)
-		machineType = io.read()
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Enter type of machine: ")
+		machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
+		 
 		
 		while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "lsc" do
 			gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC")
-			gpu.fill(multiblockInformationX + 1, multiblockInformationY + 7, 80, 1, " ")
-			term.setCursor(multiblockInformationX + 1, multiblockInformationY + 7)
-			machineType = io.read()
+			gpu.fill(multiblockInformationX + 24, multiblockInformationY + 7, 40, 1, " ")
+			machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
 		end
 	
 		-- Set the maximum length for the machine name and address
 		local maxNameLength = 20
 
 		-- Set the cursor position and prompt the user for the machine name
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Enter the name of the machine:")
-		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 11)
-		local machineName = io.read()
-	
-		while string.len(machineName) > maxNameLength do 
-			-- Set the cursor position and prompt the user for the machine name
-			gpu.set(multiblockInformationX + 1, multiblockInformationY + 12, "Name must not be more than 20 characters")
-			gpu.fill(multiblockInformationX + 1, multiblockInformationY + 11, 80, 1, " ")
-			term.setCursor(multiblockInformationX + 1, multiblockInformationY + 11)
-			machineName = io.read()
-		end
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Enter the name of the machine (20 characters max): ")
+		machineName = readInput(multiblockInformationX + 32, multiblockInformationY + 10, "string")
 		
 		fileType = {
 			multiblock = "machines",
@@ -693,16 +713,14 @@ local function editButton()
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Write stuff here for editing machines")
-
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "What type of machine would you like to edit? multiblock / tank / LSC")
-	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 7)
-	machineType = io.read()
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Enter type of machine: ")
+	machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
 		
 	while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "lsc" do
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC")
-		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 7, 80, 1, " ")
-		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 7)
-		machineType = io.read()
+		gpu.fill(multiblockInformationX + 24, multiblockInformationY + 7, 40, 1, " ")
+		machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
 	end
 	
 		fileType = {
@@ -725,15 +743,15 @@ local function editButton()
 	
 	local machineNum 
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 26, "Select the number of the machine you want to edit.")
-	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 27)
-	machineNum = tonumber(io.read())
-	
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 27, "Enter number: ")
+	machineNum = readInput(multiblockInformationX + 15, multiblockInformationY + 27, "number")
+
 	while not machineNum or machineNum > #array or machineNum < 1 do 
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 28, "Must be a number from 1 - "..#array)
-		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 27, 80, 1, " ")
-		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 27)
-		machineNum = tonumber(io.read())
+		gpu.fill(multiblockInformationX + 15, multiblockInformationY + 27, 60, 1, " ")
+		machineNum = readInput(multiblockInformationX + 15, multiblockInformationY + 27, "number")
 	end
+
 	
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
@@ -741,17 +759,14 @@ local function editButton()
 	local editOption
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "Editing: "..machineNum..". "..array[machineNum].name)
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "Enter a new number to change position or type 'delete' to remove the machine")
-	term.setCursor(multiblockInformationX + 1, multiblockInformationY + 3)
-	editOption = io.read()
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Enter number or delete: ")
+	editOption = readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string")
 	
 	while not editOption or (editOption ~= "delete" and (tonumber(editOption) > #array or tonumber(editOption) < 1)) do 
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Input must be a number between 1 and "..#array.." or 'delete'")
-		gpu.fill(multiblockInformationX + 1, multiblockInformationY + 3, 80, 1, " ")
-		term.setCursor(multiblockInformationX + 1, multiblockInformationY + 3)
-		editOption = tonumber(io.read())
+		gpu.fill(multiblockInformationX + 25, multiblockInformationY + 3, 50, 1, " ")
+		editOption = readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string")
 	end
-	
-
 	
 	if editOption == "delete" then
 		deleteMachine(fileType[machineType], machineNum)
