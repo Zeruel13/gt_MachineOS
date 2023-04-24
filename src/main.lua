@@ -702,7 +702,7 @@ local function addButton()
 		machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
 		 
 		
-		while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "lsc" do
+		while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "LSC" do
 			gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC.")
 			gpu.fill(multiblockInformationX + 24, multiblockInformationY + 7, 40, 1, " ")
 			machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
@@ -719,7 +719,7 @@ local function addButton()
 		fileType = {
 			multiblock = "machines",
 			tank = "tanks",
-			energy = "energy"
+			LSC = "energy"
 		}
 		
 		addMachine(fileType[machineType], machineAddress, machineName)
