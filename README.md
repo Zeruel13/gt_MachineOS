@@ -22,6 +22,8 @@ buttonAPI ported to OC by MoparDan originally created by DireWolf20 for Computer
 - A tier 3 computer case or a tier 3 server
     - This is because the program requires a tier 3 graphics card
     - a server is **strongly** recommended. a tier 3 CPU can only support 16 components. With a tier 3 server, you can install up to 3 components busses to increase      capacity
+        - Each tier 3 component busses is 16 additional components (64 total. 48 from 3 components busses and 16 from tier 3 CPU
+        - With a creative component bus, you can have over 1,000 components!
 - A tier 3 Screen 
     - Recommended screen size is 6x4
 - A tier 3 Graphics card
