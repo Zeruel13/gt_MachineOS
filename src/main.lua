@@ -636,6 +636,30 @@ local function deleteMachine(fileType, machineIndex)
     file:close()
 end
 
+local function renameMachine(fileType, machineIndex, newName)
+    -- read the file into a table
+    local gtMachineTable = {}
+    for line in io.lines("addresslist/"..fileType..".lua") do
+        table.insert(gtMachineTable, line)
+    end
+    
+    -- update the name of the desired machine
+    local oldLine = gtMachineTable[machineIndex + 5]
+    local newLine = oldLine:gsub('name = "(.-)"', 'name = "'..newName..'"')
+    gtMachineTable[machineIndex + 5] = newLine
+
+    -- write the modified table back to the correct file
+    local file = io.open("addresslist/"..fileType..".lua", "w")
+    file:write(table.concat(gtMachineTable, "\n"))
+
+    -- Close the file
+    file:close()
+
+    -- return the old and new names
+    return oldLine:match('name = "(.-)"'), newName
+end
+
+
 local function readInput(x, y, valueType)
   local input = ""
   term.setCursor(x, y)
@@ -752,7 +776,7 @@ local function editButton()
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "This page edits exisiting machines in gt_MachineOS.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "You can change the position of a machine or delete it.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "You can change the position of a machine, rename it, or delete it.")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "What type of machine would you like to edit? multiblock / tank / LSC.")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Enter type of machine: ")
 	machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
@@ -798,12 +822,12 @@ local function editButton()
 	
 	local editOption
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "Editing: "..machineNum..". "..array[machineNum].name)
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "Enter a new number to change position or type 'delete' to remove the machine.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "Type a new number to change position, 'rename' to rename, or 'delete' to remove.")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Enter number or delete: ")
 	editOption = readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string")
 	
-	while not editOption or (editOption ~= "delete" and (tonumber(editOption) > #array or tonumber(editOption) < 1)) do 
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Input must be a number between 1 and "..#array.." or 'delete'.")
+	while not editOption or (editOption ~= "delete" and editOption ~= "rename" and (tonumber(editOption) > #array or tonumber(editOption) < 1)) do
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Input must be a number between 1 and "..#array.." , 'rename', or 'delete'.")
 		gpu.fill(multiblockInformationX + 25, multiblockInformationY + 3, 50, 1, " ")
 		editOption = readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string")
 	end
@@ -812,6 +836,23 @@ local function editButton()
 		deleteMachine(fileType[machineType], machineNum)
 		-- Print a confirmation message
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, array[machineNum].name.." deleted from "..fileType[machineType]..".lua.")
+	elseif editOption == "rename" then
+		-- get the new name from the user
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Enter the new name for "..array[machineNum].name..": ")
+		local newName = readInput(multiblockInformationX + 26 + string.len(array[machineNum].name), multiblockInformationY + 4, "string")
+
+		-- validate the input
+		while not newName or newName == "" do
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 5, "New name cannot be empty.")
+			gpu.fill(multiblockInformationX + 33, multiblockInformationY + 4, 50, 1, " ")
+			newName = readInput(multiblockInformationX + 33, multiblockInformationY + 4, "string")
+		end
+
+		-- call the renameMachine function
+		local oldName, newName = renameMachine(fileType[machineType], machineNum, newName)
+
+		-- display the confirmation message with old and new names
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, oldName.." renamed to "..newName.." in "..fileType[machineType]..".lua.")
 	else
 		moveMachine(fileType[machineType], machineNum, editOption)
 		-- Print a confirmation message
