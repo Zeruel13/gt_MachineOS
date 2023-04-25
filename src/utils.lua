@@ -18,6 +18,15 @@ utils.colors = {
 	turq = 0x008B8B
 }
 
+function utils.getColorName(color)
+  for name, value in pairs(utils.colors) do
+    if value == color then
+      return name
+    end
+  end
+  return "0x" .. string.format("%06X", color)
+end
+
 -- Print colored text	
 function utils.printColoredText(x, y, text, color)
   local oldColor = gpu.getForeground()
@@ -35,9 +44,9 @@ function utils.setBackgroundColor(x, y, width, height, text, color)
 end
 
 -- Draw a yellow border	
-function utils.drawBorder(x, y, width, height)
+function utils.drawBorder(x, y, width, height, color)
 
-	gpu.setForeground(utils.colors.yellow)
+	gpu.setForeground(color)
 	-- top and bottom lines
 	gpu.fill(x, y, width, 1, "─")
 	gpu.fill(x, y+height, width, 1, "─")
@@ -140,14 +149,14 @@ function utils.formatTime(time)
 end
 
 -- prints AsciiArt
-function utils.printAsciiArt(x, y, art)
+function utils.printAsciiArt(x, y, art, color)
 	local rows = {}
 	local i = 1
 	art:gsub("[^\n]+", function(row)
 		rows[i] = row
 		i = i + 1
 	end)
-	gpu.setForeground(utils.colors.cyan)
+	gpu.setForeground(color)
 	for i, row in ipairs(rows) do
 		for j = 1, #row do
 			gpu.set(x + j - 1, y + i - 1, row:sub(j, j))

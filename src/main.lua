@@ -28,6 +28,7 @@ local API = require("buttonAPI")
 local utils = require("utils")
 local energyFiles = require("energyFiles")
 local gtMachineFind = require("gtMachineFind")
+local config = require("config")
 
 -- Load the files that store machines / tank addresses
 local machines_chunk = loadfile("addressList/machines.lua")
@@ -49,7 +50,7 @@ local pageButtonSpacing = 1
 
 local function drawButton(x, y)
   -- Draw the border
-  utils.drawBorder(x, y, pageButtonWidth, pageButtonHeight)
+  utils.drawBorder(x, y, pageButtonWidth, pageButtonHeight, config.outlineColor)
 end
 
 -- Initalizes screenOuter table to add entries to later
@@ -78,7 +79,7 @@ function printBordersOuter(screenOuterName)
 	local sO = screenOuter[screenOuterName]
 
 	-- Set border
-	gpu.setBackground(utils.colors.blue)
+	gpu.setBackground(config.sectionColor)
 	gpu.fill(sO.x, sO.y, sO.width, 1, " ")
 	gpu.fill(sO.x, sO.y, 1, sO.height, " ")
 	gpu.fill(sO.x, sO.y + sO.height, sO.width, 1, " ")
@@ -179,8 +180,8 @@ loadMachines()
 -- Draws the border and text for the inner borders
 local function printBordersInner(i)
 	local sI = screenInner[i]
-	utils.drawBorder(sI.machineX, sI.machineY, sI.width, sI.height)
-	utils.printColoredText(sI.machineX + 2, sI.machineY, sI.title, utils.colors.purple)
+	utils.drawBorder(sI.machineX, sI.machineY, sI.width, sI.height, config.outlineColor)
+	utils.printColoredText(sI.machineX + 2, sI.machineY, sI.title, config.textColor)
 end
   
 -- This loops through screenOuter and calls printBorderOuter
@@ -418,7 +419,7 @@ function loadLSC()
 		energyCheck = true
 		
 		-- Border for Energy Levels
-		utils.drawBorder(screenOuter["energy"].x + 3, screenOuter["energy"].y + 2, 149, 3)	
+		utils.drawBorder(screenOuter["energy"].x + 3, screenOuter["energy"].y + 2, 149, 3, config.outlineColor)	
 
 		LSC = component.proxy(component.get(energy[1].id))
 		energyMax = math.floor(string.gsub(LSC.getSensorInformation()[3], "([^0-9]+)", "") + 0)
@@ -464,7 +465,7 @@ local function reloadMachines(fileType)
 end
 
 local function createBackButton()
-utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 30, multiblockInformationX+ 2, 2)
+utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 30, multiblockInformationX+ 2, 2, config.outlineColor)
 API.setTable("backButton", backButton, multiblockInformationX+ 3, multiblockInformationY+ 31, multiblockInformationX+ 7,  multiblockInformationY+ 31, "Back", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 API.screen("backButton")
  -- Unregister checkxy from the touch event listener. If checkxy isn't unregistered, 
@@ -497,16 +498,16 @@ local function createFilterButtons()
 	disableControlPanel()
 	disableMachineButtons()
 
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 10, multiblockInformationX+ 8, 2)
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 10, multiblockInformationX+ 8, 2, config.outlineColor)
 	API.setTable("processingFilterButton", processingFilterButton, multiblockInformationX+ 4, multiblockInformationY + 11, multiblockInformationX + 13, multiblockInformationY + 11, "Processing", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 14, multiblockInformationX+ 2, 2)
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 14, multiblockInformationX+ 2, 2, config.outlineColor)
 	API.setTable("idleFilterButton", idleFilterButton, multiblockInformationX+ 4, multiblockInformationY + 15, multiblockInformationX + 7, multiblockInformationY + 15, "Idle", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 18, multiblockInformationX+ 17, 2)
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 18, multiblockInformationX+ 17, 2, config.outlineColor)
 	API.setTable("processingDisabledFilterButton", processingDisabledFilterButton, multiblockInformationX+ 4, multiblockInformationY + 19, multiblockInformationX + 20, multiblockInformationY + 19, "Processing Disabled", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 22, multiblockInformationX+ 10, 2)
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 22, multiblockInformationX+ 10, 2, config.outlineColor)
 	API.setTable("problemFilterButton", problemFilterButton, multiblockInformationX+ 4, multiblockInformationY + 23, multiblockInformationX + 15, multiblockInformationY + 23, "Has Problems", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
 	API.screen("processingFilterButton")
@@ -615,7 +616,7 @@ computer.shutdown(true)
 end
 
 local function createRebootButton()
-utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 30, multiblockInformationX+ 4, 2)
+utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 30, multiblockInformationX+ 4, 2, config.outlineColor)
 API.setTable("rebootButton", rebootButton, multiblockInformationX+ 3, multiblockInformationY+ 31, multiblockInformationX+ 9,  multiblockInformationY+ 31, "Reboot", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 API.screen("rebootButton")
  -- Unregister checkxy from the touch event listener. If checkxy isn't unregistered, 
@@ -627,7 +628,7 @@ API.waitForButtonPress("rebootButton")
 end
 
 
-utils.printAsciiArt(controlPanelX - 2, controlPanelY - 12, titleCard)
+utils.printAsciiArt(controlPanelX - 2, controlPanelY - 12, titleCard, config.titleColor)
 gpu.set(controlPanelX + 35, controlPanelY - 2, "Created by: Zeruel    Ver 1.0 ")
 		
 -- function for adding a line to the end of the file
@@ -937,21 +938,134 @@ local function machineCheck(machines)
   return true -- all machines found
 end
 
+local function changeColor(elementType, colorType)
+  -- read the file into a table
+  local colorTable = {}
+  for line in io.lines("config.lua") do
+    table.insert(colorTable, line)
+  end
+
+  -- find the old color line and update the color of the desired element
+  local oldLine, newLine
+  for i, line in ipairs(colorTable) do
+    if line:match(elementType .. "Color") then
+      oldLine = line
+      if colorType:match("^%x%x%x%x%x%x$") then -- check if colorType is a 6-digit hex code
+        newLine = "local " .. elementType .. "Color = 0x" .. colorType
+      else
+        newLine = "local " .. elementType .. "Color = " .. "utils.colors." .. colorType
+      end
+      colorTable[i] = newLine
+      break
+    end
+  end
+
+  -- write the modified table back to the correct file
+  local file = io.open("config.lua", "w")
+  file:write(table.concat(colorTable, "\n"))
+  file:close()
+
+	-- return the old and new colors
+	local oldColor = oldLine:match("0x%x+") or oldLine:match("utils.colors%.[%w_]+")
+	if oldColor then
+	  oldColor = oldColor:gsub("utils.colors%.", "")
+	end
+	return oldColor, colorType
+
+end
+
+
+local defaultType
+
+local function colorButton()
+
+	checkLoop = false
+	disableControlPanel()
+	disableMachineButtons()
+
+	-- Clears the multiblock information section
+	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "This page edits the colors of the program")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Section Color: "..utils.getColorName(config.sectionColor))
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Outline Color: "..utils.getColorName(config.outlineColor))
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 5, "Text Color: "..utils.getColorName(config.textColor))
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "Title Color: "..utils.getColorName(config.titleColor))
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Enter an element name to change, or type 'default' to reset all to default.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 9, "Enter elemant name or 'default': ")
+	elementType = readInput(multiblockInformationX + 34, multiblockInformationY + 9, "string")
+
+	while not (elementType == "section" or elementType == "outline" or elementType == "text" or elementType == "title" or elementType == "default") do
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Input must be a the name of an element or 'default'")
+		gpu.fill(multiblockInformationX + 34, multiblockInformationY + 9, 25, 1, " ")
+		elementType = readInput(multiblockInformationX + 34, multiblockInformationY + 9, "string")
+	end
+
+	if elementType == 'default' then
+		changeColor("section", "blue")
+		changeColor("outline", "yellow")
+		changeColor("text", "purple")
+		changeColor("title", "cyan")
+		
+		-- Print a confirmation message
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, "All elements have been reset to default.")
+		
+	else
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 12, "Enter one of the below colors, a hex value (077a11), or 'default'.")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 13, "blue, purple, red, green, white, orange, yellow, cyan, turq")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "Enter color name or hex: ")
+		colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 14, "string")
+		
+		while not (colorType == "blue" or colorType == "purple" or colorType == "red" or colorType == "green" or colorType == "white" or colorType == "orange" or colorType == "yellow" or colorType == "cyan" or colorType == "turq" or colorType == "default" or string.len(colorType) == 6) do
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 15, "Input a valid color name or hex value.")
+			gpu.fill(multiblockInformationX + 26, multiblockInformationY + 14, 25, 1, " ")
+			colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 14, "string")
+		end
+		
+		if colorType == "default" then
+		
+			defaultType = {
+				section = "blue",
+				outline = "yellow",
+				text = "purple",
+				title = "cyan"
+				}
+				
+			local oldColor, newColor = changeColor(elementType, defaultType[elementType])
+			
+			-- Print a confirmation message
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, elementType.." has been reset to default.")
+		else
+		
+			local oldColor, newColor = changeColor(elementType, colorType)
+			
+			-- Print a confirmation message
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, elementType.." has been changed from "..oldColor.." to "..newColor..".")
+		end
+	end
+	
+
+	
+	createRebootButton()
+end
+
 gpu.set(controlPanelX + 1, controlPanelY + 1, "Add / Edit Machines")
-utils.drawBorder(controlPanelX + 1, controlPanelY + 3, 14, 2)
+utils.drawBorder(controlPanelX + 1, controlPanelY + 3, 14, 2, config.outlineColor)
 API.setTable("add", addButton, controlPanelX + 3, controlPanelY + 4, controlPanelX + 13, controlPanelY + 4, "Add Address", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-utils.drawBorder(controlPanelX + 1, controlPanelY + 6, 17, 2)
+utils.drawBorder(controlPanelX + 1, controlPanelY + 6, 17, 2, config.outlineColor)
 API.setTable("edit", editButton, controlPanelX + 3, controlPanelY + 7, controlPanelX + 17, controlPanelY + 7, "Edit Addresses", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
 gpu.set(controlPanelX + 27, controlPanelY + 1, "Filter by Status")
-utils.drawBorder(controlPanelX + 30, controlPanelY + 3, 9, 2)
+utils.drawBorder(controlPanelX + 30, controlPanelY + 3, 9, 2, config.outlineColor)
 API.setTable("filter", filterButton, controlPanelX + 33, controlPanelY + 4, controlPanelX + 38, controlPanelY + 4, "Filter", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-utils.drawBorder(controlPanelX + 54, controlPanelY + 3, 8, 2)
+utils.drawBorder(controlPanelX + 27, controlPanelY + 6, 15, 2, config.outlineColor)
+API.setTable("color", colorButton, controlPanelX + 33, controlPanelY + 7, controlPanelX + 38, controlPanelY + 7, "Color Config", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+
+utils.drawBorder(controlPanelX + 54, controlPanelY + 3, 8, 2, config.outlineColor)
 API.setTable("about", aboutButton, controlPanelX + 56, controlPanelY + 4, controlPanelX+ 61, controlPanelY + 4, "About", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-utils.drawBorder(controlPanelX + 55, controlPanelY + 6, 7, 2)
+utils.drawBorder(controlPanelX + 55, controlPanelY + 6, 7, 2, config.outlineColor)
 API.setTable("help", helpButton, controlPanelX + 57, controlPanelY + 7, controlPanelX + 61, controlPanelY + 7, "Help", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
 function disableControlPanel()
