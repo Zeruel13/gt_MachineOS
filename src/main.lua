@@ -497,17 +497,17 @@ local function createFilterButtons()
 	disableControlPanel()
 	disableMachineButtons()
 
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 2, multiblockInformationX+ 8, 2)
-	API.setTable("processingFilterButton", processingFilterButton, multiblockInformationX+ 4, multiblockInformationY + 3, multiblockInformationX + 13, multiblockInformationY + 3, "Processing", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 10, multiblockInformationX+ 8, 2)
+	API.setTable("processingFilterButton", processingFilterButton, multiblockInformationX+ 4, multiblockInformationY + 11, multiblockInformationX + 13, multiblockInformationY + 11, "Processing", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 6, multiblockInformationX+ 2, 2)
-	API.setTable("idleFilterButton", idleFilterButton, multiblockInformationX+ 4, multiblockInformationY + 7, multiblockInformationX + 7, multiblockInformationY + 7, "Idle", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 14, multiblockInformationX+ 2, 2)
+	API.setTable("idleFilterButton", idleFilterButton, multiblockInformationX+ 4, multiblockInformationY + 15, multiblockInformationX + 7, multiblockInformationY + 15, "Idle", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 10, multiblockInformationX+ 17, 2)
-	API.setTable("processingDisabledFilterButton", processingDisabledFilterButton, multiblockInformationX+ 4, multiblockInformationY + 11, multiblockInformationX + 20, multiblockInformationY + 11, "Processing Disabled", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 18, multiblockInformationX+ 17, 2)
+	API.setTable("processingDisabledFilterButton", processingDisabledFilterButton, multiblockInformationX+ 4, multiblockInformationY + 19, multiblockInformationX + 20, multiblockInformationY + 19, "Processing Disabled", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 14, multiblockInformationX+ 10, 2)
-	API.setTable("problemFilterButton", problemFilterButton, multiblockInformationX+ 4, multiblockInformationY + 15, multiblockInformationX + 15, multiblockInformationY + 15, "Has Problems", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
+	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 22, multiblockInformationX+ 10, 2)
+	API.setTable("problemFilterButton", problemFilterButton, multiblockInformationX+ 4, multiblockInformationY + 23, multiblockInformationX + 15, multiblockInformationY + 23, "Has Problems", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
 	API.screen("processingFilterButton")
 	API.screen("idleFilterButton")
@@ -603,7 +603,7 @@ checkLoop = false
 
 -- Clears the multiblock information section
 gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "This is where text will go to explain what filtering is.")
+gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Filtering by Status will be in a future version :)")
 
 createFilterButtons()
 createBackButton()
