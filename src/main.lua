@@ -1144,6 +1144,9 @@ function enableMachineButtons()
 end
 
 local firstTime = true
+		
+-- API.screen is used to iterate through all the buttons and fill the table in buttonAPI
+API.screen()
 
 -- Everything inside this while loop will run every 1 second1 by os.sleep(1)
 local function mainLoop()
