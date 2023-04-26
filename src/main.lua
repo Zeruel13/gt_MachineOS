@@ -985,14 +985,15 @@ local function colorButton()
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Outline Color: "..utils.getColorName(config.outlineColor))
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 5, "Text Color: "..utils.getColorName(config.textColor))
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "Title Color: "..utils.getColorName(config.titleColor))
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Enter an element name to change, or type 'default' to reset all to default.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 9, "Enter elemant name or 'default': ")
-	elementType = readInput(multiblockInformationX + 34, multiblockInformationY + 9, "string")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Enter an element name to change,'default' to reset all to default,")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 9, "or enter one of the following themes: 'waterlily', 'aurora', or 'mushroom'.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Enter elemant name or 'default': ")
+	elementType = readInput(multiblockInformationX + 34, multiblockInformationY + 10, "string")
 
-	while not (elementType == "section" or elementType == "outline" or elementType == "text" or elementType == "title" or elementType == "default") do
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Input must be a the name of an element or 'default'")
-		gpu.fill(multiblockInformationX + 34, multiblockInformationY + 9, 25, 1, " ")
-		elementType = readInput(multiblockInformationX + 34, multiblockInformationY + 9, "string")
+	while not (elementType == "section" or elementType == "outline" or elementType == "text" or elementType == "title" or elementType == "default" or elementType == "waterlily" or elementType == "aurora" or elementType == "mushroom" ) do
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 11, "Input must be a the name of an element or 'default'")
+		gpu.fill(multiblockInformationX + 34, multiblockInformationY + 10, 25, 1, " ")
+		elementType = readInput(multiblockInformationX + 34, multiblockInformationY + 10, "string")
 	end
 
 	if elementType == 'default' then
@@ -1002,18 +1003,45 @@ local function colorButton()
 		changeColor("title", "cyan")
 		
 		-- Print a confirmation message
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, "All elements have been reset to default.")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, "All elements have been reset to default.")
+		
+	elseif elementType == 'waterlily' then
+		changeColor("section", "5f8232")
+		changeColor("outline", "ff616c")
+		changeColor("text", "91ec65")
+		changeColor("title", "ff616c")
+		
+		-- Print a confirmation message
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, "The theme has been set to 'waterlily'.")
+		
+	elseif elementType == 'aurora' then
+		changeColor("section", "404373")
+		changeColor("outline", "03A6A6")
+		changeColor("text", "503F8C")
+		changeColor("title", "503F8C")
+		
+		-- Print a confirmation message
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, "The theme has been set to 'aurora'.")
+		
+	elseif elementType == 'mushroom' then
+		changeColor("section", "5b0902")
+		changeColor("outline", "A68F81")
+		changeColor("text", "F2F2F2")
+		changeColor("title", "F28D77")
+		
+		-- Print a confirmation message
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, "The theme has been set to 'mushroom'.")
 		
 	else
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 12, "Enter one of the below colors, a hex value (077a11), or 'default'.")
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 13, "blue, purple, red, green, white, orange, yellow, cyan, turq")
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "Enter color name or hex: ")
-		colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 14, "string")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 13, "Enter one of the below colors, a hex value (077a11), or 'default'.")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "blue, purple, red, green, white, orange, yellow, cyan, turq")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 15, "Enter color name or hex: ")
+		colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string")
 		
 		while not (colorType == "blue" or colorType == "purple" or colorType == "red" or colorType == "green" or colorType == "white" or colorType == "orange" or colorType == "yellow" or colorType == "cyan" or colorType == "turq" or colorType == "default" or string.len(colorType) == 6) do
-			gpu.set(multiblockInformationX + 1, multiblockInformationY + 15, "Input a valid color name or hex value.")
-			gpu.fill(multiblockInformationX + 26, multiblockInformationY + 14, 25, 1, " ")
-			colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 14, "string")
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, "Input a valid color name or hex value.")
+			gpu.fill(multiblockInformationX + 26, multiblockInformationY + 15, 25, 1, " ")
+			colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string")
 		end
 		
 		if colorType == "default" then
@@ -1028,13 +1056,13 @@ local function colorButton()
 			local oldColor, newColor = changeColor(elementType, defaultType[elementType])
 			
 			-- Print a confirmation message
-			gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, elementType.." has been reset to default.")
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, elementType.." has been reset to default.")
 		else
 		
 			local oldColor, newColor = changeColor(elementType, colorType)
 			
 			-- Print a confirmation message
-			gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, elementType.." has been changed from "..oldColor.." to "..newColor..".")
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, elementType.." has been changed from "..oldColor.." to "..newColor..".")
 		end
 	end
 	
