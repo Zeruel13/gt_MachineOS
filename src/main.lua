@@ -196,12 +196,6 @@ local machinesPerPage = 12
 local machineStartBorder = (machinePrintPage - 1) * machinesPerPage + 1
 local machineFinishBorder = math.min(machinePrintPage * machinesPerPage, #machines) 
 
--- This loops through start and finish border and calls printBorderInner
--- i.e. This will print the borders and the titles of the borders. 
-for i = machineStartBorder, machineFinishBorder do
-	printBordersInner(i) 
-end
-
 -- Correctly prints fluid levels from sensor information
 function getFluidLevels(output)
     fluidLevel = string.match(output , "§a(%d[%d,]*) L§r")
@@ -275,6 +269,7 @@ local function createMachineControlButton(machine, i, x, y)
 	local buttonColor = machine.isWorkAllowed() and utils.colors.green or utils.colors.red
 	local xValue = machine.isWorkAllowed() and 32 or 31
 	API.setTable("Control"..i, function() machine.setWorkAllowed(not machine.isWorkAllowed()) end, x + xValue, y + 1, x + 36, y + 1, buttonLabel, buttonColor, {on = utils.colors.black, off = utils.colors.yellow}, true)
+	API.screen("Control"..i)
 end
 	
 -- Prints all the MultiBlock Information. 
@@ -1106,9 +1101,6 @@ function enableMachineButtons()
 	end
 end
 
--- API.screen is used to iterate through all the buttons and fill the table in buttonAPI
-API.screen()
-
 local firstTime = true
 
 -- Everything inside this while loop will run every 1 second1 by os.sleep(1)
@@ -1134,6 +1126,9 @@ local function mainLoop()
 					drawButton(buttonX, 34)
 				end
 				
+				-- API.screen is used to iterate through all the buttons and fill the table in buttonAPI
+				API.screen()
+				
 				firstTime = false
 			end
 		
@@ -1154,7 +1149,7 @@ local function mainLoop()
 
 				-- Prints all the multiblock information
 				printMachineMethods(component.proxy(component.get(machine.id)), i)
-			
+			 
 				-- If there exsists an entry in machineTankList at index i, print the tank info
 				if machineTankList[i] then
 					printMachineTankInfo(component.proxy(component.get(machineTankList[i])), i)
@@ -1163,7 +1158,7 @@ local function mainLoop()
 			
 			-- Once the # of problems is added up, print it
 			gpu.set(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 33, "Number of Problems: "..problems)
-			API.screen()
+			--API.screen()
 		else
 			-- Clears the multiblock information section
 			gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
