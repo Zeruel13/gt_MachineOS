@@ -426,9 +426,6 @@ loadLSC()
 
 local function reloadMachines(fileType)
 
-	-- Unload the module
-	package.loaded["gtMachineFind"] = nil
-
 	-- Require the module again (it will be reloaded)
 	gtMachineFind = require("gtMachineFind")
 		
@@ -457,6 +454,10 @@ local function reloadMachines(fileType)
 		-- Reload function required to load LSC
 		loadLSC()
 	end
+	
+		-- Unload the module
+	package.loaded["gtMachineFind"] = nil
+	
 end
 
 local function createBackButton()
@@ -590,6 +591,13 @@ function backButton()
 		-- Draw the button at the specified coordinates
 		drawButton(buttonX, 34)
 	end
+	  
+	for name, data in pairs(button) do
+		if string.find(name, "machinePage") then
+			API.screen(name)
+		end
+	end
+	
 	checkLoop = true
 end
 
@@ -747,6 +755,12 @@ local fileType
 local machineName
 
 local function addButton()
+
+	-- Unload the module
+	package.loaded["gtMachineFind"] = nil
+
+	-- Require the module 
+	gtMachineFind = require("gtMachineFind")
 
 	checkLoop = false
 	disableControlPanel()
@@ -1185,8 +1199,7 @@ local function mainLoop()
 			end
 			
 			-- Once the # of problems is added up, print it
-			gpu.set(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 33, "Number of Problems: "..problems)
-			--API.screen()
+			gpu.set(screenOuter["multiblockInformation"].x + 4, screenOuter["multiblockInformation"].y + 33, "Number of Problems: "..problems)
 		else
 			-- Clears the multiblock information section
 			gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
