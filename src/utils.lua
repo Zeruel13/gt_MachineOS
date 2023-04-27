@@ -6,7 +6,7 @@ local utils = {}
 
 -- Initializes some colors to use 
 utils.colors = {
-	blue = 0x1434A4, -- old blue
+	blue = 0x000066, --  1434A4 old blue
 	purple = 0x884EA0,
 	red = 0xC14141,
 	green = 0xDA841,
