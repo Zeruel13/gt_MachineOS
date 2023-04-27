@@ -577,12 +577,22 @@ function backButton()
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+
+	--Calculate how many the start and finish borders again. 
+	machineStartBorder = (machinePrintPage - 1) * machinesPerPage + 1
+	machineFinishBorder = math.min(machinePrintPage * machinesPerPage, #machines) 
 	
+	
+	-- Gets the number of pages needed for multiblockInformation
+	machineNumPage = math.ceil(#machines/machinesPerPage)
+	machineSetPage = machineNumPage
 	
 	-- Print the borders again
 	for i = machineStartBorder, machineFinishBorder do
 		printBordersInner(i)
 	end
+	
+	createPageButtons(machineNumPage, createMachineButtons, machinePGX)
 	
 	for i = 1, machineNumPage do
 		-- Calculate the x coordinate of the button
@@ -591,13 +601,25 @@ function backButton()
 		-- Draw the button at the specified coordinates
 		drawButton(buttonX, 34)
 	end
+	
+	-- Clear the area where the fluid Levels is set 
+	gpu.fill(94, 26, 52, 8, " ")
+	
+		-- Gets the number of pages needed for fluid Levels
+	fluidNumPage = math.ceil(#tankFluidLevels/tanksPerPage)
+	fluidSetPage = fluidNumPage
+
+	fluidStartBorder = (fluidPrintPage - 1) * tanksPerPage + 1
+	fluidFinishBorder = math.min(fluidPrintPage * tanksPerPage, #tankFluidLevels)
+
+	--Calculate how many the start and finish borders again. 
+	createPageButtons(fluidNumPage, createFluidButtons, fluidPGX)	
 	  
 	for name, data in pairs(button) do
-		if string.find(name, "machinePage") then
+		if string.find(name, "machinePage") or string.find(name, "fluidPage") then
 			API.screen(name)
 		end
 	end
-	
 	checkLoop = true
 end
 
