@@ -5,17 +5,19 @@
 -- buttonAPI ported to OC by MoparDan originally created by DireWolf 20 for ComputerCraft
 
 -- TODO list
--- Change to update every 1 second (when a button is pressed, it should refresh on the screen right away
--- Clean up loop (double check fluid and machine handling)
--- Comment code
--- Filter by IDLE, processing disabled, problems
--- add button to turn off and on machine
--- Try to break code
--- Add handling for when user first starts program
-
--- Future:
--- Info panel
-
+-- V2.0: Filtering based on status
+	--[[
+	two arrays - unfiltered
+	and filtered
+	when the for loop runs, it adds a machine to the new filtered array or remove
+	]]
+	
+-- V3.0: 
+	--[[
+	1. Record what machines are using the most power
+		setWorkAllowed = false
+	2. Turn on/off power generation methods if LSC is full/empty/threshold
+	]]
 -- Components to require
 local component = require("component")
 local event = require("event")
@@ -401,10 +403,11 @@ local counter = 0
 local timeToFillAVG = 0
 local netEnergyAVG = 0
 local timeToFill = 0
-local energyCheck = false
-
+local energyCheck -- possibly false
 
 function loadLSC()
+
+	energyCheck = false
 
 	-- Clears the energy section
 	gpu.fill(screenOuter["energy"].x + 2, screenOuter["energy"].y + 1, 152, 8, " ")
@@ -563,6 +566,12 @@ end
 -- Note, can't be local as it accessses buttonAPI
 function backButton()
 
+	for name, data in pairs(button) do
+		if string.find(name, "Page") then
+			button[name] = nil
+		end
+	end	
+  
 	button["backButton"]["isEnabled"] = false
 	
 	if button["processingFilterButton"] then
@@ -577,7 +586,8 @@ function backButton()
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-
+	
+	
 	--Calculate how many the start and finish borders again. 
 	machineStartBorder = (machinePrintPage - 1) * machinesPerPage + 1
 	machineFinishBorder = math.min(machinePrintPage * machinesPerPage, #machines) 
@@ -594,6 +604,7 @@ function backButton()
 	
 	createPageButtons(machineNumPage, createMachineButtons, machinePGX)
 	
+	
 	for i = 1, machineNumPage do
 		-- Calculate the x coordinate of the button
 		local buttonX = machinePGX - (i-1) * (pageButtonWidth + pageButtonSpacing)
@@ -603,7 +614,7 @@ function backButton()
 	end
 	
 	-- Clear the area where the fluid Levels is set 
-	gpu.fill(94, 26, 52, 8, " ")
+	gpu.fill(94, 26, 64, 11, " ")
 	
 		-- Gets the number of pages needed for fluid Levels
 	fluidNumPage = math.ceil(#tankFluidLevels/tanksPerPage)
@@ -661,7 +672,7 @@ local function addMachine(fileType, machineAddress, machineName)
 
     -- read the file into a table
     local gtMachineTable = {}
-    for line in io.lines("addresslist/"..fileType..".lua") do
+    for line in io.lines("addressList/"..fileType..".lua") do
         table.insert(gtMachineTable, line)
     end
     
@@ -670,7 +681,7 @@ local function addMachine(fileType, machineAddress, machineName)
 	table.insert(gtMachineTable, position, "	{id = \"" .. machineAddress .. "\", name = \"" .. machineName .. "\"},")
 	
     -- write the modified table back to the correct file
-    local file = io.open("addresslist/"..fileType..".lua", "w")
+    local file = io.open("addressList/"..fileType..".lua", "w")
     file:write(table.concat(gtMachineTable, "\n"))
 
     -- Close the file
@@ -683,7 +694,7 @@ local function moveMachine(fileType, machineIndex, newLineNum)
 
     -- read the file into a table
     local gtMachineTable = {}
-    for line in io.lines("addresslist/"..fileType..".lua") do
+    for line in io.lines("addressList/"..fileType..".lua") do
         table.insert(gtMachineTable, line)
     end
     
@@ -694,7 +705,7 @@ local function moveMachine(fileType, machineIndex, newLineNum)
     table.insert(gtMachineTable, newLineNum + 5, removedLine)
 
     -- write the modified table back to the correct file
-    local file = io.open("addresslist/"..fileType..".lua", "w")
+    local file = io.open("addressList/"..fileType..".lua", "w")
     file:write(table.concat(gtMachineTable, "\n"))
 
     -- Close the file
@@ -705,7 +716,7 @@ end
 local function deleteMachine(fileType, machineIndex)
     -- read the file into a table
     local gtMachineTable = {}
-    for line in io.lines("addresslist/"..fileType..".lua") do
+    for line in io.lines("addressList/"..fileType..".lua") do
         table.insert(gtMachineTable, line)
     end
     
@@ -713,7 +724,7 @@ local function deleteMachine(fileType, machineIndex)
     local removedLine = table.remove(gtMachineTable, machineIndex + 5)
 
     -- write the modified table back to the correct file
-    local file = io.open("addresslist/"..fileType..".lua", "w")
+    local file = io.open("addressList/"..fileType..".lua", "w")
     file:write(table.concat(gtMachineTable, "\n"))
 
     -- Close the file
@@ -723,7 +734,7 @@ end
 local function renameMachine(fileType, machineIndex, newName)
     -- read the file into a table
     local gtMachineTable = {}
-    for line in io.lines("addresslist/"..fileType..".lua") do
+    for line in io.lines("addressList/"..fileType..".lua") do
         table.insert(gtMachineTable, line)
     end
     
@@ -733,7 +744,7 @@ local function renameMachine(fileType, machineIndex, newName)
     gtMachineTable[machineIndex + 5] = newLine
 
     -- write the modified table back to the correct file
-    local file = io.open("addresslist/"..fileType..".lua", "w")
+    local file = io.open("addressList/"..fileType..".lua", "w")
     file:write(table.concat(gtMachineTable, "\n"))
 
     -- Close the file
@@ -905,7 +916,7 @@ local function editButton()
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 27, "Enter number: ")
 	machineNum = readInput(multiblockInformationX + 15, multiblockInformationY + 27, "number")
 
-	while not machineNum or machineNum > #array or machineNum < 1 do 
+	while not (1 <= (machineNum or 0) and (machineNum or 0) <= #array) do 
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 28, "Must be a number from 1 - "..#array..".")
 		gpu.fill(multiblockInformationX + 15, multiblockInformationY + 27, 60, 1, " ")
 		machineNum = readInput(multiblockInformationX + 15, multiblockInformationY + 27, "number")
@@ -921,11 +932,13 @@ local function editButton()
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Enter number or delete: ")
 	editOption = readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string")
 	
-	while not editOption or (editOption ~= "delete" and editOption ~= "rename" and (tonumber(editOption) > #array or tonumber(editOption) < 1)) do
+	while not (editOption == "delete" or editOption == "rename" or (1 <= (tonumber(editOption) or 0) and (tonumber(editOption) or 0) <= #array)) do
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Input must be a number between 1 and "..#array.." , 'rename', or 'delete'.")
 		gpu.fill(multiblockInformationX + 25, multiblockInformationY + 3, 50, 1, " ")
 		editOption = readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string")
 	end
+	
+	gpu.fill(multiblockInformationX + 25, multiblockInformationY + 4, 50, 1, " ")
 	
 	if editOption == "delete" then
 		deleteMachine(fileType[machineType], machineNum)
@@ -1259,7 +1272,7 @@ local function mainLoop()
 
 	-- To check if user entered only one energy source
 	if energyCheck then
-	
+
 		-- Variables for calculating time to drain/fill
 		local energyInfo = energyFiles.getEnergyInformation(LSC, energyMax, colors, timeToFillAVG, netEnergyAVG)
 		timeToFillAVG = energyInfo.timeToFillAVG
@@ -1294,7 +1307,7 @@ local function mainLoop()
 	else
 		gpu.set(screenOuter["energy"].x + 2, screenOuter["energy"].y + 2, "Not a valid LSC!")
 	end
-
+	
 	-- Wait 1 seconds before checking the status again
 	os.sleep(1)
 
