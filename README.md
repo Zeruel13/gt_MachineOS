@@ -1,5 +1,5 @@
-# gt_machineOS
-gt_machineOS is a program for OpenComputers to be used in GT New Horizons. It's used to display information about your Multiblocks such progress, problems, and fluid levels of a tank that is associated with the multiblock (LCR for example)
+# gt_MachineOS
+gt_MachineOS is a program for OpenComputers to be used in GT New Horizons. It's used to display information about your Multiblocks such progress, problems, and fluid levels of a tank that is associated with the multiblock (LCR for example)
 
 Features:
 - Up to 6 pages of machines in Multiblock Information (72 total machines!)
