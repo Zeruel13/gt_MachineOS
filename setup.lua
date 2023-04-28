@@ -1,6 +1,7 @@
 -- wget https://raw.githubusercontent.com/Zeruel13/gt_MachineOS/master/setup.lua -f
 local shell = require("shell")
 local computer = require("computer")
+local filesystem = require("filesystem")
 
 local tarMan = "https://raw.githubusercontent.com/mpmxyz/ocprograms/master/usr/man/tar.man"
 local tarBin = "https://raw.githubusercontent.com/mpmxyz/ocprograms/master/home/bin/tar.lua"
@@ -25,7 +26,7 @@ shell.execute("tar -xf gt_MachineOS.tar")
 shell.execute("rm gt_MachineOS.tar") --deleting gt_MachineOS.ta
 
 shell.execute("mv .shrc /home") --move .shrc to home. This will allow the computer to auto-run main.lua upon reboot. 
-if not shell.execute("/home/gt_MachineOS") then --if a folder called gt_MachineOS doesn't exist, users are installing for the first time
+if not filesystem.exists("/home/gt_machineOS") then --if a folder called gt_MachineOS doesn't exist, users are installing for the first time
     print("Installing gt_MachineOS for the first time...")
 	shell.execute("mkdir /home/gt_MachineOS") -- make the gt_MachineOS direcotry
     shell.execute("mv * /home/gt_MachineOS") -- move all files in tmp to /home/gt_MachineOS
