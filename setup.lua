@@ -1,7 +1,6 @@
 -- wget https://raw.githubusercontent.com/Zeruel13/gt_MachineOS/master/setup.lua -f
 local shell = require("shell")
 
--- Download and install tar utility
 local tarMan = "https://raw.githubusercontent.com/mpmxyz/ocprograms/master/usr/man/tar.man"
 local tarBin = "https://raw.githubusercontent.com/mpmxyz/ocprograms/master/home/bin/tar.lua"
 
@@ -10,38 +9,36 @@ shell.execute("wget -fq " .. tarMan)
 shell.setWorkingDirectory("/bin")
 shell.execute("wget -fq " .. tarBin)
 
--- Check if updating or installing for the first time
-local isUpdating = false
-if shell.resolve("gt_MachineOS") then
-  print("Updating gt_MachineOS")
-  isUpdating = true
-else
-  print("Installing gt_MachineOS for the first time")
-  shell.execute("mkdir gt_MachineOS")
-end
-
--- Download and extract gt_MachineOS
 local gt_MachineOS = "https://github.com/Zeruel13/gt_MachineOS/releases/latest/download/gt_MachineOS.tar"
+
 shell.setWorkingDirectory("/home")
+print("Downloading gt_MachineOS...")
+shell.execute("wget -fq " .. gt_MachineOS .. " -f")
 
-shell.execute("wget -fq " .. gt_MachineOS)
-print("...")
 
-if isUpdating then
-  -- Extract all files except those in the addressList directory
-  shell.setWorkingDirectory("/home/gt_MachineOS")
-  shell.execute("mkdir tmp")
-  shell.execute("tar -xf gt_MachineOS.tar -C tmp")
-  shell.execute("cp -r tmp/gt_MachineOS/* .")
-  shell.execute("rm -rf tmp/gt_MachineOS/addressList")
-  shell.execute("rm -f tmp/gt_MachineOS.tar")
-  shell.execute("rmdir tmp")
+shell.execute("mkdir tmp") --Making a tmp directory
+shell.execute("mv gt_MachineOS.tar tmp/") --Moving gt_MachineOS to tmp
+shell.setWorkingDirectory("/home/tmp") --setting work directory to /home/tmp
+print("unpacking gt_MachineOS.tar...")
+shell.execute("tar -xf gt_MachineOS.tar")
+shell.execute("rm gt_MachineOS.tar") --deleting gt_MachineOS.ta
+
+shell.execute("mv .shrc /home") --move .shrc to home. This will allow the computer to auto-run main.lua upon reboot. 
+if not filesystem.exists("/home/gt_MachineOS") then --if a folder called gt_MachineOS doesn't exist, users are installing for the first time
+    print("Installing gt_MachineOS for the first time...")
+	shell.execute("mkdir /home/gt_MachineOS") -- make the gt_MachineOS direcotry
+    shell.execute("mv * /home/gt_MachineOS") -- move all files in tmp to /home/gt_MachineOS
 else
-  -- Extract all files
-  shell.execute("tar -xf gt_MachineOS.tar -C gt_MachineOS")
+    print("Updating gt_MachineOS...")
+    shell.execute("mv *.lua /home/gt_MachineOS") -- move all lua files. If updating, we don't want to overwrite all their addresses in addressList
 end
 
--- Remove the downloaded tar file and setup script
-shell.execute("rm -f gt_MachineOS.tar setup.lua")
+-- delete temporary files
+print("Cleaning up...")
+shell.setWorkingDirectory("/home")
+shell.execute("rm -rf tmp")
+shell.execute("rm -f setup.lua")
 
 print("Success!\n")
+shell.setWorkingDirectory("/home/gt_MachineOS")
+print("type 'main' and hit enter to run gt_MachineOS!")

@@ -26,18 +26,18 @@ local computer = require("computer")
 local gpu = component.gpu
 
 -- Require APIs
-local API = require("buttonAPI")
-local utils = require("utils")
-local energyFiles = require("energyFiles")
-local gtMachineFind = require("gtMachineFind")
-local config = require("config")
+local API = require("gt_MachineOS/buttonAPI")
+local utils = require("gt_MachineOS/utils")
+local energyFiles = require("gt_MachineOS/energyFiles")
+local gtMachineFind = require("gt_MachineOS/gtMachineFind")
+local config = require("gt_MachineOS/config/config")
 
 -- Load the files that store machines / tank addresses
-local machines_chunk = loadfile("addressList/machines.lua")
+local machines_chunk = loadfile("gt_MachineOS/addressList/machines.lua")
 local machines = machines_chunk()
-local tanks_chunk = loadfile("addressList/tanks.lua")
+local tanks_chunk = loadfile("gt_MachineOS/addressList/tanks.lua")
 local tanks = tanks_chunk()
-local energy_chunk = loadfile("addressList/energy.lua")
+local energy_chunk = loadfile("gt_MachineOS/addressList/energy.lua")
 local energy = energy_chunk()
 
 -- Controls the whole loop
@@ -430,12 +430,12 @@ loadLSC()
 local function reloadMachines(fileType)
 
 	-- Require the module again (it will be reloaded)
-	gtMachineFind = require("gtMachineFind")
+	gtMachineFind = require("gt_MachineOS/gtMachineFind")
 		
 	if fileType == "machines" then	
 		
 		-- Reload the machines.lua file
-		machines_chunk = loadfile("addressList/machines.lua")
+		machines_chunk = loadfile("gt_MachineOS/addressList/machines.lua")
 		machines = machines_chunk()
 		
 		-- Reload function required to load machines
@@ -443,7 +443,7 @@ local function reloadMachines(fileType)
 	elseif fileType == "tanks" then
 	
 		-- Reload the tanks.lua file
-		tanks_chunk = loadfile("addressList/tanks.lua")
+		tanks_chunk = loadfile("gt_MachineOS/addressList/tanks.lua")
 		tanks = tanks_chunk()
 		
 		-- Reload function required to load tanks
@@ -451,7 +451,7 @@ local function reloadMachines(fileType)
 	else
 	
 		-- Reload the energy.lua file
-		energy_chunk = loadfile("addressList/energy.lua")
+		energy_chunk = loadfile("gt_MachineOS/addressList/energy.lua")
 		energy = energy_chunk()
 	
 		-- Reload function required to load LSC
@@ -672,7 +672,7 @@ local function addMachine(fileType, machineAddress, machineName)
 
     -- read the file into a table
     local gtMachineTable = {}
-    for line in io.lines("addressList/"..fileType..".lua") do
+    for line in io.lines("gt_MachineOS/addressList/"..fileType..".lua") do
         table.insert(gtMachineTable, line)
     end
     
@@ -681,7 +681,7 @@ local function addMachine(fileType, machineAddress, machineName)
 	table.insert(gtMachineTable, position, "	{id = \"" .. machineAddress .. "\", name = \"" .. machineName .. "\"},")
 	
     -- write the modified table back to the correct file
-    local file = io.open("addressList/"..fileType..".lua", "w")
+    local file = io.open("gt_MachineOS/addressList/"..fileType..".lua", "w")
     file:write(table.concat(gtMachineTable, "\n"))
 
     -- Close the file
@@ -694,7 +694,7 @@ local function moveMachine(fileType, machineIndex, newLineNum)
 
     -- read the file into a table
     local gtMachineTable = {}
-    for line in io.lines("addressList/"..fileType..".lua") do
+    for line in io.lines("gt_MachineOS/addressList/"..fileType..".lua") do
         table.insert(gtMachineTable, line)
     end
     
@@ -705,7 +705,7 @@ local function moveMachine(fileType, machineIndex, newLineNum)
     table.insert(gtMachineTable, newLineNum + 5, removedLine)
 
     -- write the modified table back to the correct file
-    local file = io.open("addressList/"..fileType..".lua", "w")
+    local file = io.open("gt_MachineOS/addressList/"..fileType..".lua", "w")
     file:write(table.concat(gtMachineTable, "\n"))
 
     -- Close the file
@@ -716,7 +716,7 @@ end
 local function deleteMachine(fileType, machineIndex)
     -- read the file into a table
     local gtMachineTable = {}
-    for line in io.lines("addressList/"..fileType..".lua") do
+    for line in io.lines("gt_MachineOS/addressList/"..fileType..".lua") do
         table.insert(gtMachineTable, line)
     end
     
@@ -724,7 +724,7 @@ local function deleteMachine(fileType, machineIndex)
     local removedLine = table.remove(gtMachineTable, machineIndex + 5)
 
     -- write the modified table back to the correct file
-    local file = io.open("addressList/"..fileType..".lua", "w")
+    local file = io.open("gt_MachineOS/addressList/"..fileType..".lua", "w")
     file:write(table.concat(gtMachineTable, "\n"))
 
     -- Close the file
@@ -734,7 +734,7 @@ end
 local function renameMachine(fileType, machineIndex, newName)
     -- read the file into a table
     local gtMachineTable = {}
-    for line in io.lines("addressList/"..fileType..".lua") do
+    for line in io.lines("gt_MachineOS/addressList/"..fileType..".lua") do
         table.insert(gtMachineTable, line)
     end
     
@@ -744,7 +744,7 @@ local function renameMachine(fileType, machineIndex, newName)
     gtMachineTable[machineIndex + 5] = newLine
 
     -- write the modified table back to the correct file
-    local file = io.open("addressList/"..fileType..".lua", "w")
+    local file = io.open("gt_MachineOS/addressList/"..fileType..".lua", "w")
     file:write(table.concat(gtMachineTable, "\n"))
 
     -- Close the file
@@ -793,7 +793,7 @@ local function addButton()
 	package.loaded["gtMachineFind"] = nil
 
 	-- Require the module 
-	gtMachineFind = require("gtMachineFind")
+	gtMachineFind = require("gt_MachineOS/gtMachineFind")
 
 	checkLoop = false
 	disableControlPanel()
@@ -985,7 +985,7 @@ end
 local function changeColor(elementType, colorType)
   -- read the file into a table
   local colorTable = {}
-  for line in io.lines("config.lua") do
+  for line in io.lines("gt_MachineOS/config/config.lua") do
     table.insert(colorTable, line)
   end
 
@@ -1005,7 +1005,7 @@ local function changeColor(elementType, colorType)
   end
 
   -- write the modified table back to the correct file
-  local file = io.open("config.lua", "w")
+  local file = io.open("gt_MachineOS/config/config.lua", "w")
   file:write(table.concat(colorTable, "\n"))
   file:close()
 

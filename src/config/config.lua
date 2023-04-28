@@ -1,5 +1,5 @@
 --load requirements
-local utils = require("utils")
+local utils = require("gt_MachineOS/utils")
 
 
 local textColor = utils.colors.purple

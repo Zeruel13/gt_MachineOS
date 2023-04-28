@@ -1,5 +1,5 @@
 -- Require utils from utils.lua
-local utils = require("utils")
+local utils = require("gt_MachineOS/utils")
 
 -- Components to require
 local component = require("component")
