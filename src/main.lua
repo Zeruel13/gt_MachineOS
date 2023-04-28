@@ -459,7 +459,7 @@ local function reloadMachines(fileType)
 	end
 	
 		-- Unload the module
-	package.loaded["gtMachineFind"] = nil
+	package.loaded["gt_MachineOS/gtMachineFind"] = nil
 	
 end
 
@@ -790,7 +790,7 @@ local machineName
 local function addButton()
 
 	-- Unload the module
-	package.loaded["gtMachineFind"] = nil
+	package.loaded["gt_MachineOS/gtMachineFind"] = nil
 
 	-- Require the module 
 	gtMachineFind = require("gt_MachineOS/gtMachineFind")
