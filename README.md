@@ -42,7 +42,7 @@ buttonAPI ported to OC by MoparDan originally created by DireWolf20 for Computer
 ## Installation
  to install, type the following into your OC Computer/Server. 
 
-`wget https://raw.githubusercontent.com/Zeruel13/gt_machineOS/master/setup.lua -f'
+`wget https://raw.githubusercontent.com/Zeruel13/gt_machineOS/master/setup.lua -f`
 
 Once setup.lua is finished downloading, type `setup` into your OC Computer/Server and hit enter. 
 
