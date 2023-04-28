@@ -48,6 +48,14 @@ buttonAPI ported to OC by MoparDan originally created by DireWolf20 for Computer
 
 Once setup.lua is finished downloading, type `setup` into your OC Computer/Server and hit enter. 
 
+## Updating gt_MachineOS
+ to update gt_MachineOS, the steps are the exact same as installation!
+
+ `setup.lua` will autmatically check if you're downloading gt_MachineOS for the first time or updating.
+
+ If you're updating, `setup.lua` will not overwrite addressList or Config meaning it won't delete all your saved machines / color configs. 
+ 
+ 
 
 ## Usage
 - All machines/tanks need an adapter connected to the machine. You can do this by placing it directly beside, or placing the adapter less than 5 blocks away and use an MFU to wirelessly connect the adapter to the machine
