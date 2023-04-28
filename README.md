@@ -40,7 +40,8 @@ buttonAPI ported to OC by MoparDan originally created by DireWolf20 for Computer
 
 
 ## Installation
- to install, type the following into your OC Computer/Server. 
+ to install, type the following into your OC Computer/Server and hit enter. 
+tip: You can copy the code and paste it using middle-click on your mouse.
 
 `wget https://raw.githubusercontent.com/Zeruel13/gt_machineOS/master/setup.lua -f`
 
