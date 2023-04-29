@@ -4,7 +4,7 @@ gt_MachineOS is a program for OpenComputers to be used in GT New Horizons. It's 
 Features:
 - Up to 6 pages of machines in Multiblock Information (72 total machines!)
     - Display working status and any problems
-    - Display progress crafting
+    - Display crafting progress
 - Up to 5 pages of tanks in Fluid Levels (50 total tanks!)
     - Display current and max fluid levels
 - monitor your LSC
@@ -33,7 +33,7 @@ buttonAPI ported to OC by MoparDan originally created by DireWolf20 for Computer
     - Internet Card (needed to download the program)
     - Tier 3 CPU
     - Tier 1 Disk
-    - Tier 1 Memory
+    - Tier 3.5 memory
 - EEPROM (lua BIOS)
 - OpenOS installed on the computer
 
