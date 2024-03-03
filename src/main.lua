@@ -55,7 +55,7 @@ local function drawButton(x, y)
   utils.drawBorder(x, y, pageButtonWidth, pageButtonHeight, config.outlineColor)
 end
 
--- Initalizes screenOuter table to add entries to later
+-- Initializes screenOuter table to add entries to later
 local screenOuter = {}
 
 -- Adds all the borders to the screenOuter table	
@@ -136,7 +136,7 @@ local fluidLevelX = screenOuter["fluidLevels"].x + 2
 -- Start the text at the top of the section
 local fluidLevelY = screenOuter["fluidLevels"].y + 2
 
--- Initiazling variables for the dimension of the MultiBlock borders. 
+-- Initializing variables for the dimension of the MultiBlock borders. 
 local screenInner = {}
 local machineXOffset = 40
 local machineYOffset = 5
@@ -396,7 +396,7 @@ createPageButtons(fluidNumPage, createFluidButtons, fluidPGX)
 -- Checks if a user touches the screen then calls API.checkxy
 event.listen("touch", API.checkxy)
 
--- Initiazling variables for Energy Levels. Checks if there is one valid LSC in energy.lua
+-- Initializing variables for Energy Levels. Checks if there is one valid LSC in energy.lua
 local LSC 
 local energyMax
 local counter = 0
@@ -1230,7 +1230,7 @@ local function mainLoop()
 				-- Prints all the multiblock information
 				printMachineMethods(component.proxy(component.get(machine.id)), i)
 			 
-				-- If there exsists an entry in machineTankList at index i, print the tank info
+				-- If there exists an entry in machineTankList at index i, print the tank info
 				if machineTankList[i] then
 					printMachineTankInfo(component.proxy(component.get(machineTankList[i])), i)
 				end	
@@ -1244,8 +1244,8 @@ local function mainLoop()
 			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 4, "There are errors with the machine addresses!!!", utils.colors.red)
 			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 5, "This error appears when a machine has been added to gt_MachineOS", utils.colors.red)
 			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 6, "but your OC network can't access it.", utils.colors.red)
-			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 7, "This could happen because if a cable, adapater, or MFU has been removed.", utils.colors.red)
-			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 8, "Go to edit addresses and delete the machine has has been removed from your OC network.", utils.colors.red)
+			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 7, "This could happen if a cable, adapater, or MFU has been removed.", utils.colors.red)
+			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 8, "Press 'edit addresses' and delete the machine.", utils.colors.red)
 			firstTime = true
 		end
 	else
@@ -1291,7 +1291,7 @@ local function mainLoop()
 		gpu.set(75, 46, (string.format("%.2f", energyInfo.percent).."%"))
 		energyFiles.problemCheck(LSC)
 	
-		-- To get a more accurate time to fill/drain, it collects inforamtion for 30 second before updating it
+		-- To get a more accurate time to fill/drain, it collects information for 30 second before updating it
 		if counter == 30 then
 			energyFiles.displayEnergyInfo(energyInfo, netEnergyAVG, timeToFillAVG, colors)
 			counter = 0
