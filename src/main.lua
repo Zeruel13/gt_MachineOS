@@ -822,15 +822,15 @@ local function addButton()
 	
 		machineAddress = newMachineList[1]
 	
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "One address found. Enter the type of machine below: multiblock / tank / LSC.")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "One address found. Enter the type of machine below: Multiblock / Tank / LSC.")
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Enter type of machine: ")
-		machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
+		machineType = string.lower(readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string"))
 		 
 		
 		while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "LSC" and machineType ~= "lsc" do
-			gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC.")
+			gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be Multiblock / Tank / LSC.")
 			gpu.fill(multiblockInformationX + 24, multiblockInformationY + 7, 40, 1, " ")
-			machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
+			machineType = string.lower(readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string"))
 		end
 	
 		-- Set the maximum length for the machine name and address
@@ -881,14 +881,14 @@ local function editButton()
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "This page edits exisiting machines in gt_MachineOS.")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "You can change the position of a machine, rename it, or delete it.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "What type of machine would you like to edit? multiblock / tank / LSC.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "What type of machine would you like to edit? Multiblock / Tank / LSC.")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "Enter type of machine: ")
-	machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
+	machineType = string.lower(readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string"))
 		
 	while machineType ~= "multiblock" and machineType ~= "tank" and machineType ~= "LSC" and machineType ~= "lsc" do
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Machine type must be multiblock / tank / LSC.")
 		gpu.fill(multiblockInformationX + 24, multiblockInformationY + 7, 40, 1, " ")
-		machineType = readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string")
+		machineType = string.lower(readInput(multiblockInformationX + 24, multiblockInformationY + 7, "string"))
 	end
 	
 		fileType = {
