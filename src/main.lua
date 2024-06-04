@@ -928,14 +928,14 @@ local function editButton()
 	
 	local editOption
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "Editing: "..machineNum..". "..array[machineNum].name)
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "Type a new number to change position, 'rename' to rename, or 'delete' to remove.")
+	gpu.set(multiblockInformationX + 1, multiblockInformationY + 2, "Type a new number to change position, 'Rename' to rename, or 'Delete' to remove.")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Enter number or delete: ")
-	editOption = readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string")
+	editOption = string.lower(readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string"))
 	
 	while not (editOption == "delete" or editOption == "rename" or (1 <= (tonumber(editOption) or 0) and (tonumber(editOption) or 0) <= #array)) do
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Input must be a number between 1 and "..#array.." , 'rename', or 'delete'.")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Input must be a number between 1 and "..#array.." , 'Rename', or 'Delete'.")
 		gpu.fill(multiblockInformationX + 25, multiblockInformationY + 3, 50, 1, " ")
-		editOption = readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string")
+		editOption = string.lower(readInput(multiblockInformationX + 25, multiblockInformationY + 3, "string"))
 	end
 	
 	gpu.fill(multiblockInformationX + 25, multiblockInformationY + 4, 50, 1, " ")
@@ -1047,12 +1047,12 @@ local function colorButton()
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Enter an element name to change,'default' to reset all to default,")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 9, "or enter one of the following themes: 'waterlily', 'aurora', or 'mushroom'.")
 	gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Enter elemant name or 'default': ")
-	elementType = readInput(multiblockInformationX + 34, multiblockInformationY + 10, "string")
+	local elementType = string.lower(readInput(multiblockInformationX + 34, multiblockInformationY + 10, "string"))
 
 	while not (elementType == "section" or elementType == "outline" or elementType == "text" or elementType == "title" or elementType == "default" or elementType == "waterlily" or elementType == "aurora" or elementType == "mushroom" ) do
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 11, "Input must be a the name of an element or 'default'")
 		gpu.fill(multiblockInformationX + 34, multiblockInformationY + 10, 25, 1, " ")
-		elementType = readInput(multiblockInformationX + 34, multiblockInformationY + 10, "string")
+		elementType = string.lower(readInput(multiblockInformationX + 34, multiblockInformationY + 10, "string"))
 	end
 
 	if elementType == 'default' then
@@ -1095,12 +1095,12 @@ local function colorButton()
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 13, "Enter one of the below colors, a hex value (077a11), or 'default'.")
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "blue, purple, red, green, white, orange, yellow, cyan, turq")
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 15, "Enter color name or hex: ")
-		colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string")
+		colorType = string.lower(readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string"))
 		
 		while not (colorType == "blue" or colorType == "purple" or colorType == "red" or colorType == "green" or colorType == "white" or colorType == "orange" or colorType == "yellow" or colorType == "cyan" or colorType == "turq" or colorType == "default" or string.len(colorType) == 6) do
 			gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, "Input a valid color name or hex value.")
 			gpu.fill(multiblockInformationX + 26, multiblockInformationY + 15, 25, 1, " ")
-			colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string")
+			colorType = string.lower(readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string"))
 		end
 		
 		if colorType == "default" then
