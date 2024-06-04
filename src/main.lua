@@ -982,6 +982,16 @@ local function machineCheck(machines)
   return true -- all machines found
 end
 
+local function tankCheck(tanks)
+	for i, tank in ipairs(tanks) do
+		local tankCheck = component.get(tank.id)
+		if not tankCheck then
+			return false
+		end 
+	end 
+	return true
+end 
+
 local function changeColor(elementType, colorType)
   -- read the file into a table
   local colorTable = {}
@@ -1241,8 +1251,8 @@ local function mainLoop()
 		else
 			-- Clears the multiblock information section
 			gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 4, "There are errors with the machine addresses!!!", utils.colors.red)
-			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 5, "This error appears when a machine has been added to gt_MachineOS", utils.colors.red)
+			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 4, "There are errors with the Multiblock addresses!!!", utils.colors.red)
+			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 5, "This error appears when a Multiblock has been added to gt_MachineOS", utils.colors.red)
 			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 6, "but your OC network can't access it.", utils.colors.red)
 			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 7, "This could happen if a cable, adapater, or MFU has been removed.", utils.colors.red)
 			utils.printColoredText(screenOuter["multiblockInformation"].x + 2, screenOuter["multiblockInformation"].y + 8, "Press 'edit addresses' and delete the machine.", utils.colors.red)
@@ -1255,18 +1265,25 @@ local function mainLoop()
 
 	-- To check if user entered tanks or not
 	if #tanks > 0 then
-		
 		-- Clear the area where the fluid Levels is set 
-		gpu.fill(94, 26, 52, 8, " ")
-	
-		fluidYValue = 0
-		-- Iterate through the tankFluidLevels array and call printTankInfo
-		for i = fluidStartBorder, fluidFinishBorder do
-			local tank = tankFluidLevels[i]
-			printTankInfo(component.proxy(tank.id), tank.name)
-			fluidYValue = fluidYValue + 1
+		gpu.fill(94, 26, 64, 8, " ")
+		
+		if tankCheck(tanks) then 
+			fluidYValue = 0
+			-- Iterate through the tankFluidLevels array and call printTankInfo
+			for i = fluidStartBorder, fluidFinishBorder do
+				local tank = tankFluidLevels[i]
+				printTankInfo(component.proxy(tank.id), tank.name)
+				fluidYValue = fluidYValue + 1
+			end
+		else
+			utils.printColoredText(screenOuter["fluidLevels"].x + 2, screenOuter["fluidLevels"].y + 2, "There are errors with the Tank addresses", utils.colors.red)
+			utils.printColoredText(screenOuter["fluidLevels"].x + 2, screenOuter["fluidLevels"].y + 3, "This error appears when a Tank has been added to gt_MachineOS", utils.colors.red)
+			utils.printColoredText(screenOuter["fluidLevels"].x + 2, screenOuter["fluidLevels"].y + 4, "but your OC network can't access it.", utils.colors.red)
+			utils.printColoredText(screenOuter["fluidLevels"].x + 2, screenOuter["fluidLevels"].y + 5, "This could happen if a cable, adapater, or MFU has been removed.", utils.colors.red)
+			utils.printColoredText(screenOuter["fluidLevels"].x + 2, screenOuter["fluidLevels"].y + 6, "Press 'edit addresses' and delete the machine.", utils.colors.red)			
 		end
-	else	
+	else
 		gpu.set(screenOuter["fluidLevels"].x + 2, screenOuter["fluidLevels"].y + 2, "There are no tanks entered!")	
 	end
 
