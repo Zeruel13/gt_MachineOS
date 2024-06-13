@@ -10,14 +10,16 @@ local energyFiles = {}
 -- Returns energy information
 function energyFiles.getEnergyInformation(LSC, energyMax, colors, timeToFillAVG, netEnergyAVG)
     -- Extract energy input and output values from sensor information
-    local energyInput = string.match(LSC.getSensorInformation()[7], "%d[%d,]*")
-    local energyOutput =  string.match(LSC.getSensorInformation()[8], "%d[%d,]*")
+	--[7] & [8] = avg eu in & out (5 seconds)
+    local energyInput = string.match(LSC.getSensorInformation()[10], "%d[%d,]*")
+    local energyOutput =  string.match(LSC.getSensorInformation()[11], "%d[%d,]*")
     -- Calculate net energy and energy per second
     local netEnergy = math.floor((string.gsub(energyInput, ",", "")) - (string.gsub(energyOutput, ",", "")))
     local energyPerSecond = netEnergy*20
     
     -- Extract energy level and calculate time to fill
-    local energyLevel = math.floor(string.gsub(LSC.getSensorInformation()[2], "([^0-9]+)", "") + 0)
+	--[2] = current energy level
+    local energyLevel = LSC.getEUStored()
     local timeToFill = math.huge
     if netEnergy ~= 0 then
         timeToFill = math.floor((netEnergy > 0 and energyMax - energyLevel or energyLevel) / math.abs(energyPerSecond))
@@ -79,7 +81,8 @@ end
 
 function energyFiles.problemCheck(LSC)
 	-- get the maintenance status 
-	status = LSC.getSensorInformation()[9]:gsub(".*§a(.-)§r.*", "%1")
+	--[9] = Status 
+	status = LSC.getSensorInformation()[13]:gsub(".*§a(.-)§r.*", "%1")
 	if status == "Working perfectly" then
 		if LSC.isWorkAllowed() == true then
 			utils.printColoredText(78 - #status/2, 47, status, utils.colors.green)
