@@ -467,92 +467,57 @@ event.ignore("touch", API.checkxy)
 API.waitForButtonPress("backButton")
 end
 
-local function processingFilterButton()
+local function displayStaticPage(title, contentLines)
+  checkLoop = false
 
-end
+  -- Disable control panel and machine buttons
+  setControlPanelState(false)
+  setMachineButtonsState(false)
 
-local function idleFilterButton()
+  -- Clear the multiblock information section
+  gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+  gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, title)
 
-end
+  for i, line in ipairs(contentLines) do
+    gpu.set(multiblockInformationX + 1, multiblockInformationY + 3 + i, line)
+  end
 
-local function processingDisabledFilterButton()
-
-end
-
-local function problemFilterButton()
-
-end
-
-local function createFilterButtons()
-
-	checkLoop = false
-	disableControlPanel()
-	disableMachineButtons()
-
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 10, multiblockInformationX+ 8, 2, config.outlineColor)
-	API.setTable("processingFilterButton", processingFilterButton, multiblockInformationX+ 4, multiblockInformationY + 11, multiblockInformationX + 13, multiblockInformationY + 11, "Processing", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
-
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 14, multiblockInformationX+ 2, 2, config.outlineColor)
-	API.setTable("idleFilterButton", idleFilterButton, multiblockInformationX+ 4, multiblockInformationY + 15, multiblockInformationX + 7, multiblockInformationY + 15, "Idle", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
-
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 18, multiblockInformationX+ 17, 2, config.outlineColor)
-	API.setTable("processingDisabledFilterButton", processingDisabledFilterButton, multiblockInformationX+ 4, multiblockInformationY + 19, multiblockInformationX + 20, multiblockInformationY + 19, "Processing Disabled", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
-
-	utils.drawBorder(multiblockInformationX+ 1, multiblockInformationY+ 22, multiblockInformationX+ 10, 2, config.outlineColor)
-	API.setTable("problemFilterButton", problemFilterButton, multiblockInformationX+ 4, multiblockInformationY + 23, multiblockInformationX + 15, multiblockInformationY + 23, "Has Problems", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
-
-	API.screen("processingFilterButton")
-	API.screen("idleFilterButton")
-	API.screen("processingDisabledFilterButton")
-	API.screen("problemFilterButton")
-
+  createBackButton()
 end
 
 local function aboutButton()
-
-	checkLoop = false
-	disableControlPanel()
-	disableMachineButtons()
-
-	-- Clears the multiblock information section
-	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "Welcome to the 'About' page for gt_MachineOS.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Created by: Zeruel.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 5, "References / Thank you list ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "Border code by Krakaen for 'OPENCOMPUTER AUTOMATION PROGRAM'.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "buttonAPI by DireWolf20, ported to OC by MoparDan.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Gordominossi for inspiration and consulting.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "This program was created to combat machine maintenance frustration.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 11, "As with all programs, the scope increased dramatically")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 13, "This is the first Lua program I wrote and learned a lot while making it.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "Hope you enjoy using it as much as I enjoyed making it!")
-
-	createBackButton()
+  local contentLines = {
+    "Welcome to the 'About' page for gt_MachineOS.",
+    "Created by: Zeruel.",
+    "References / Thank you list ",
+    "Border code by Krakaen for 'OPENCOMPUTER AUTOMATION PROGRAM'.",
+    "buttonAPI by DireWolf20, ported to OC by MoparDan.",
+    "Gordominossi for inspiration and consulting.",
+    "This program was created to combat machine maintenance frustration.",
+    "As with all programs, the scope increased dramatically.",
+    "This is the first Lua program I wrote and learned a lot while making it.",
+    "Hope you enjoy using it as much as I enjoyed making it!"
+  }
+  displayStaticPage("About", contentLines)
 end
 
 local function helpButton()
-
-	checkLoop = false
-	disableControlPanel()
-	disableMachineButtons()
-
-	-- Clears the multiblock information section
-	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "Welcome to the 'Help' page for gt_MachineOS.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "To start, connect a machine to your OC Network for gt_MachineOS to detect it.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Attach the machine to an adapter or use an MFU for wireless connection.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "Note that only one machine can be added to the OC network at a time.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 7, "i.e., only attach one machine to an adapter / MFU at a time. ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 9, "Then, hit the 'Add Address' button and let the program guide you. ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 11, "Tip:")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 12, "Name a tank and multiblock the same for it to appear in the multiblock section!")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "Machines can also be edited using the 'Edit Addresses' button.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 15, "You can change the position of a machine or delete it.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, "Multiblocks can be remotely turned on/off via top-right button. ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 18, "If there's a maintanance issue gt_MachineOS will notify you. ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 18, "LSC calculates time to drain/fill every 30 seconds.")
-
-	createBackButton()
+  local contentLines = {
+    "Welcome to the 'Help' page for gt_MachineOS.",
+    "To start, connect a machine to your OC Network for gt_MachineOS to detect it.",
+    "Attach the machine to an adapter or use an MFU for wireless connection.",
+    "Note that only one machine can be added to the OC network at a time.",
+    "i.e., only attach one machine to an adapter / MFU at a time.",
+    "Then, hit the 'Add Address' button and let the program guide you.",
+    "Tip:",
+    "Name a tank and multiblock the same for it to appear in the multiblock section!",
+    "Machines can also be edited using the 'Edit Addresses' button.",
+    "You can change the position of a machine or delete it.",
+    "Multiblocks can be remotely turned on/off via top-right button.",
+    "If there's a maintenance issue gt_MachineOS will notify you.",
+    "LSC calculates time to drain/fill every 30 seconds."
+  }
+  displayStaticPage("Help", contentLines)
 end
 
 -- Note, can't be local as it accessses buttonAPI
