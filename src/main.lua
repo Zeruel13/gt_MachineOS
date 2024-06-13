@@ -94,13 +94,6 @@ function printBordersOuter(screenOuterName)
 	
 end
 
-local multiblockInformationX = screenOuter["multiblockInformation"].x + 2
-local multiblockInformationY = screenOuter["multiblockInformation"].y + 1
-
--- Get the dimensions of the pinnedMachines section. 
-local controlPanelX = screenOuter["controlPanel"].x + 2
-local controlPanelY = screenOuter["controlPanel"].y + 1
-
 penguin = [[
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡤⠴⠒⠒⠒⠶⢤⣄⡀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⡀⠀⠀⠀⠀⠀
@@ -131,9 +124,12 @@ titleCard = [[
   |___/ |______|                                                                                                                                                                                                                                                                                                        
 ]]
 
--- Indent the text by 2 spaces from the left side of the section
+-- Get the dimensions of each of the different outer sections
+local multiblockInformationX = screenOuter["multiblockInformation"].x + 2
+local multiblockInformationY = screenOuter["multiblockInformation"].y + 1
+local controlPanelX = screenOuter["controlPanel"].x + 2
+local controlPanelY = screenOuter["controlPanel"].y + 1
 local fluidLevelX = screenOuter["fluidLevels"].x + 2 
--- Start the text at the top of the section
 local fluidLevelY = screenOuter["fluidLevels"].y + 2
 
 -- Initializing variables for the dimension of the MultiBlock borders. 
@@ -153,7 +149,6 @@ local function setScreenInner(currentMachineName, i)
 	machineX = machinexStart + machineXOffset * ((i - 1) // 6 % 2),
 	machineY = machineyStart + machineYOffset * ((i - 1) % 6)
 	}
-	
 end
 
 local function loadMachines()
@@ -273,7 +268,7 @@ local function createMachineControlButton(machine, i, x, y)
 	API.setTable("Control"..i, function() machine.setWorkAllowed(not machine.isWorkAllowed()) end, x + xValue, y + 1, x + 36, y + 1, buttonLabel, buttonColor, {on = utils.colors.black, off = utils.colors.yellow}, true)
 	API.screen("Control"..i)
 end
-	
+
 -- Prints all the MultiBlock Information. 
 local function printMachineMethods(machine, i)
 
@@ -413,7 +408,7 @@ function loadLSC()
 	-- Clears the energy section
 	gpu.fill(screenOuter["energy"].x + 2, screenOuter["energy"].y + 1, 152, 8, " ")
 
-	if #energy == 1 and component.proxy(component.get(energy[1].id)) and component.proxy(component.get(energy[1].id)).getSensorInformation()[7] ~= nil then
+	if #energy == 1 and component.proxy(component.get(energy[1].id)) and component.proxy(component.get(energy[1].id)).getSensorInformation()[10] ~= nil then
 
 		energyCheck = true
 		
@@ -421,8 +416,7 @@ function loadLSC()
 		utils.drawBorder(screenOuter["energy"].x + 3, screenOuter["energy"].y + 2, 149, 3, config.outlineColor)	
 
 		LSC = component.proxy(component.get(energy[1].id))
-		energyMax = energyMax = LSC.getEUMaxStored()
-		
+		energyMax = LSC.getEUMaxStored()
 	end
 end
 
@@ -538,8 +532,9 @@ function backButton()
 		button["problemFilterButton"]["isEnabled"] = false
 	end
 	
-	enableControlPanel()
-	enableMachineButtons()
+        -- Enable the control panel and machine buttons
+        setControlPanelState(true)
+        setMachineButtonsState(true)
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
@@ -694,8 +689,10 @@ local function addButton()
 	gtMachineFind = require("gt_MachineOS/gtMachineFind")
 
 	checkLoop = false
-	disableControlPanel()
-	disableMachineButtons()
+	
+	-- Disable the control and machine buttons
+	setControlPanelState(false)
+	setMachineButtonsState(false)
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
@@ -746,10 +743,11 @@ local function addButton()
 			LSC = "energy"
 		}
 		
-		addMachine(fileType[machineType], machineAddress, machineName)
+		-- Add a machine
+		modifyMachineFile("add", fileType[machineType], nil, machineAddress, machineName)
 		
 		-- Print a confirmation message
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, machineType.." added to "..fileType[machineType]..".lua.")
+		gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, machineName.." added to "..fileType[machineType]..".lua.")
 		
 		reloadMachines(fileType[machineType])
 
@@ -772,8 +770,10 @@ end
 local function editButton()
 
 	checkLoop = false
-	disableControlPanel()
-	disableMachineButtons()
+	
+	-- Dsiable the control and machine buttons
+	setControlPanelState(false)
+	setMachineButtonsState(false)
 
 	-- Clears the multiblock information section
 	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
@@ -839,7 +839,8 @@ local function editButton()
 	gpu.fill(multiblockInformationX + 25, multiblockInformationY + 4, 50, 1, " ")
 	
 	if editOption == "delete" then
-		deleteMachine(fileType[machineType], machineNum)
+		-- To delete a machine
+		modifyMachineFile("delete", fileType[machineType], machineNum)
 		-- Print a confirmation message
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, array[machineNum].name.." deleted from "..fileType[machineType]..".lua.")
 	elseif editOption == "rename" then
@@ -854,17 +855,18 @@ local function editButton()
 			newName = readInput(multiblockInformationX + 33, multiblockInformationY + 4, "string")
 		end
 
-		-- call the renameMachine function
-		local oldName, newName = renameMachine(fileType[machineType], machineNum, newName)
+		-- Rename a machine
+		local oldName, newName = modifyMachineFile("rename", fileType[machineType], machineNum, nil, nil, newName)
 
 		-- display the confirmation message with old and new names
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, oldName.." renamed to "..newName.." in "..fileType[machineType]..".lua.")
 	else
-		moveMachine(fileType[machineType], machineNum, editOption)
+		-- To move a machine
+		modifyMachineFile("move", fileType[machineType], machineNum, nil, nil, nil, editOption)
+		
 		-- Print a confirmation message
 		gpu.set(multiblockInformationX + 1, multiblockInformationY + 6,  array[machineNum].name.." moved from position "..machineNum.." to "..editOption.." in "..fileType[machineType]..".lua.")
 	end
-
 		reloadMachines(fileType[machineType])
 		
 		createBackButton()
@@ -925,9 +927,6 @@ local function changeColor(elementType, colorType)
 	return oldColor, colorType
 
 end
-
-
-local defaultType
 
 local function colorButton()
 	checkLoop = false
