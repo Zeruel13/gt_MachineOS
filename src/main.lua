@@ -421,7 +421,7 @@ function loadLSC()
 		utils.drawBorder(screenOuter["energy"].x + 3, screenOuter["energy"].y + 2, 149, 3, config.outlineColor)	
 
 		LSC = component.proxy(component.get(energy[1].id))
-		energyMax = math.floor(string.gsub(LSC.getSensorInformation()[3], "([^0-9]+)", "") + 0)
+		energyMax = energyMax = LSC.getEUMaxStored()
 		
 	end
 end
