@@ -1011,42 +1011,20 @@ API.setTable("about", aboutButton, controlPanelX + 56, controlPanelY + 4, contro
 utils.drawBorder(controlPanelX + 55, controlPanelY + 6, 7, 2, config.outlineColor)
 API.setTable("help", helpButton, controlPanelX + 57, controlPanelY + 7, controlPanelX + 61, controlPanelY + 7, "Help", utils.colors.white, {on = utils.colors.black, off = utils.colors.yellow}, true)
 
-function disableControlPanel()
-
-	button["add"]["isEnabled"] = false
-	button["edit"]["isEnabled"] = false
-	button["filter"]["isEnabled"] = false
-	button["about"]["isEnabled"] = false
-	button["help"]["isEnabled"] = false
-
+function setControlPanelState(isEnabled)
+    button["add"]["isEnabled"] = isEnabled
+    button["edit"]["isEnabled"] = isEnabled
+    button["filter"]["isEnabled"] = isEnabled
+    button["about"]["isEnabled"] = isEnabled
+    button["help"]["isEnabled"] = isEnabled
 end
 
-function enableControlPanel()
-
-	button["add"]["isEnabled"] = true
-	button["edit"]["isEnabled"] = true
-	button["filter"]["isEnabled"] = true
-	button["about"]["isEnabled"] = true
-	button["help"]["isEnabled"] = true
-
-end
-
-function disableMachineButtons()
-
-	for name, data in pairs(button) do
-		if string.find(name, "Control") or string.find(name, "machinePage") then
-		button[name]["isEnabled"] = false
-		end
-	end
-end
-
-function enableMachineButtons()
-
-	for name, data in pairs(button) do
-		if string.find(name, "Control") or string.find(name, "machinePage") then
-		button[name]["isEnabled"] = true
-		end
-	end
+function setMachineButtonsState(isEnabled)
+    for name, data in pairs(button) do
+        if string.find(name, "Control") or string.find(name, "machinePage") then
+            button[name]["isEnabled"] = isEnabled
+        end
+    end
 end
 
 local firstTime = true
