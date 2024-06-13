@@ -429,39 +429,30 @@ end
 loadLSC()
 
 local function reloadMachines(fileType)
+    -- Reload the gtMachineFind module
+    package.loaded["gt_MachineOS/gtMachineFind"] = nil
+    gtMachineFind = require("gt_MachineOS/gtMachineFind")
 
-	-- Require the module again (it will be reloaded)
-	gtMachineFind = require("gt_MachineOS/gtMachineFind")
-		
-	if fileType == "machines" then	
-		
-		-- Reload the machines.lua file
-		machines_chunk = loadfile("gt_MachineOS/addressList/machines.lua")
-		machines = machines_chunk()
-		
-		-- Reload function required to load machines
-		loadMachines()
-	elseif fileType == "tanks" then
-	
-		-- Reload the tanks.lua file
-		tanks_chunk = loadfile("gt_MachineOS/addressList/tanks.lua")
-		tanks = tanks_chunk()
-		
-		-- Reload function required to load tanks
-		loadTanks()
-	else
-	
-		-- Reload the energy.lua file
-		energy_chunk = loadfile("gt_MachineOS/addressList/energy.lua")
-		energy = energy_chunk()
-	
-		-- Reload function required to load LSC
-		loadLSC()
-	end
-	
-		-- Unload the module
-	package.loaded["gt_MachineOS/gtMachineFind"] = nil
-	
+    -- Define file mappings
+    local fileMapping = {
+        machines = { file = "gt_MachineOS/addressList/machines.lua", loadFunction = loadMachines },
+        tanks = { file = "gt_MachineOS/addressList/tanks.lua", loadFunction = loadTanks },
+        energy = { file = "gt_MachineOS/addressList/energy.lua", loadFunction = loadLSC }
+    }
+
+    -- Directly load the file and call the corresponding load function
+    local fileInfo = fileMapping[fileType]
+
+    local chunk = loadfile(fileInfo.file)
+    if fileType == "machines" then
+        machines = chunk()
+    elseif fileType == "tanks" then
+        tanks = chunk()
+    elseif fileType == "energy" then
+        energy = chunk()
+    end
+
+    fileInfo.loadFunction()
 end
 
 local function createBackButton()
