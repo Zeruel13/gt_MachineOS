@@ -591,19 +591,6 @@ function backButton()
 	checkLoop = true
 end
 
-local function filterButton()
-
-checkLoop = false
-
--- Clears the multiblock information section
-gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Filtering by Status will be in a future version :)")
-
-createFilterButtons()
-createBackButton()
-
-end
-
 local function rebootButton()
 computer.shutdown(true)
 end
@@ -624,93 +611,47 @@ end
 utils.printAsciiArt(controlPanelX - 2, controlPanelY - 12, titleCard, config.titleColor)
 gpu.set(controlPanelX + 35, controlPanelY - 2, "Created by: Zeruel    Ver 1.0 ")
 		
--- function for adding a line to the end of the file
-local function addMachine(fileType, machineAddress, machineName)
-
-    -- read the file into a table
+local function modifyMachineFile(action, fileType, machineIndex, machineAddress, machineName, newName, newLineNum)
+    -- Read the file into a table
     local gtMachineTable = {}
-    for line in io.lines("gt_MachineOS/addressList/"..fileType..".lua") do
+    for line in io.lines("gt_MachineOS/addressList/" .. fileType .. ".lua") do
         table.insert(gtMachineTable, line)
     end
-    
-	-- insert the new machine at the desired position
-	local position = #gtMachineTable - 2 -- insert before the last line (which is 'return')
-	table.insert(gtMachineTable, position, "	{id = \"" .. machineAddress .. "\", name = \"" .. machineName .. "\"},")
 	
-    -- write the modified table back to the correct file
-    local file = io.open("gt_MachineOS/addressList/"..fileType..".lua", "w")
-    file:write(table.concat(gtMachineTable, "\n"))
-
-    -- Close the file
-    file:close()
-	
-end
-
--- function for moving a line in the file
-local function moveMachine(fileType, machineIndex, newLineNum)
-
-    -- read the file into a table
-    local gtMachineTable = {}
-    for line in io.lines("gt_MachineOS/addressList/"..fileType..".lua") do
-        table.insert(gtMachineTable, line)
-    end
+	 local oldLine, newLine
     
-    -- remove the desired line
-    local removedLine = table.remove(gtMachineTable, machineIndex + 5)
-
-    -- insert the removed line at the new position
-    table.insert(gtMachineTable, newLineNum + 5, removedLine)
-
-    -- write the modified table back to the correct file
-    local file = io.open("gt_MachineOS/addressList/"..fileType..".lua", "w")
-    file:write(table.concat(gtMachineTable, "\n"))
-
-    -- Close the file
-    file:close()
-end
-
--- function for deleting a line from the file
-local function deleteMachine(fileType, machineIndex)
-    -- read the file into a table
-    local gtMachineTable = {}
-    for line in io.lines("gt_MachineOS/addressList/"..fileType..".lua") do
-        table.insert(gtMachineTable, line)
-    end
+    if action == "add" then
+        -- Insert the new machine at the desired position
+        local position = #gtMachineTable - 2 -- Insert before the last line (which is 'return')
+        table.insert(gtMachineTable, position, "    {id = \"" .. machineAddress .. "\", name = \"" .. machineName .. "\"},")
     
-    -- remove the desired line
-    local removedLine = table.remove(gtMachineTable, machineIndex + 5)
-
-    -- write the modified table back to the correct file
-    local file = io.open("gt_MachineOS/addressList/"..fileType..".lua", "w")
-    file:write(table.concat(gtMachineTable, "\n"))
-
-    -- Close the file
-    file:close()
-end
-
-local function renameMachine(fileType, machineIndex, newName)
-    -- read the file into a table
-    local gtMachineTable = {}
-    for line in io.lines("gt_MachineOS/addressList/"..fileType..".lua") do
-        table.insert(gtMachineTable, line)
-    end
+    elseif action == "move" then
+        -- Remove the desired line
+        local removedLine = table.remove(gtMachineTable, machineIndex + 5)
+        -- Insert the removed line at the new position
+        table.insert(gtMachineTable, newLineNum + 5, removedLine)
     
-    -- update the name of the desired machine
-    local oldLine = gtMachineTable[machineIndex + 5]
-    local newLine = oldLine:gsub('name = "(.-)"', 'name = "'..newName..'"')
-    gtMachineTable[machineIndex + 5] = newLine
+    elseif action == "delete" then
+        -- Remove the desired line
+        table.remove(gtMachineTable, machineIndex + 5)
+    
+    elseif action == "rename" then
+        -- Update the name of the desired machine
+        oldLine = gtMachineTable[machineIndex + 5]
+        newLine = oldLine:gsub('name = "(.-)"', 'name = "' .. newName .. '"')
+        gtMachineTable[machineIndex + 5] = newLine
+    end
 
-    -- write the modified table back to the correct file
-    local file = io.open("gt_MachineOS/addressList/"..fileType..".lua", "w")
+    -- Write the modified table back to the file
+    local file = io.open("gt_MachineOS/addressList/" .. fileType .. ".lua", "w")
     file:write(table.concat(gtMachineTable, "\n"))
-
-    -- Close the file
     file:close()
 
-    -- return the old and new names
-    return oldLine:match('name = "(.-)"'), newName
+    if action == "rename" then
+		-- return the old and new names
+		return oldLine:match('name = "(.-)"'), newName
+    end
 end
-
 
 local function readInput(x, y, valueType)
   local input = ""
