@@ -289,7 +289,8 @@ local function printMachineMethods(machine, i)
 		if (machine.isWorkAllowed()) == true then
 			if(machine.isMachineActive()) == true then
 				utils.printColoredText(screenInner[i].machineX + 2, screenInner[i].machineY + 1,"Machine go Brrrrrrr", utils.colors.green)
-				gpu.set(screenInner[i].machineX + 2, screenInner[i].machineY + 2,(string.gsub(machine.getSensorInformation()[1], "§.","")))
+				gpu.set(screenInner[i].machineX + 2, screenInner[i].machineY + 2, string.format("Progress: %d s / %d s", math.floor(machine.getWorkProgress() / 20), math.floor(machine.getWorkMaxProgress() / 20)))
+
 			else
 			utils.printColoredText(screenInner[i].machineX + 2, screenInner[i].machineY + 1,"Machine Status: IDLE", utils.colors.orange)
 			end	
