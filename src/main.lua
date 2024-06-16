@@ -929,65 +929,80 @@ local function changeColor(elementType, colorType)
 end
 
 local function colorButton()
-	checkLoop = false
+    checkLoop = false
 
-	-- Disable the control panel and machine buttons
-	setControlPanelState(false)
-	setMachineButtonsState(false)
+    -- Disable the control panel and machine buttons
+    setControlPanelState(false)
+    setMachineButtonsState(false)
 
-	-- Clear the multiblock information section
-	gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "This page edits the colors of the program")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Section Color: " .. utils.getColorName(config.sectionColor))
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Outline Color: " .. utils.getColorName(config.outlineColor))
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 5, "Text Color: " .. utils.getColorName(config.textColor))
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "Title Color: " .. utils.getColorName(config.titleColor))
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Enter an element name to change, 'default' to reset all to default,")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 9, "or enter one of the following themes: 'waterlily', 'aurora', or 'mushroom'.")
-	gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Enter element name or 'default': ")
-	local elementType = string.lower(readInput(multiblockInformationX + 34, multiblockInformationY + 10, "string"))
+    -- Clear the multiblock information section
+    gpu.fill(multiblockInformationX, multiblockInformationY, 83, 34, " ")
+    gpu.set(multiblockInformationX + 1, multiblockInformationY + 1, "This page edits the colors of the program")
+    gpu.set(multiblockInformationX + 1, multiblockInformationY + 3, "Section Color: " .. utils.getColorName(config.sectionColor))
+    gpu.set(multiblockInformationX + 1, multiblockInformationY + 4, "Outline Color: " .. utils.getColorName(config.outlineColor))
+    gpu.set(multiblockInformationX + 1, multiblockInformationY + 5, "Text Color: " .. utils.getColorName(config.textColor))
+    gpu.set(multiblockInformationX + 1, multiblockInformationY + 6, "Title Color: " .. utils.getColorName(config.titleColor))
+    gpu.set(multiblockInformationX + 1, multiblockInformationY + 8, "Enter an element name to change, 'default' to reset all to default,")
+    gpu.set(multiblockInformationX + 1, multiblockInformationY + 9, "or enter one of the following themes: 'waterlily', 'aurora', or 'mushroom'.")
+    gpu.set(multiblockInformationX + 1, multiblockInformationY + 10, "Enter element name or 'default': ")
 
-	while not (elementType == "section" or elementType == "outline" or elementType == "text" or elementType == "title" or elementType == "default" or elementType == "waterlily" or elementType == "aurora" or elementType == "mushroom" ) do
-		gpu.set(multiblockInformationX + 1, multiblockInformationY + 11, "Input must be a the name of an element or 'default'")
-		gpu.fill(multiblockInformationX + 34, multiblockInformationY + 10, 25, 1, " ")
-		elementType = string.lower(readInput(multiblockInformationX + 34, multiblockInformationY + 10, "string"))
-  end
+    -- Define the valid element types and theme colors
+    local validElementTypes = { section = true, outline = true, text = true, title = true }
+    local themeColors = {
+        default = { section = "blue", outline = "yellow", text = "purple", title = "cyan" },
+        waterlily = { section = "5f8232", outline = "ff616c", text = "91ec65", title = "ff616c" },
+        aurora = { section = "404373", outline = "03A6A6", text = "503F8C", title = "503F8C" },
+        mushroom = { section = "5b0902", outline = "A68F81", text = "F2F2F2", title = "F28D77" }
+    }
 
-  local themeColors = {
-    default = { section = "blue", outline = "yellow", text = "purple", title = "cyan" },
-    waterlily = { section = "5f8232", outline = "ff616c", text = "91ec65", title = "ff616c" },
-    aurora = { section = "404373", outline = "03A6A6", text = "503F8C", title = "503F8C" },
-    mushroom = { section = "5b0902", outline = "A68F81", text = "F2F2F2", title = "F28D77" }
-  }
-
-  if themeColors[elementType] then
-    for elType, color in pairs(themeColors[elementType]) do
-      changeColor(elType, color)
+    -- Combine element types and theme names into a single validation table
+    local validInputs = {}
+    for k in pairs(validElementTypes) do
+        validInputs[k] = true
     end
-    gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, "The theme has been set to '" .. elementType .. "'.")
-  else
-    gpu.set(multiblockInformationX + 1, multiblockInformationY + 13, "Enter one of the below colors, a hex value (077a11), or 'default'.")
-    gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "blue, purple, red, green, white, orange, yellow, cyan, turq")
-    gpu.set(multiblockInformationX + 1, multiblockInformationY + 15, "Enter color name or hex: ")
-    local colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string")
-
-    while not (colorType == "blue" or colorType == "purple" or colorType == "red" or colorType == "green" or colorType == "white" or colorType == "orange" or colorType == "yellow" or colorType == "cyan" or colorType == "turq" or colorType == "default" or string.len(colorType) == 6) do
-      gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, "Input a valid color name or hex value.")
-      gpu.fill(multiblockInformationX + 26, multiblockInformationY + 15, 25, 1, " ")
-      colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string")
+    for k in pairs(themeColors) do
+        validInputs[k] = true
     end
 
-    if colorType == "default" then
-      local defaultColors = { section = "blue", outline = "yellow", text = "purple", title = "cyan" }
-      local oldColor, newColor = changeColor(elementType, defaultColors[elementType])
-      gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, elementType .. " has been reset to default.")
+    local elementType = string.lower(readInput(multiblockInformationX + 34, multiblockInformationY + 10, "string"))
+
+    while not validInputs[elementType] do
+        gpu.set(multiblockInformationX + 1, multiblockInformationY + 11, "Input must be the name of an element or 'default'")
+        gpu.fill(multiblockInformationX + 34, multiblockInformationY + 10, 25, 1, " ")
+        elementType = string.lower(readInput(multiblockInformationX + 34, multiblockInformationY + 10, "string"))
+    end
+
+    if themeColors[elementType] then
+        for elType, color in pairs(themeColors[elementType]) do
+            changeColor(elType, color)
+        end
+        gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, "The theme has been set to '" .. elementType .. "'.")
     else
-      local oldColor, newColor = changeColor(elementType, colorType)
-      gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, elementType .. " has been changed from " .. oldColor .. " to " .. newColor .. ".")
-    end
-  end
+        gpu.set(multiblockInformationX + 1, multiblockInformationY + 13, "Enter one of the below colors, a hex value (077a11), or 'default'.")
+        gpu.set(multiblockInformationX + 1, multiblockInformationY + 14, "blue, purple, red, green, white, orange, yellow, cyan, turq")
+        gpu.set(multiblockInformationX + 1, multiblockInformationY + 15, "Enter color name or hex: ")
 
-  createRebootButton()
+        local validColors = { blue = true, purple = true, red = true, green = true, white = true, orange = true, yellow = true, cyan = true, turq = true, default = true }
+
+        local colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string")
+
+        while not (validColors[colorType] or string.len(colorType) == 6) do
+            gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, "Input a valid color name or hex value.")
+            gpu.fill(multiblockInformationX + 26, multiblockInformationY + 15, 25, 1, " ")
+            colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string")
+        end
+
+        if colorType == "default" then
+            local defaultColors = { section = "blue", outline = "yellow", text = "purple", title = "cyan" }
+            local oldColor, newColor = changeColor(elementType, defaultColors[elementType])
+            gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, elementType .. " has been reset to default.")
+        else
+            local oldColor, newColor = changeColor(elementType, colorType)
+            gpu.set(multiblockInformationX + 1, multiblockInformationY + 17, elementType .. " has been changed from " .. oldColor .. " to " .. newColor .. ".")
+        end
+    end
+
+	createRebootButton()
 end
 
 gpu.set(controlPanelX + 1, controlPanelY + 1, "Add / Edit Machines")
