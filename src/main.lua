@@ -984,12 +984,12 @@ local function colorButton()
 
         local validColors = { blue = true, purple = true, red = true, green = true, white = true, orange = true, yellow = true, cyan = true, turq = true, default = true }
 
-        local colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string")
+        local colorType = string.lower(readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string"))
 
         while not (validColors[colorType] or string.len(colorType) == 6) do
             gpu.set(multiblockInformationX + 1, multiblockInformationY + 16, "Input a valid color name or hex value.")
             gpu.fill(multiblockInformationX + 26, multiblockInformationY + 15, 25, 1, " ")
-            colorType = readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string")
+            colorType = string.lower(readInput(multiblockInformationX + 26, multiblockInformationY + 15, "string"))
         end
 
         if colorType == "default" then
@@ -1002,8 +1002,10 @@ local function colorButton()
         end
     end
 
-	createRebootButton()
+    createRebootButton()
 end
+
+
 
 gpu.set(controlPanelX + 1, controlPanelY + 1, "Add / Edit Machines")
 utils.drawBorder(controlPanelX + 1, controlPanelY + 3, 14, 2, config.outlineColor)
